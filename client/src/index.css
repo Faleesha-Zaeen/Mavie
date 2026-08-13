@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ivory text-espresso font-sans antialiased;
+    /* A barely-there warm grain so large ivory fields don't read as flat white. */
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(232, 211, 209, 0.35), transparent 42%),
+      radial-gradient(circle at 88% 4%, rgba(227, 205, 164, 0.28), transparent 38%),
+      radial-gradient(circle at 50% 100%, rgba(201, 139, 148, 0.10), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-blush text-espresso;
+  }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-line rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-rose-soft; }
+}
+
+@layer components {
+  /* ── Typography ─────────────────────────────────────────── */
+  .eyebrow {
+    @apply font-sans text-[10px] uppercase tracking-editorial text-espresso-mute font-medium;
+  }
+
+  .display {
+    @apply font-display font-light leading-[1.05] tracking-[-0.01em];
+  }
+
+  .serif-body {
+    @apply font-display text-lg leading-relaxed text-espresso-soft;
+  }
+
+  /* ── Surfaces ───────────────────────────────────────────── */
+  .card {
+    @apply bg-white/70 backdrop-blur-sm border border-line rounded-[4px] shadow-soft;
+  }
+
+  .card-lift {
+    @apply card transition-all duration-500 hover:shadow-lift hover:-translate-y-1 hover:border-rose-soft;
+  }
+
+  .rule {
+    @apply h-px w-full bg-line;
+  }
+
+  /* ── Controls ───────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 font-sans text-[11px]
+           uppercase tracking-salon font-medium transition-all duration-300
+           disabled:opacity-40 disabled:cursor-not-allowed rounded-[2px];
+  }
+
+  .btn-primary {
+    @apply btn bg-espresso text-ivory hover:bg-espresso-soft shadow-soft
+           hover:shadow-lift active:translate-y-px;
+  }
+
+  .btn-rose {
+    @apply btn bg-rose text-white hover:bg-rose-deep shadow-soft hover:shadow-glow active:translate-y-px;
+  }
+
+  .btn-ghost {
+    @apply btn border border-line text-espresso hover:border-espresso hover:bg-white/60;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line
+           bg-white/60 text-[11px] tracking-wide text-espresso-soft transition-all duration-300
+           hover:border-rose cursor-pointer select-none;
+  }
+
+  .chip-active {
+    @apply bg-espresso text-ivory border-espresso hover:border-espresso;
+  }
+
+  .field {
+    @apply w-full bg-white/70 border border-line rounded-[3px] px-5 py-4 font-display text-xl
+           text-espresso placeholder:text-espresso-mute/60 focus:outline-none
+           focus:border-rose focus:ring-4 focus:ring-rose/10 transition-all duration-300;
+  }
+
+  /* ── Loading ────────────────────────────────────────────── */
+  .shimmer {
+    background: linear-gradient(90deg, #F3EDE4 8%, #FAF7F2 22%, #F3EDE4 36%);
+    background-size: 800px 100%;
+    @apply animate-shimmer;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+}
