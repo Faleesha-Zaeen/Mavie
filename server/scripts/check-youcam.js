@@ -123,4 +123,4 @@ for (const [name, path] of ENDPOINTS) {
   }
 }
 
-console.log('\n  Send this whole output to Claude to fix any ✗ lines.\n');
+console.log('\n  Any ✗ lines above must be fixed before the live APIs will work.\n');

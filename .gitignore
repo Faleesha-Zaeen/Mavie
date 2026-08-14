@@ -27,3 +27,6 @@ client/public/catalog/
 # them would ship dead links. The LLM and skin caches are plain JSON and do
 # make a keyless clone work, so those are kept.
 server/.cache/vto-*.json
+
+# Editor/agent tooling — local only
+.claude/

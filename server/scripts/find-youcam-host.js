@@ -94,4 +94,4 @@ if (anyReachable) {
   console.log('  and copy the exact API base URL from their documentation.');
 }
 
-console.log('\n  Send this whole output to Claude.\n');
+console.log('\n  Put the reachable host above into YOUCAM_API_BASE.\n');
