@@ -14,16 +14,30 @@ const STYLIST_SYSTEM = `You are THE STYLIST, one half of MAVIE's decision panel.
 Your job: find the strongest reasons this is a GOOD decision, using ONLY the user's stated
 goals, preferences, the catalog metadata and the evidence provided.
 Do not invent facts. Do not reference anything not present in the evidence.
-Return ONLY JSON: { "reasons": [{ "claim": "<one sentence>", "basis": "<which evidence field>" }] }
-Give 2-4 reasons. Be specific, warm and concrete — never generic flattery.`;
+Return ONLY JSON: { "reasons": [{ "claim": "<one sentence>", "basis": "<field name only>" }] }
+Give 2-4 reasons. Be specific, warm and concrete — never generic flattery.
+
+"basis" MUST be a bare field name of at most 3 words, such as "versatility",
+"budget_fit" or "occasion_match". It is rendered as a small caption, so it must
+never be a sentence, an explanation, or contain backticks or numbers.
+
+All prices are US DOLLARS. Always write them as $42. Never use ₹, rupees, or any
+other currency symbol, whatever the user's phrasing looks like.`;
 
 const SKEPTIC_SYSTEM = `You are THE SKEPTIC, one half of MAVIE's decision panel.
 Your job: CHALLENGE this purchase. Look for conflicts with the user's goals, budget, closet,
 versatility, maintenance preferences and expected usage.
 Use ONLY the evidence provided. DO NOT INVENT FACTS. If the evidence does not support a
 concern, do not raise it. It is acceptable to return few concerns when the purchase is sound.
-Return ONLY JSON: { "concerns": [{ "claim": "<one sentence>", "basis": "<which evidence field>", "severity": "low|medium|high" }] }
-Give 1-4 concerns. Be direct and useful, never preachy or moralising about spending.`;
+Return ONLY JSON: { "concerns": [{ "claim": "<one sentence>", "basis": "<field name only>", "severity": "low|medium|high" }] }
+Give 1-4 concerns. Be direct and useful, never preachy or moralising about spending.
+
+"basis" MUST be a bare field name of at most 3 words, such as "versatility",
+"closet_overlap" or "budget_pressure". It is rendered as a small caption, so it
+must never be a sentence, an explanation, or contain backticks or numbers.
+
+All prices are US DOLLARS. Always write them as $42. Never use ₹, rupees, or any
+other currency symbol, whatever the user's phrasing looks like.`;
 
 export async function runPanel(evidence) {
   const payload = JSON.stringify(evidence, null, 2);
@@ -163,12 +177,54 @@ function interleave(stylist, skeptic) {
 
 function normalise(list) {
   if (!Array.isArray(list) || !list.length) return null;
-  return list
+  const cleaned = list
     .filter((r) => r && typeof r.claim === 'string' && r.claim.length > 3)
     .map((r) => ({
-      claim: String(r.claim).slice(0, 240),
-      basis: String(r.basis || 'evidence'),
+      claim: cleanClaim(r.claim),
+      basis: cleanBasis(r.basis),
       ...(r.severity ? { severity: r.severity } : {}),
     }))
     .slice(0, 4);
+  return cleaned.length ? cleaned : null;
+}
+
+/**
+ * The model occasionally slips into rupees — the prompts are full of Indian
+ * phrasing and it pattern-matches. Prices are USD everywhere in MAVIE, so this
+ * is enforced in code rather than trusted to the instruction.
+ */
+export function cleanClaim(claim) {
+  return String(claim)
+    .replace(/₹\s?/g, '$')
+    // "899 rupees" / "899 rs"  →  "$899"
+    .replace(/\b(\d[\d,]*)\s*(?:rupees|rs\.?|inr)\b/gi, '$$$1')
+    // "Rs. 899" / "INR 899"  →  "$899"
+    .replace(/\b(?:rs\.?|inr)\s*(\d[\d,]*)/gi, '$$$1')
+    .replace(/`/g, '')
+    .trim()
+    .slice(0, 240);
+}
+
+/**
+ * `basis` is rendered as a small caption under each claim. The model sometimes
+ * returns a whole explanatory sentence instead of a field name, which breaks
+ * the layout — so reduce it to the field it is clearly pointing at.
+ */
+const KNOWN_FIELDS = [
+  'occasion_match', 'style_match', 'budget_fit', 'versatility', 'rewear_potential',
+  'closet_overlap', 'maintenance_burden', 'budget_pressure', 'visual_match',
+  'comfort_priority', 'style_preferences', 'style_dna', 'occasion_tags', 'style_tags', 'price',
+];
+
+export function cleanBasis(raw) {
+  const text = String(raw || 'evidence').toLowerCase().replace(/[`'"]/g, '');
+
+  // Prefer an explicit field name mentioned anywhere in the string.
+  const snake = text.replace(/\s+/g, '_');
+  const hit = KNOWN_FIELDS.find((f) => snake.includes(f) || text.includes(f.replace(/_/g, ' ')));
+  if (hit) return hit;
+
+  // Otherwise keep it to a short caption rather than a sentence.
+  const words = text.replace(/[^a-z_\s]/g, '').trim().split(/\s+/).filter(Boolean);
+  return words.slice(0, 3).join('_') || 'evidence';
 }

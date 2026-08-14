@@ -56,7 +56,12 @@ occasion into structured styling constraints. Return ONLY JSON with this exact s
   "avoided_colors": ["neon"],
   "summary": "<one warm sentence reflecting the moment back to the user>"
 }
-Never invent a budget the user did not state. Use null instead.`;
+Never invent a budget the user did not state. Use null instead.
+
+MAVIE works in US DOLLARS. If the user states a budget in another currency
+(₹, rupees, €, £), convert it to approximate USD before returning it — a
+₹3,000 budget is roughly 36, not 3000. The "summary" must never contain a
+non-USD currency symbol.`;
 
 export async function parseContext(text) {
   const fallback = deterministicParse(text);
