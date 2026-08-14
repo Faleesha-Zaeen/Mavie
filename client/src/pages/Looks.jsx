@@ -73,6 +73,7 @@ export default function Looks() {
           <h2 className="font-display text-3xl font-light">MAVIE Match</h2>
           <span className="text-[11px] text-espresso-mute max-w-xs text-right leading-relaxed">
             Not an attractiveness score — how well each look satisfies what you asked for.
+            Beauty compatibility comes from your skin analysis.
           </span>
         </div>
 
@@ -91,14 +92,29 @@ export default function Looks() {
             <tbody>
               {FACTORS.map(([key, label]) => {
                 const best = Math.max(...looks.map((l) => l.scores[key] ?? 0));
+                const isBeauty = key === 'beauty';
                 return (
                   <tr key={key} className="border-b border-line/60">
-                    <td className="p-5 text-[12px] text-espresso-soft">{label}</td>
+                    <td className="p-5 text-[12px] text-espresso-soft">
+                      {isBeauty ? (
+                        // Links back to the line explaining how skin analysis
+                        // set this look's makeup — the score should be
+                        // traceable, not an unexplained number.
+                        <a
+                          href="#beauty-chain"
+                          className="inline-flex items-center gap-1 border-b border-dotted border-line
+                                     hover:border-rose hover:text-rose-text transition-colors"
+                        >
+                          {label}
+                          <Sparkles size={10} className="text-rose-text" />
+                        </a>
+                      ) : label}
+                    </td>
                     {looks.map((l) => {
                       const v = l.scores[key] ?? 0;
                       return (
                         <td key={l.id} className={`p-5 text-right tabular-nums font-display text-lg ${
-                          v === best ? 'text-rose' : 'text-espresso-mute'
+                          v === best ? 'text-rose-text' : 'text-espresso-mute'
                         }`}>
                           {v}%
                         </td>
@@ -111,7 +127,7 @@ export default function Looks() {
                 <td className="p-5 eyebrow">Overall</td>
                 {looks.map((l) => (
                   <td key={l.id} className="p-5 text-right">
-                    <span className={`display text-2xl ${l.id === pick.id ? 'text-rose' : ''}`}>
+                    <span className={`display text-2xl ${l.id === pick.id ? 'text-rose-text' : ''}`}>
                       {l.scores.overall}%
                     </span>
                   </td>
@@ -137,7 +153,7 @@ export default function Looks() {
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles size={13} className="text-rose" />
+                <Sparkles size={13} className="text-rose-text" />
                 <span className="eyebrow">MAVIE's pick</span>
               </div>
               <h3 className="display text-4xl">{pick.name}</h3>
@@ -152,8 +168,29 @@ export default function Looks() {
             </div>
 
             {selectedLook?.makeup && (
-              <div className="pt-5 border-t border-line space-y-3">
+              <div id="beauty-chain" className="pt-5 border-t border-line space-y-3 scroll-mt-24">
                 <div className="eyebrow">Complete the look</div>
+
+                {/* The combined-track chain, stated in one line so it is
+                    legible on screen and not just true in the code. */}
+                <div className={`flex items-start gap-2.5 rounded-[3px] px-4 py-3 border ${
+                  selectedLook.makeup.finish_source === 'skin_analysis'
+                    ? 'border-rose-soft bg-blush/25'
+                    : 'border-line bg-surface/60'
+                }`}>
+                  <Sparkles size={12} className="text-rose-text mt-0.5 shrink-0" />
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-editorial text-espresso-mute">
+                      <span>Skin</span><ArrowRight size={9} />
+                      <span>Makeup</span><ArrowRight size={9} />
+                      <span>Outfit</span>
+                    </div>
+                    <p className="text-[12px] leading-relaxed text-espresso-soft">
+                      {selectedLook.makeup.provenance}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="flex flex-wrap items-center gap-4">
                   {Object.entries(selectedLook.makeup.direction).map(([part, value]) => (
                     <div key={part} className="text-[12px]">
@@ -177,7 +214,7 @@ export default function Looks() {
                 Should I buy it?
               </button>
               <button onClick={saveLook} disabled={saved} className="btn-ghost">
-                <Heart size={12} className={saved ? 'fill-rose text-rose' : ''} />
+                <Heart size={12} className={saved ? 'fill-rose text-rose-text' : ''} />
                 {saved ? 'Saved' : 'Save look'}
               </button>
             </div>

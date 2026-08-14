@@ -23,8 +23,9 @@ export function recommendMakeup(constraints = {}, profile = {}, items = []) {
   const wantsSoft = goals.includes('feminine') || goals.includes('minimal') || goals.includes('comfortable');
 
   // The beauty profile derived from Skin Analysis sets the base finish.
-  const finish = profile?.beauty?.preferred_finish
-    || (goals.includes('elegant') ? 'luminous' : 'natural');
+  const skinFinish = profile?.beauty?.preferred_finish;
+  const skinDirection = profile?.beauty?.direction;
+  const finish = skinFinish || (goals.includes('elegant') ? 'luminous' : 'natural');
 
   // Coordinate the lip with the dominant garment colour so the look reads as one.
   const dominant = items.find((i) => i.category === 'dress') || items[0];
@@ -48,6 +49,19 @@ export function recommendMakeup(constraints = {}, profile = {}, items = []) {
     name,
     intensity,
     finish,
+
+    /**
+     * Provenance for the skin → makeup → outfit chain.
+     *
+     * The causal link was real in code but invisible on screen. This states, in
+     * one line, exactly which step set the finish — so the combined-track
+     * requirement is legible rather than merely implemented.
+     */
+    finish_source: skinFinish ? 'skin_analysis' : 'defaults',
+    provenance: skinFinish
+      ? `Your skin analysis read as ${(skinDirection || []).join(' + ') || 'balanced'}, so MAVIE set this look to a ${finish} base at ${intensity} intensity — then matched the lip and cheek to the ${dominant ? dominant.colors[0] : 'outfit'} in your outfit.`
+      : `MAVIE set a ${finish} base from your stated goals. Add a photo and your skin analysis will set this instead.`,
+
     products: [base, eyes, blush, lip].filter(Boolean),
     direction: {
       base: `${base?.shade || 'Natural'} — ${finish} finish`,
