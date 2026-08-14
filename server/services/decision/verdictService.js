@@ -97,6 +97,6 @@ export function findAlternatives({ items = [], constraints = {}, limit = 3 }) {
     .slice(0, limit)
     .map((c) => ({
       ...c,
-      why: `Similar ${c.style_tags[0]} feel, versatility ${c.versatility}%${c.price < target.price ? `, and ₹${(target.price - c.price).toLocaleString('en-IN')} cheaper` : ''}.`,
+      why: `Similar ${c.style_tags[0]} feel, versatility ${c.versatility}%${c.price < target.price ? `, and $${(target.price - c.price).toLocaleString('en-US')} cheaper` : ''}.`,
     }));
 }

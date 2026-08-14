@@ -7,7 +7,7 @@ import { useMavie } from '../context/MavieContext.jsx';
 import { readImage } from '../utils/image.js';
 import VTOViewer from '../components/VTOViewer.jsx';
 import EmptyState from '../components/EmptyState.jsx';
-import ProductCard, { inr } from '../components/ProductCard.jsx';
+import ProductCard, { usd } from '../components/ProductCard.jsx';
 
 export default function TryOn() {
   const navigate = useNavigate();
@@ -116,7 +116,7 @@ export default function TryOn() {
 
           <div className="flex items-baseline justify-between pt-2 border-t border-line">
             <span className="eyebrow">Total</span>
-            <span className="display text-3xl">{inr(selectedLook?.total)}</span>
+            <span className="display text-3xl">{usd(selectedLook?.total)}</span>
           </div>
 
           {selectedLook?.makeup && (

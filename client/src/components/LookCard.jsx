@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import GarmentVisual from './GarmentVisual.jsx';
-import { inr } from './ProductCard.jsx';
+import { usd } from './ProductCard.jsx';
 
 /** A complete look: real garments + coordinated makeup + its own scores. */
 export default function LookCard({ look, index = 0, selected, isPick, onSelect }) {
@@ -54,7 +54,7 @@ export default function LookCard({ look, index = 0, selected, isPick, onSelect }
             <li key={item.id} className="flex justify-between text-[12px] text-espresso-soft">
               <span className="truncate pr-3">{item.name}</span>
               <span className="tabular-nums shrink-0 text-espresso-mute">
-                {item.owned ? 'owned' : inr(item.price)}
+                {item.owned ? 'owned' : usd(item.price)}
               </span>
             </li>
           ))}
@@ -64,7 +64,7 @@ export default function LookCard({ look, index = 0, selected, isPick, onSelect }
 
         <div className="flex items-center justify-between">
           <span className="eyebrow">Total</span>
-          <span className="font-display text-xl">{look.total === 0 ? 'Already yours' : inr(look.total)}</span>
+          <span className="font-display text-xl">{look.total === 0 ? 'Already yours' : usd(look.total)}</span>
         </div>
 
         {look.makeup && (

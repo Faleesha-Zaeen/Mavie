@@ -66,7 +66,7 @@ export default function Profile() {
           <div className="space-y-6">
             <Block label="Budget range">
               <p className="display text-3xl">
-                ₹{profile.budget_range[0].toLocaleString('en-IN')} — ₹{profile.budget_range[1].toLocaleString('en-IN')}
+                ${profile.budget_range[0].toLocaleString('en-US')} — ${profile.budget_range[1].toLocaleString('en-US')}
               </p>
             </Block>
 

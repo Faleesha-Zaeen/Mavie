@@ -64,7 +64,7 @@ export function deterministicStylist({ metrics, constraints, items, makeup }) {
   if (metrics.budget_fit >= 90) {
     const total = items.reduce((s, i) => s + i.price, 0);
     reasons.push({
-      claim: `At ₹${total.toLocaleString('en-IN')} it sits comfortably inside the budget you set.`,
+      claim: `At $${total.toLocaleString('en-US')} it sits comfortably inside the budget you set.`,
       basis: 'budget_fit',
     });
   }

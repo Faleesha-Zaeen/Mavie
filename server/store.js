@@ -29,7 +29,7 @@ export const store = {
         preferred_colors: ['ivory', 'beige', 'black', 'dusty rose'],
         avoided_colors: ['neon'],
         comfort_priority: 0.8,
-        budget_range: [1000, 5000],
+        budget_range: [50, 300],
         beauty: null,
         created_at: new Date().toISOString(),
       });

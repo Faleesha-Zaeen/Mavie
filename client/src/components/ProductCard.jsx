@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import GarmentVisual from './GarmentVisual.jsx';
 
-export const inr = (n) => `₹${Number(n || 0).toLocaleString('en-IN')}`;
+export const usd = (n) => `$${Number(n || 0).toLocaleString('en-US')}`;
 
 export default function ProductCard({ item, index = 0, compact = false, onClick }) {
   if (!item) return null;
@@ -25,7 +25,7 @@ export default function ProductCard({ item, index = 0, compact = false, onClick 
 
         <div className="flex items-baseline justify-between pt-1">
           <span className="font-sans text-sm tracking-wide">
-            {item.owned ? <span className="text-sage">Owned</span> : inr(item.price)}
+            {item.owned ? <span className="text-sage">Owned</span> : usd(item.price)}
           </span>
           {!compact && (
             <span className="text-[10px] text-espresso-mute tracking-wide">

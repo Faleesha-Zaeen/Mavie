@@ -75,7 +75,7 @@ export function style(req, res) {
 
   res.json({
     looks,
-    note: 'Styled entirely from pieces you already own. Total cost: ₹0.',
+    note: 'Styled entirely from pieces you already own. Total cost: $0.',
   });
 }
 

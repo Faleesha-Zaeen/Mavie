@@ -50,7 +50,7 @@ occasion into structured styling constraints. Return ONLY JSON with this exact s
   "occasion": "interview|office|date|dinner|party|wedding|college|brunch|travel|casual",
   "formality": "casual|smart-casual|formal|statement",
   "goal": ["professional","confident","feminine","minimal","elegant","bold","comfortable"],
-  "budget": <number in INR or null>,
+  "budget": <number in USD or null>,
   "comfort_priority": <0..1>,
   "style_preferences": ["minimal","elegant","feminine","classic","relaxed","bold"],
   "avoided_colors": ["neon"],
@@ -103,8 +103,8 @@ export function deterministicParse(text) {
     .filter(([, words]) => words.some((w) => t.includes(w)))
     .map(([key]) => key);
 
-  // ₹2,500 / 2500 rupees / budget of 3000
-  const budgetMatch = t.match(/(?:₹|rs\.?\s*|inr\s*)([\d,]{3,7})|([\d,]{3,7})\s*(?:rupees|rs\b|bucks)/);
+  // $150 / 150 dollars / usd 150 / budget of 150
+  const budgetMatch = t.match(/(?:\$|usd\s*)([\d,]{2,7})|([\d,]{2,7})\s*(?:dollars|usd|bucks)/);
   const budget = budgetMatch
     ? parseInt((budgetMatch[1] || budgetMatch[2]).replace(/,/g, ''), 10)
     : null;
@@ -137,7 +137,7 @@ function summarise(occasion, goal, budget) {
     college: 'college', brunch: 'brunch', travel: 'travel', casual: 'a relaxed day',
   }[occasion] || 'your moment';
   const tone = goal.length ? goal.slice(0, 2).join(' and ') : 'like yourself';
-  const money = budget ? ` within ₹${budget.toLocaleString('en-IN')}` : '';
+  const money = budget ? ` within $${budget.toLocaleString('en-US')}` : '';
   return `You're dressing for ${label}, and you want to feel ${tone}${money}.`;
 }
 

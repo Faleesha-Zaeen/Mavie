@@ -193,7 +193,7 @@ export default function Closet() {
         <section className="space-y-6">
           <div className="space-y-2">
             <h2 className="font-display text-3xl font-light">Built from what you own</h2>
-            <p className="text-[13px] text-espresso-mute">Total cost: ₹0.</p>
+            <p className="text-[13px] text-espresso-mute">Total cost: $0.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {looks.map((look, i) => (

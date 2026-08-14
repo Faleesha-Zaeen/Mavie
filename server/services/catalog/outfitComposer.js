@@ -108,7 +108,7 @@ function explain(arch, items, constraints, scores) {
   const names = items.slice(0, 2).map((i) => i.name.toLowerCase()).join(' with ');
   const goal = (constraints.goal || []).slice(0, 2).join(' and ') || 'like yourself';
   const budgetLine = constraints.budget
-    ? ` It lands at ₹${items.reduce((s, i) => s + i.price, 0).toLocaleString('en-IN')} against your ₹${constraints.budget.toLocaleString('en-IN')} budget.`
+    ? ` It lands at $${items.reduce((s, i) => s + i.price, 0).toLocaleString('en-US')} against your $${constraints.budget.toLocaleString('en-US')} budget.`
     : '';
   const occasion = constraints.occasion
     ? `${/^[aeiou]/i.test(constraints.occasion) ? 'an' : 'a'} ${constraints.occasion}`

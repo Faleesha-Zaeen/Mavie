@@ -11,9 +11,9 @@ import Loader from '../components/Loader.jsx';
 const VIBES = ['Soft', 'Minimal', 'Elegant', 'Bold', 'Feminine', 'Comfortable'];
 
 const EXAMPLES = [
-  'I have a placement interview tomorrow. I want to look professional but still feminine. Nothing uncomfortable, and I have ₹3,000.',
+  'I have a job interview tomorrow. I want to look professional but still feminine. Nothing uncomfortable, and I have $150.',
   'Birthday dinner with my friends tonight — cute but not overdressed.',
-  'Graduation ceremony. Elegant, feminine and sophisticated. Budget ₹3,000.',
+  'Graduation ceremony. Elegant, feminine and sophisticated. Budget $200.',
 ];
 
 export default function Moment() {
@@ -22,7 +22,7 @@ export default function Moment() {
 
   const [text, setText] = useState('');
   const [vibes, setVibes] = useState([]);
-  const [budget, setBudget] = useState(3000);
+  const [budget, setBudget] = useState(150);
   const [stage, setStage] = useState(null);
   const [error, setError] = useState(null);
 
@@ -55,7 +55,7 @@ export default function Moment() {
 
     try {
       setStage('context');
-      const enriched = [text, vibes.length ? `I want to feel ${vibes.join(' and ')}.` : '', `My budget is ₹${budget}.`]
+      const enriched = [text, vibes.length ? `I want to feel ${vibes.join(' and ')}.` : '', `My budget is $${budget}.`]
         .filter(Boolean)
         .join(' ');
 
@@ -158,13 +158,13 @@ export default function Moment() {
         <div className="space-y-3.5">
           <div className="flex items-baseline justify-between">
             <span className="eyebrow">Your budget</span>
-            <span className="font-display text-2xl">₹{budget.toLocaleString('en-IN')}</span>
+            <span className="font-display text-2xl">${budget.toLocaleString('en-US')}</span>
           </div>
           <input
             type="range"
-            min={500}
-            max={10000}
-            step={250}
+            min={25}
+            max={500}
+            step={5}
             value={budget}
             onChange={(e) => setBudget(Number(e.target.value))}
             className="w-full h-px bg-line appearance-none cursor-pointer
@@ -175,7 +175,7 @@ export default function Moment() {
                        [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-rose"
           />
           <div className="flex justify-between text-[10px] tracking-wide text-espresso-mute">
-            <span>₹500</span><span>₹10,000</span>
+            <span>$25</span><span>$500</span>
           </div>
         </div>
 
