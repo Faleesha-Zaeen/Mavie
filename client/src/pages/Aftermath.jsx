@@ -8,6 +8,7 @@ import Loader from '../components/Loader.jsx';
 import EmptyState from '../components/EmptyState.jsx';
 import AgentDebate from '../components/AgentDebate.jsx';
 import VerdictCard from '../components/VerdictCard.jsx';
+import ErrorState from '../components/ErrorState.jsx';
 import ScoreBar from '../components/ScoreBar.jsx';
 import ProductCard from '../components/ProductCard.jsx';
 
@@ -27,10 +28,30 @@ export default function Aftermath() {
   const [sent, setSent] = useState(null);
   const [error, setError] = useState(null);
 
+  // The verdict is the point of the whole product, so it should not appear in
+  // the same instant as the argument that produced it. Let the agents land,
+  // then the evidence, then the call.
+  const [stage, setStage] = useState(0); // 0 debate · 1 evidence · 2 verdict
+
   useEffect(() => {
     if (selectedLook && !decision) analyse();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLook?.id]);
+
+  // Stage the reveal once the decision lands. Timings are tuned to roughly the
+  // pace of reading the debate rather than to look busy.
+  useEffect(() => {
+    if (!decision) return setStage(0);
+    // Deliberately short. The user has already waited on the API; this beat is
+    // for weight, not for suspense. ~2s total from debate to verdict.
+    const debateBeats = decision.panel?.debate?.length || 4;
+    const evidenceAt = Math.min(700 + debateBeats * 150, 1500);
+    const timers = [
+      setTimeout(() => setStage(1), evidenceAt),
+      setTimeout(() => setStage(2), evidenceAt + 900),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [decision]);
 
   async function analyse() {
     if (!selectedLook) return;
@@ -99,7 +120,12 @@ export default function Aftermath() {
       </section>
 
       {/* Metrics */}
-      <section className="space-y-8">
+      <motion.section
+        className="space-y-8"
+        initial={{ opacity: 0, y: 16 }}
+        animate={stage >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <h2 className="font-display text-3xl font-light">The evidence</h2>
 
         <div className="grid sm:grid-cols-2 gap-x-14 gap-y-7">
@@ -121,17 +147,28 @@ export default function Aftermath() {
         <p className="text-[11px] leading-relaxed text-espresso-mute border-t border-line pt-5 max-w-2xl">
           {decision.disclaimer}
         </p>
-      </section>
+      </motion.section>
 
-      {/* Verdict */}
-      <VerdictCard decision={decision} />
+      {/* Verdict — held back until the argument and the evidence have landed. */}
+      {stage < 2 ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-4">
+          <motion.span
+            className="w-1.5 h-1.5 rounded-full bg-rose"
+            animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.6, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <span className="eyebrow">Weighing it up</span>
+        </div>
+      ) : (
+        <VerdictCard decision={decision} />
+      )}
 
       {/* Alternatives */}
-      {alternatives.length > 0 && (
+      {stage >= 2 && alternatives.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
           className="space-y-6"
         >
           <div className="space-y-2 max-w-xl">
@@ -153,7 +190,12 @@ export default function Aftermath() {
       )}
 
       {/* Feedback loop */}
-      <section className="card p-8 space-y-5">
+      <motion.section
+        className="card p-8 space-y-5"
+        initial={{ opacity: 0 }}
+        animate={stage >= 2 ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.6, delay: 0.7 }}
+      >
         <div className="space-y-1.5">
           <h2 className="font-display text-2xl font-light">Tell MAVIE what you think</h2>
           <p className="text-[12px] text-espresso-mute">
@@ -174,7 +216,7 @@ export default function Aftermath() {
         </div>
 
         {sent && (
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[12px] text-sage flex items-center gap-1.5">
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[12px] text-sage-text flex items-center gap-1.5">
             <Heart size={11} /> Noted. MAVIE will factor that in next time.
           </motion.p>
         )}
@@ -184,9 +226,9 @@ export default function Aftermath() {
             <RefreshCw size={12} /> Re-run the analysis
           </button>
         </div>
-      </section>
+      </motion.section>
 
-      {error && <p className="text-[12px] text-rust">{error}</p>}
+      {error && <ErrorState message={error} onRetry={() => { setDecision(null); analyse(); }} />}
     </div>
   );
 }

@@ -58,7 +58,7 @@ export default function Saved() {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                 className="text-[11px] text-espresso-mute leading-relaxed px-1"
               >
-                <Heart size={9} className="inline mr-1 text-rose" />
+                <Heart size={9} className="inline mr-1 text-rose-text" />
                 {look.explanation}
               </motion.p>
             )}

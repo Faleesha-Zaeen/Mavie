@@ -56,7 +56,7 @@ export default function Profile() {
               <div className="flex flex-wrap gap-2">
                 {profile.avoided_colors.length
                   ? profile.avoided_colors.map((c) => (
-                      <span key={c} className="chip cursor-default text-rust border-rust/30">{c}</span>
+                      <span key={c} className="chip cursor-default text-rust-text border-rust/30">{c}</span>
                     ))
                   : <span className="text-[12px] text-espresso-mute">Nothing yet.</span>}
               </div>
@@ -133,7 +133,7 @@ export default function Profile() {
       {/* Privacy */}
       <section className="card p-8 space-y-5">
         <div className="flex items-center gap-2">
-          <ShieldCheck size={15} className="text-sage" />
+          <ShieldCheck size={15} className="text-sage-text" />
           <h2 className="font-display text-2xl font-light">Your photos, your call</h2>
         </div>
 
@@ -149,12 +149,12 @@ export default function Profile() {
           <button onClick={() => { setUserImage(null); setBeauty(null); setMessage('Photo removed from this session.'); }} className="btn-ghost">
             Delete my photos
           </button>
-          <button onClick={deleteEverything} className="btn-ghost text-rust border-rust/30 hover:border-rust">
+          <button onClick={deleteEverything} className="btn-ghost text-rust-text border-rust/30 hover:border-rust">
             <Trash2 size={12} /> Delete my profile
           </button>
         </div>
 
-        {message && <p className="text-[12px] text-sage">{message}</p>}
+        {message && <p className="text-[12px] text-sage-text">{message}</p>}
       </section>
 
       {/* Integration status — useful right before a demo */}

@@ -25,7 +25,7 @@ export default function ProductCard({ item, index = 0, compact = false, onClick 
 
         <div className="flex items-baseline justify-between pt-1">
           <span className="font-sans text-sm tracking-wide">
-            {item.owned ? <span className="text-sage">Owned</span> : usd(item.price)}
+            {item.owned ? <span className="text-sage-text">Owned</span> : usd(item.price)}
           </span>
           {!compact && (
             <span className="text-[10px] text-espresso-mute tracking-wide">

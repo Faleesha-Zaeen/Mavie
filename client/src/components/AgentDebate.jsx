@@ -41,9 +41,9 @@ export default function AgentDebate({ panel }) {
                   {turn.severity && (
                     <span className={`text-[9px] uppercase tracking-salon px-1.5 py-0.5 rounded-full border ${
                       turn.severity === 'high'
-                        ? 'border-rust/40 text-rust'
+                        ? 'border-rust/40 text-rust-text'
                         : turn.severity === 'medium'
-                          ? 'border-amber/40 text-amber'
+                          ? 'border-amber/40 text-amber-text'
                           : 'border-line text-espresso-mute'
                     }`}>
                       {turn.severity}

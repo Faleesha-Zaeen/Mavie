@@ -4,6 +4,7 @@ import { Luggage } from 'lucide-react';
 
 import { api } from '../services/api.js';
 import Loader from '../components/Loader.jsx';
+import ErrorState from '../components/ErrorState.jsx';
 import GarmentVisual from '../components/GarmentVisual.jsx';
 import { usd } from '../components/ProductCard.jsx';
 
@@ -97,7 +98,7 @@ export default function Trip() {
           </button>
         </div>
 
-        {error && <p className="text-[12px] text-rust">{error}</p>}
+        {error && <ErrorState message={error} onRetry={() => setError(null)} retryLabel="Dismiss" />}
       </section>
 
       {trip && (
@@ -116,10 +117,10 @@ export default function Trip() {
 
             <div className="flex flex-wrap gap-x-14 gap-y-6">
               <Stat value={trip.stats.pieces} label="pieces packed" />
-              <Stat value={trip.stats.from_closet} label="from your closet" accent="#7C8F76" />
+              <Stat value={trip.stats.from_closet} label="from your closet" accent="#56684F" />
               <Stat value={trip.stats.to_buy} label="to buy" />
               <Stat value={usd(trip.stats.spend)} label="trip spend" />
-              <Stat value={`${trip.stats.wears_per_piece}×`} label="worn per piece" accent="#C98B94" />
+              <Stat value={`${trip.stats.wears_per_piece}×`} label="worn per piece" accent="#92535F" />
             </div>
 
             <p className="text-[11px] text-espresso-mute leading-relaxed">
@@ -144,7 +145,7 @@ export default function Trip() {
                     <div className="text-[11px] leading-tight truncate">{item.name}</div>
                     <div className="text-[10px] tracking-wide">
                       {item.owned
-                        ? <span className="text-sage">owned</span>
+                        ? <span className="text-sage-text">owned</span>
                         : <span className="text-espresso-mute">{usd(item.price)}</span>}
                     </div>
                   </div>
@@ -166,7 +167,7 @@ export default function Trip() {
                   className="card p-6 grid sm:grid-cols-[110px,1fr] gap-6 items-start"
                 >
                   <div>
-                    <div className="display text-4xl text-rose">{String(day.day).padStart(2, '0')}</div>
+                    <div className="display text-4xl text-rose-text">{String(day.day).padStart(2, '0')}</div>
                     <div className="eyebrow mt-1">{day.label}</div>
                   </div>
 

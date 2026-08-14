@@ -7,6 +7,7 @@ import { api } from '../services/api.js';
 import { useMavie } from '../context/MavieContext.jsx';
 import { readImage } from '../utils/image.js';
 import Loader from '../components/Loader.jsx';
+import ErrorState from '../components/ErrorState.jsx';
 
 const VIBES = ['Soft', 'Minimal', 'Elegant', 'Bold', 'Feminine', 'Comfortable'];
 
@@ -218,7 +219,7 @@ export default function Moment() {
               className="pt-4 border-t border-line space-y-2.5"
             >
               <div className="flex items-center gap-2">
-                <Sparkles size={12} className="text-rose" />
+                <Sparkles size={12} className="text-rose-text" />
                 <span className="eyebrow">Your beauty direction</span>
               </div>
               <p className="font-display text-2xl font-light">{beauty.headline}</p>
@@ -232,11 +233,7 @@ export default function Moment() {
           )}
         </div>
 
-        {error && (
-          <p className="text-[12px] text-rust border border-rust/25 bg-rust/[0.05] px-4 py-3 rounded-[3px]">
-            {error}
-          </p>
-        )}
+        {error && <ErrorState message={error} onRetry={() => setError(null)} retryLabel="Dismiss" />}
 
         <div className="flex justify-center pb-8">
           <button onClick={createLook} className="btn-rose group">
@@ -262,7 +259,7 @@ export default function Moment() {
               transition={{ delay: i * 0.12, duration: 0.6 }}
               className="space-y-2.5"
             >
-              <div className="eyebrow text-rose">{s.n}</div>
+              <div className="eyebrow text-rose-text">{s.n}</div>
               <h3 className="font-display text-2xl font-light">{s.t}</h3>
               <p className="text-[13px] leading-relaxed text-espresso-mute">{s.d}</p>
             </motion.div>

@@ -13,11 +13,12 @@
 
   body {
     @apply bg-ivory text-espresso font-sans antialiased;
-    /* A barely-there warm grain so large ivory fields don't read as flat white. */
+    /* Warm depth rather than brightness — the tints sit slightly darker than
+       the base so large fields have shape instead of glare. */
     background-image:
-      radial-gradient(circle at 12% 8%, rgba(232, 211, 209, 0.35), transparent 42%),
-      radial-gradient(circle at 88% 4%, rgba(227, 205, 164, 0.28), transparent 38%),
-      radial-gradient(circle at 50% 100%, rgba(201, 139, 148, 0.10), transparent 55%);
+      radial-gradient(circle at 12% 8%, rgba(203, 176, 172, 0.30), transparent 45%),
+      radial-gradient(circle at 88% 4%, rgba(198, 172, 130, 0.24), transparent 40%),
+      radial-gradient(circle at 50% 100%, rgba(168, 116, 124, 0.12), transparent 58%);
     background-attachment: fixed;
   }
 
@@ -47,7 +48,7 @@
 
   /* ── Surfaces ───────────────────────────────────────────── */
   .card {
-    @apply bg-white/70 backdrop-blur-sm border border-line rounded-[4px] shadow-soft;
+    @apply bg-surface/75 backdrop-blur-sm border border-line rounded-[4px] shadow-soft;
   }
 
   .card-lift {
@@ -75,12 +76,12 @@
   }
 
   .btn-ghost {
-    @apply btn border border-line text-espresso hover:border-espresso hover:bg-white/60;
+    @apply btn border border-line text-espresso hover:border-espresso hover:bg-surface/70;
   }
 
   .chip {
     @apply inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-line
-           bg-white/60 text-[11px] tracking-wide text-espresso-soft transition-all duration-300
+           bg-surface/70 text-[11px] tracking-wide text-espresso-soft transition-all duration-300
            hover:border-rose cursor-pointer select-none;
   }
 
@@ -89,14 +90,14 @@
   }
 
   .field {
-    @apply w-full bg-white/70 border border-line rounded-[3px] px-5 py-4 font-display text-xl
+    @apply w-full bg-surface/75 border border-line rounded-[3px] px-5 py-4 font-display text-xl
            text-espresso placeholder:text-espresso-mute/60 focus:outline-none
            focus:border-rose focus:ring-4 focus:ring-rose/10 transition-all duration-300;
   }
 
   /* ── Loading ────────────────────────────────────────────── */
   .shimmer {
-    background: linear-gradient(90deg, #F3EDE4 8%, #FAF7F2 22%, #F3EDE4 36%);
+    background: linear-gradient(90deg, #E7DED1 8%, #F3ECE2 22%, #E7DED1 36%);
     background-size: 800px 100%;
     @apply animate-shimmer;
   }

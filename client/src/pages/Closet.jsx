@@ -6,8 +6,27 @@ import { api } from '../services/api.js';
 import { useMavie } from '../context/MavieContext.jsx';
 import GarmentVisual from '../components/GarmentVisual.jsx';
 import LookCard from '../components/LookCard.jsx';
+import ErrorState from '../components/ErrorState.jsx';
 
 const CATEGORIES = ['top', 'bottom', 'dress', 'outerwear', 'shoes', 'accessory'];
+
+/** "dresses" not "dresss"; "shoes" and "outerwear" are already plural. */
+const plural = (category) => {
+  if (['shoes', 'outerwear'].includes(category)) return category;
+  if (category === 'accessory') return 'accessories';
+  if (/(s|sh|ch|x|z)$/.test(category)) return `${category}es`;
+  return `${category}s`;
+};
+
+// One tap to a populated closet, so the empty state isn't a dead end.
+const STARTERS = [
+  { name: 'Black top', category: 'top', color: 'black', hex: '#1F1B19' },
+  { name: 'White shirt', category: 'top', color: 'white', hex: '#F7F4EE' },
+  { name: 'Blue jeans', category: 'bottom', color: 'navy', hex: '#33455E' },
+  { name: 'Black trousers', category: 'bottom', color: 'black', hex: '#211D1B' },
+  { name: 'Black dress', category: 'dress', color: 'black', hex: '#1C1917' },
+  { name: 'White sneakers', category: 'shoes', color: 'white', hex: '#F5F3EE' },
+];
 const COLORS = [
   ['black', '#1F1B19'], ['white', '#F7F4EE'], ['ivory', '#F2E9DC'], ['beige', '#D7C6AC'],
   ['navy', '#2C3A4F'], ['dusty rose', '#C98B94'], ['sage', '#A8B49A'], ['charcoal', '#403A36'],
@@ -51,6 +70,21 @@ export default function Closet() {
     }
   }
 
+  async function addStarter(s) {
+    try {
+      await api.addClosetItem({
+        category: s.category,
+        color: s.color,
+        colors: [s.color],
+        hex: s.hex,
+        name: s.name,
+      });
+      load();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   async function remove(id) {
     await api.removeClosetItem(id);
     load();
@@ -82,7 +116,7 @@ export default function Closet() {
           {CATEGORIES.map((c) => (
             <div key={c}>
               <div className="display text-4xl">{analysis.counts[c] || 0}</div>
-              <div className="eyebrow mt-1">{c}s</div>
+              <div className="eyebrow mt-1">{plural(c)}</div>
             </div>
           ))}
         </div>
@@ -123,7 +157,7 @@ export default function Closet() {
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
             placeholder="Name (optional)"
-            className="flex-1 min-w-[200px] bg-white/70 border border-line rounded-[3px] px-4 py-2.5
+            className="flex-1 min-w-[200px] bg-surface/75 border border-line rounded-[3px] px-4 py-2.5
                        text-sm focus:outline-none focus:border-rose transition-colors"
           />
           <button onClick={add} className="btn-primary">
@@ -136,7 +170,9 @@ export default function Closet() {
       {items.length > 0 && (
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-3xl font-light">{items.length} pieces</h2>
+            <h2 className="font-display text-3xl font-light">
+              {items.length} {items.length === 1 ? 'piece' : 'pieces'}
+            </h2>
             <button onClick={styleIt} className="btn-rose">Style my closet</button>
           </div>
 
@@ -157,9 +193,9 @@ export default function Closet() {
                 </div>
                 <button
                   onClick={() => remove(item.id)}
-                  className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white/90 text-espresso-mute
+                  className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-surface/95 text-espresso-mute
                              opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center
-                             hover:text-rust"
+                             hover:text-rust-text"
                   aria-label="Remove"
                 >
                   <Trash2 size={11} />
@@ -174,7 +210,7 @@ export default function Closet() {
       {analysis?.duplicates?.length > 0 && (
         <section className="border border-amber/30 bg-amber/[0.06] rounded-[4px] p-6 space-y-3">
           <div className="flex items-center gap-2">
-            <AlertCircle size={14} className="text-amber" />
+            <AlertCircle size={14} className="text-amber-text" />
             <h3 className="eyebrow text-espresso">What MAVIE noticed</h3>
           </div>
           <ul className="space-y-1.5">
@@ -203,11 +239,37 @@ export default function Closet() {
         </section>
       )}
 
+      {/* Designed empty state — a blank page reads as broken, not as new. */}
       {items.length === 0 && (
-        <p className="serif-body">Your closet is empty. Add a few pieces above and MAVIE will style them.</p>
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card p-10 sm:p-14 text-center space-y-6"
+        >
+          <span className="text-3xl">👗</span>
+          <div className="space-y-2 max-w-md mx-auto">
+            <h2 className="display text-3xl">Your closet is empty</h2>
+            <p className="serif-body text-pretty">
+              Add what you already own. MAVIE styles it into new outfits, and uses it
+              to tell you when a new purchase would just be a duplicate.
+            </p>
+          </div>
+
+          <div className="pt-2 space-y-3">
+            <div className="eyebrow">Add a few to see how it works</div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {STARTERS.map((s) => (
+                <button key={s.name} onClick={() => addStarter(s)} className="chip">
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ background: s.hex }} />
+                  {s.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </motion.section>
       )}
 
-      {error && <p className="text-[12px] text-rust">{error}</p>}
+      {error && <ErrorState message={error} onRetry={() => { setError(null); load(); }} />}
     </div>
   );
 }

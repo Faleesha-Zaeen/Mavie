@@ -7,6 +7,7 @@ import { useMavie } from '../context/MavieContext.jsx';
 import { readImage } from '../utils/image.js';
 import VTOViewer from '../components/VTOViewer.jsx';
 import EmptyState from '../components/EmptyState.jsx';
+import ErrorState from '../components/ErrorState.jsx';
 import ProductCard, { usd } from '../components/ProductCard.jsx';
 
 export default function TryOn() {
@@ -95,7 +96,7 @@ export default function TryOn() {
             </label>
           )}
 
-          {error && <p className="text-[12px] text-rust">{error}</p>}
+          {error && <ErrorState message={error} onRetry={runTryOn} retryLabel="Try the look again" />}
         </div>
 
         {/* Look detail */}

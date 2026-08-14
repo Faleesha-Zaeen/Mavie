@@ -115,6 +115,7 @@ function buildFromOwned(items, constraints) {
 /** "dresses" not "dresss"; "shoes" and "outerwear" don't take an extra s. */
 function plural(category) {
   if (['shoes', 'outerwear'].includes(category)) return category;
+  if (/y$/.test(category)) return `${category.slice(0, -1)}ies`;
   if (/(s|sh|ch|x|z)$/.test(category)) return `${category}es`;
   return `${category}s`;
 }

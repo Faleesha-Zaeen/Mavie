@@ -10,6 +10,7 @@ import VerdictCard from '../components/VerdictCard.jsx';
 import AgentDebate from '../components/AgentDebate.jsx';
 import ScoreBar from '../components/ScoreBar.jsx';
 import ProductCard, { usd } from '../components/ProductCard.jsx';
+import ErrorState from '../components/ErrorState.jsx';
 
 /**
  * "I found this online."
@@ -118,7 +119,7 @@ export default function Found() {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="89"
-                className="flex-1 bg-white/70 border border-line rounded-[3px] px-4 py-2.5 text-sm
+                className="flex-1 bg-surface/75 border border-line rounded-[3px] px-4 py-2.5 text-sm
                            focus:outline-none focus:border-rose transition-colors"
               />
             </div>
@@ -144,7 +145,7 @@ export default function Found() {
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles size={13} className="text-rose" />
+                <Sparkles size={13} className="text-rose-text" />
                 <span className="eyebrow">What MAVIE sees</span>
               </div>
               <h2 className="display text-4xl">{product.name}</h2>
@@ -182,7 +183,7 @@ export default function Found() {
                   value={price || (product.price_known ? product.price : '')}
                   onChange={(e) => setPrice(e.target.value)}
                   placeholder="89"
-                  className="flex-1 bg-white/70 border border-line rounded-[3px] px-4 py-2.5 text-sm
+                  className="flex-1 bg-surface/75 border border-line rounded-[3px] px-4 py-2.5 text-sm
                              focus:outline-none focus:border-rose transition-colors"
                 />
               </div>
@@ -252,11 +253,7 @@ export default function Found() {
         </>
       )}
 
-      {error && (
-        <p className="text-[12px] text-rust border border-rust/25 bg-rust/[0.05] px-4 py-3 rounded-[3px]">
-          {error}
-        </p>
-      )}
+      {error && <ErrorState message={error} onRetry={() => setError(null)} retryLabel="Dismiss" />}
     </div>
   );
 }

@@ -17,8 +17,8 @@ export default function LookCard({ look, index = 0, selected, isPick, onSelect }
       transition={{ delay: index * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`group relative text-left w-full overflow-hidden rounded-[4px] border transition-all duration-500
         ${selected
-          ? 'border-rose shadow-glow bg-white/80'
-          : 'border-line bg-white/60 hover:border-rose-soft hover:shadow-lift hover:-translate-y-1'}`}
+          ? 'border-rose shadow-glow bg-surface/85'
+          : 'border-line bg-surface/70 hover:border-rose-soft hover:shadow-lift hover:-translate-y-1'}`}
     >
       {isPick && (
         <div className="absolute top-0 right-0 z-10 bg-espresso text-ivory text-[9px] uppercase tracking-editorial px-3 py-1.5">
@@ -42,7 +42,7 @@ export default function LookCard({ look, index = 0, selected, isPick, onSelect }
             <h3 className="font-display text-2xl font-light mt-0.5">{look.name}</h3>
           </div>
           <div className="text-right shrink-0">
-            <div className="display text-3xl text-rose">{look.scores.overall}%</div>
+            <div className="display text-3xl text-rose-text">{look.scores.overall}%</div>
             <div className="eyebrow">match</div>
           </div>
         </div>

@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import { Check, Clock, X } from 'lucide-react';
 
+// `color` is used for type, so it uses the AA-compliant variants. The tinted
+// backgrounds and borders keep the softer brand tones.
 const STYLES = {
-  BUY:  { color: '#7C8F76', bg: 'bg-sage/[0.08]',  border: 'border-sage/35',  Icon: Check, dot: 'bg-sage' },
-  WAIT: { color: '#C9A227', bg: 'bg-amber/[0.08]', border: 'border-amber/35', Icon: Clock, dot: 'bg-amber' },
-  SKIP: { color: '#B4614F', bg: 'bg-rust/[0.08]',  border: 'border-rust/35',  Icon: X,     dot: 'bg-rust' },
+  BUY:  { color: '#56684F', bg: 'bg-sage/[0.08]',  border: 'border-sage/35',  Icon: Check, dot: 'bg-sage' },
+  WAIT: { color: '#806115', bg: 'bg-amber/[0.08]', border: 'border-amber/35', Icon: Clock, dot: 'bg-amber' },
+  SKIP: { color: '#9A4B3A', bg: 'bg-rust/[0.08]',  border: 'border-rust/35',  Icon: X,     dot: 'bg-rust' },
 };
 
 /** The moment the product becomes memorable. */
