@@ -56,7 +56,7 @@ You see a model wearing a dress, and then you have to mentally calculate:
 2. Would it work for **the occasion**?
 3. Does it match **my style**?
 4. Would I actually **wear it again**?
-5. Is it worth **₹2,000**?
+5. Is it worth **$85**?
 
 You buy it anyway. And sometimes, later:
 
@@ -625,7 +625,7 @@ Do **not** open by explaining technology. Open with the problem.
 | 1 | A product. *"I really like this."* → *"But should I buy it?"* |
 | 2 | Upload user photo |
 | 3 | YouCam Skin Analysis → beauty profile |
-| 4 | MAVIE understands: interview tomorrow · ₹3,000 · feminine · professional · comfortable |
+| 4 | MAVIE understands: interview tomorrow · $150 · feminine · professional · comfortable |
 | 5 | MAVIE finds **real products** → three complete looks |
 | 6 | Apparel VTO — the user sees themselves |
 | 7 | Makeup VTO — the complete look |
