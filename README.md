@@ -618,30 +618,186 @@ user text
 
 ## Perfect Corp / YouCam APIs
 
-| Endpoint | Use |
+Both Skin AI and Apparel VTO are **live, server-to-server, and load-bearing** — not decoration around a mock. This section documents the integration in full, including the parts that were not obvious from the outside.
+
+<div align="center">
+
+| Endpoint | Version | Use |
+|:--|:--:|:--|
+| `POST /s2s/v1.0/client/auth` | v1.0 | Exchange an `id_token` for a bearer token |
+| `POST /s2s/v1.0/file/{feature}` | v1.0 | Reserve an upload slot → signed `PUT` URL + `file_id` |
+| `POST /s2s/v2.0/task/skin-analysis` | v2.0 | Submit an analysis task |
+| `GET  /s2s/v2.0/task/skin-analysis/{id}` | v2.0 | Poll it |
+| `POST /s2s/v2.0/task/cloth-v4` | v2.0 | Submit an apparel try-on |
+| `GET  /s2s/v2.0/task/cloth-v4/{id}` | v2.0 | Poll it |
+
+</div>
+
+<br>
+
+### 1 · Authentication — RSA-PKCS1, not a bearer secret
+
+The `SECRET_KEY` Perfect Corp issues is **not a credential to send**. It is an RSA *public key*, and the API expects proof that you hold it.
+
+```
+id_token = base64( RSA_PKCS1_encrypt( "client_id=<API_KEY>&timestamp=<epoch_ms>",
+                                      publicKeyFrom(SECRET_KEY) ) )
+```
+
+The raw secret arrives as a bare base64 body, so it has to be reassembled into PEM — 64-character lines between armour headers — before Node's `crypto.publicEncrypt` will accept it:
+
+```js
+const pem = [
+  '-----BEGIN PUBLIC KEY-----',
+  ...(secret.replace(/\s+/g, '').match(/.{1,64}/g) || []),
+  '-----END PUBLIC KEY-----',
+].join('\n');
+
+const idToken = crypto.publicEncrypt(
+  { key: pem, padding: crypto.constants.RSA_PKCS1_PADDING },
+  Buffer.from(`client_id=${apiKey}&timestamp=${Date.now()}`),
+).toString('base64');
+```
+
+Because the timestamp is inside the ciphertext, **every `id_token` is single-use** — it cannot be cached and must be rebuilt per authentication. The *access token* it returns is cached and refreshed at **50 minutes**, deliberately early, so a token can never expire in the middle of a demo.
+
+> **The trap:** sending `SECRET_KEY` directly as the `id_token` authenticates nothing and fails with a generic error. Nothing in the failure points at RSA.
+
+<br>
+
+### 2 · Image staging — the three-step handshake
+
+No task endpoint accepts raw bytes. Every image is either a URL Perfect Corp fetches, or a `file_id` it already holds.
+
+```
+① POST /s2s/v1.0/file/{feature}     { content_type, file_name, file_size }
+   └─▶ { file_id, requests: [{ method: "PUT", url, headers }] }
+
+② PUT  <signed url>                 raw bytes, exact Content-Length
+
+③ POST /s2s/v2.0/task/{feature}     { src_file_id, ref_file_id, … }
+```
+
+The `feature` in step ① **must match the task** the id will be used with. An id minted against `skin-analysis` is rejected by `cloth-v4`. MAVIE shares one `uploadImage(feature, source)` helper across both services, which accepts a data URL, an `http(s)` URL or a `Buffer` and normalises the content type.
+
+<br>
+
+### 3 · Skin Analysis — scores in, styling direction out
+
+```jsonc
+POST /s2s/v2.0/task/skin-analysis
+{
+  "src_file_id": "…",                    // or src_file_url
+  "dst_actions": ["wrinkle", "texture", "pore", "acne",
+                  "oiliness", "moisture", "radiance", "redness"],
+  "miniserver_args": { "enable_mask_overlay": false },
+  "format": "json"
+}
+```
+
+Returns one entry per concern with a `ui_score` where **higher means better skin**. MAVIE polls up to **80 seconds** — a real portrait finishes in a few, but a large upload on a slow connection needs the headroom, and a timeout silently degrades to mock analysis, which looks like success.
+
+Two failure modes worth knowing, both hit during development:
+
+| Symptom | Cause |
 |:--|:--|
-| `POST /s2s/v1.0/client/auth` | Exchange the `id_token` for an access token |
-| `POST /s2s/v1.0/file/{feature}` | Reserve an upload slot, receive a signed `PUT` URL and a `file_id` |
-| `POST /s2s/v2.0/task/skin-analysis` | Eight concern scores → beauty personalisation |
-| `POST /s2s/v2.0/task/cloth-v4` | Apparel VTO · `upper_body` · `lower_body` · `full_body` |
+| `error_below_min_image_size` | Short side under **480px** |
+| Task runs forever, never errors | **No detectable face.** A synthetic test image polls until timeout rather than failing |
 
-**Auth** is RSA-PKCS1. `client_id` and a timestamp are encrypted with the provided public key to mint an `id_token`, which is exchanged for a bearer token. Tasks are asynchronous — submit, receive a `task_id`, then poll.
+<br>
 
-### Two findings worth recording
+### 4 · Apparel VTO — `cloth-v4`
 
-> **`dress` is not a valid `garment_category`.**
-> Despite dresses being the obvious case, `cloth-v4` rejects it. Dresses must route through `full_body`. The API returns a union-validation error listing every branch, which reads like a generic malformed-request message rather than pointing at the offending field.
+```jsonc
+POST /s2s/v2.0/task/cloth-v4
+{
+  "src_file_id": "…",                    // the person
+  "ref_file_id": "…",                    // the garment
+  "garment_category": "full_body"        // upper_body | lower_body | full_body
+}
+```
 
-> **Tasks accept `file_id` as well as `file_url`.**
-> Because the bytes can be staged with Perfect Corp directly, **no public host is required** — photoreal try-on runs on `localhost` with no tunnel and no deployment.
+The result arrives at `data.results.url` as a **pre-signed S3 link that expires in two hours** — which is why MAVIE's disk cache stores try-on URLs separately from its durable caches, and why they are excluded from version control.
+
+<br>
+
+### 5 · Three findings worth recording
+
+> #### `dress` is not a valid `garment_category`
+>
+> Despite dresses being the single most obvious apparel case, `cloth-v4` rejects it. Valid values are **`upper_body`, `lower_body`, `full_body`** only; dresses must route through `full_body`.
+>
+> This was expensive to find because the API validates its request as a **union** and, on failure, returns every branch's complaint at once:
+>
+> ```
+> "ref_file_url is required but wasn't included in your request.,
+>  or src_file_url is required but wasn't included in your request.,
+>  or garment_category is not one of the accepted values."
+> ```
+>
+> Sending valid file ids with `garment_category: "dress"` produces that message — which reads like the file fields are wrong, when the real fault is the third clause. Every dress try-on failed with what looked like a generic malformed-request error.
+
+> #### Tasks accept `file_id`, so no public host is required
+>
+> The documented path is `src_file_url` + `ref_file_url`, which Perfect Corp fetches itself. Catalog images served from `/catalog/top-101.jpg` are unreachable from the outside, so the obvious conclusion is that try-on cannot work until the app is deployed.
+>
+> That conclusion is wrong. Because `/s2s/v1.0/file/cloth-v4` exists and the task accepts ids, **staging the bytes removes the requirement entirely** — photoreal try-on runs on `localhost` with no tunnel, no ngrok and no deployment. MAVIE stages both images by default and reads catalog files straight off disk.
+
+> #### v1 and v2 signal completion differently
+>
+> The v1 task APIs report a string `status`. The v2 APIs return **HTTP 200 throughout** and signal completion by populating `data.results`, with failures surfacing at `data.error`.
+>
+> A poller waiting for `status === "success"` against a v2 endpoint will poll a *finished* task until it times out. `pollTask` handles both conventions and checks `data.error` first, so a failed task reports its real reason instead of a timeout.
+
+<br>
+
+### 6 · Reaching the API at all — DNS-over-HTTPS
+
+On the development network, **every `perfectcorp.com` hostname resolved to a single sinkhole address.** The account was fine, the keys were fine, the route was fine — the ISP was intercepting DNS.
+
+```
+system resolver  →  49.44.79.236     (sinkhole, every host, identical)
+actual address   →  32.187.59.159    (connects and serves normally)
+```
+
+Changing the OS resolver did not help: IPv6 DNS is configured separately, and the interception is at port 53 regardless of which resolver is configured.
+
+MAVIE therefore resolves Perfect Corp hostnames over **DNS-over-HTTPS via Cloudflare**, which cannot be intercepted, then connects directly to the returned IP while preserving the correct **SNI and `Host` header** so TLS still validates:
+
+```js
+const ips = await resolveViaDoH(host);          // cached 5 min
+return requestVia(ips[0], host, path, opts);    // servername: host
+```
+
+On an unaffected network this behaves identically — it simply resolves correctly either way. Set `YOUCAM_DOH=off` to use the system resolver. `npm run check:youcam` diagnoses the whole chain, and `npm run find:youcam` probes for a reachable host.
+
+<br>
+
+### 7 · Degrading honestly
+
+Every layer of the integration fails toward something truthful rather than something broken:
+
+| Condition | Behaviour |
+|:--|:--|
+| No credentials | Deterministic mock, explicitly labelled |
+| No user photo | *"Add a photo of yourself to see a photoreal try-on"* |
+| Garment has no photograph | Composite showing the real colour and cut |
+| API unreachable or task failed | Composite preview + the reason |
+| Cached result available | Served before provider selection — the demo runs offline |
+
+The user is always told which of these they are looking at. A silent fallback that resembles success is worse than an error.
+
+<br>
 
 ### What MAVIE deliberately does *not* do with Skin AI
 
-- No clinical-looking scores in the main flow
+- No clinical-looking scores anywhere in the main flow
 - No condition names, no diagnosis, no medical framing
-- No "your skin is 72/100"
+- No *"your skin is 72/100"*
 - Raw values only behind an explicit, user-initiated disclosure
-- A permanent disclaimer: *beauty personalisation, not a medical assessment*
+- A permanent disclaimer: **beauty personalisation, not a medical assessment**
+
+The API returns numbers that would be trivial to render as a score out of a hundred. That would make a more impressive-looking screenshot and a worse, less responsible product.
 
 <br>
 
@@ -962,10 +1118,6 @@ It has **no opinion about your face.** It has opinions about **decisions** — a
 <br>
 
 **MAVIE** · *A look made for your life.*
-
-<br>
-
-<sub>Built for the Perfect Corp YouCam API Skin AI & Apparel VTO Hackathon</sub>
 
 <br>
 
