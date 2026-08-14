@@ -9,6 +9,8 @@
  * module handles auth, retries and the mock fallback.
  */
 
+import crypto from 'node:crypto';
+
 const BASE = () => process.env.YOUCAM_API_BASE || 'https://yce-api-01.perfectcorp.com';
 
 export const hasCredentials = () =>
@@ -16,6 +18,30 @@ export const hasCredentials = () =>
 
 let cachedToken = null;
 let tokenExpiry = 0;
+
+/**
+ * Perfect Corp. does NOT accept the secret key directly.
+ * The secret is an RSA public key; the id_token is
+ *   base64( RSA_PKCS1_encrypt( "client_id=<key>&timestamp=<ms>" ) )
+ * The timestamp makes each token single-use, so this is rebuilt per auth.
+ */
+function buildIdToken() {
+  const secret = process.env.YOUCAM_SECRET_KEY.replace(/\s+/g, '');
+  const pem = [
+    '-----BEGIN PUBLIC KEY-----',
+    ...(secret.match(/.{1,64}/g) || []),
+    '-----END PUBLIC KEY-----',
+  ].join('\n');
+
+  const payload = `client_id=${process.env.YOUCAM_API_KEY}&timestamp=${Date.now()}`;
+
+  return crypto
+    .publicEncrypt(
+      { key: pem, padding: crypto.constants.RSA_PKCS1_PADDING },
+      Buffer.from(payload, 'utf8'),
+    )
+    .toString('base64');
+}
 
 async function getToken() {
   if (cachedToken && Date.now() < tokenExpiry) return cachedToken;
@@ -25,7 +51,7 @@ async function getToken() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       client_id: process.env.YOUCAM_API_KEY,
-      id_token: process.env.YOUCAM_SECRET_KEY,
+      id_token: buildIdToken(),
     }),
   });
 

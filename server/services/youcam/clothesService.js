@@ -78,6 +78,8 @@ function mockResult(userImage, garments, reason) {
       })),
     },
     garments: garments.map((g) => g.id),
-    message: 'Preview generated locally. Add YouCam credentials for a photoreal try-on.',
+    message: reason === 'no_credentials'
+      ? 'Preview generated locally. Add YouCam credentials for a photoreal try-on.'
+      : "MAVIE couldn't reach the try-on service just now, so this is a local preview of the same garments.",
   };
 }

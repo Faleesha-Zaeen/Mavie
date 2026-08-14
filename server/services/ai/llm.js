@@ -23,20 +23,37 @@ export const isLive = () => provider() !== 'mock';
  * Ask the LLM for JSON. Always returns a parsed object, or null on any failure —
  * callers are expected to have a deterministic fallback.
  */
-export async function askJSON({ system, user, maxTokens = 900 }) {
+export async function askJSON({ system, user, maxTokens = 2500 }) {
   const p = provider();
   if (p === 'mock') return null;
 
-  try {
-    const raw = p === 'openai'
-      ? await callOpenAI({ system, user, maxTokens })
-      : await callGemini({ system, user, maxTokens });
-    return extractJSON(raw);
-  } catch (err) {
-    console.warn(`[llm] ${p} call failed, falling back to deterministic reasoner:`, err.message);
-    return null;
+  // Free-tier quotas are per-minute, and MAVIE fires the two agents at once.
+  // A short backoff turns a burst 429 into a slightly slower success instead of
+  // a silent drop to the deterministic reasoner.
+  const RETRY_DELAYS = [1200, 3500];
+
+  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+    try {
+      const raw = p === 'openai'
+        ? await callOpenAI({ system, user, maxTokens })
+        : await callGemini({ system, user, maxTokens });
+      const parsed = extractJSON(raw);
+      if (parsed) return parsed;
+      throw new Error('response was not valid JSON');
+    } catch (err) {
+      const retryable = /429|503|rate|quota|timeout|fetch failed/i.test(err.message);
+      if (retryable && attempt < RETRY_DELAYS.length) {
+        await sleep(RETRY_DELAYS[attempt]);
+        continue;
+      }
+      console.warn(`[llm] ${p} call failed, falling back to deterministic reasoner:`, err.message);
+      return null;
+    }
   }
+  return null;
 }
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function callOpenAI({ system, user, maxTokens }) {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -79,6 +96,15 @@ async function callGemini({ system, user, maxTokens }) {
   });
   if (!res.ok) throw new Error(`Gemini ${res.status}`);
   const data = await res.json();
+
+  // Gemini 3.x spends "thinking" tokens against maxOutputTokens. If the budget
+  // runs out mid-object the JSON is truncated, so surface that as a real error
+  // rather than letting a half-written object reach the decision engine.
+  const finish = data.candidates?.[0]?.finishReason;
+  if (finish === 'MAX_TOKENS') {
+    throw new Error('Gemini hit MAX_TOKENS — raise maxTokens for this call');
+  }
+
   return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 }
 

@@ -58,6 +58,8 @@ function mockResult(makeup, reason) {
     reason,
     swatches: makeup?.vto_payload || null,
     direction: makeup?.direction || null,
-    message: 'Makeup direction shown as swatches. Add YouCam credentials for live makeup try-on.',
+    message: reason === 'no_credentials'
+      ? 'Makeup direction shown as swatches. Add YouCam credentials for live makeup try-on.'
+      : "MAVIE couldn't reach the makeup try-on service just now — here's the direction as swatches.",
   };
 }
