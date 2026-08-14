@@ -138,6 +138,29 @@ export const beautyCatalog = [
   beauty('bty-715', 'Clear Glossy Balm', 'Mavie Essentials', 'lip', 16, '#E8C9C2', 'Sheer', 'gloss', ['fresh', 'minimal', 'everyday']),
 ];
 
+/**
+ * Attach real photography when it has been fetched.
+ *
+ * Kept as a separate generated file so the catalog itself stays hand-authored
+ * and readable, and so re-running the fetch never rewrites product metadata.
+ * Photos are colour-matched to each garment's `hex`, so a rose dress is
+ * photographed rose — which is what keeps a composed look reading as coordinated.
+ */
+try {
+  const { createRequire } = await import('node:module');
+  const images = createRequire(import.meta.url)('./catalog-images.json');
+  catalog.forEach((item) => {
+    const img = images[item.id];
+    if (!img) return;
+    item.image_url = img.url;
+    item.image_alt = img.alt;
+    // Unsplash's terms require the photographer to be credited wherever used.
+    item.image_credit = { name: img.photographer, url: img.photographer_url, source: img.source };
+  });
+} catch {
+  // No photography fetched yet — the drawn studio rendering is used instead.
+}
+
 export const CATEGORIES = ['top', 'bottom', 'dress', 'outerwear', 'shoes', 'accessory'];
 
 export const findItem = (id) =>

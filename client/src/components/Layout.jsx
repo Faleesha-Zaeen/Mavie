@@ -113,6 +113,19 @@ export default function Layout({ children }) {
             <span>MAVIE · AI decision intelligence for personal appearance</span>
             <span>Skin analysis is beauty personalization, not medical advice</span>
           </div>
+
+          <p className="text-[10px] tracking-wide text-espresso-mute/80">
+            Catalog photography from{' '}
+            <a
+              href="https://unsplash.com"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="border-b border-dotted border-line hover:border-rose hover:text-rose transition-colors"
+            >
+              Unsplash
+            </a>
+            . Individual photographers are credited on each product image.
+          </p>
         </div>
       </footer>
     </div>
