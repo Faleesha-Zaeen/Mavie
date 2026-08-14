@@ -95,6 +95,13 @@ async function search(query) {
   }));
 }
 
+/**
+ * Maximum acceptable colour difference between a garment and its photo.
+ * Measured empirically: at 100, 34 of 46 stock matches were faithful; the ones
+ * beyond it included a black dress shown tan and black boots shown light grey.
+ */
+const COLOUR_TOLERANCE = 110;
+
 /* Perceptual-ish distance in RGB. Good enough to keep a rose dress rose. */
 const rgb = (hex) => {
   const h = (hex || '#888888').replace('#', '');
@@ -172,9 +179,14 @@ for (const item of missing) {
     .filter((c) => c.rel > 0)
     .sort((a, b) => (b.rel - a.rel) || (distance(item.hex, a.p.color) - distance(item.hex, b.p.color)));
 
-  // Among the genuinely relevant photos, take the closest colour match.
+  // Among the genuinely relevant photos, take the closest colour match — but
+  // only if it is actually close. MAVIE's reasoning talks about the colour of
+  // the clothes ("matched the lip to the dusty rose in your outfit"), so a
+  // black dress photographed tan makes the product contradict itself. Beyond
+  // this distance the drawn rendering is better, because its colour is exact.
   const shortlist = pool.filter((c) => c.rel >= pool[0]?.rel - 4).slice(0, 12);
-  const chosen = shortlist.sort((a, b) => distance(item.hex, a.p.color) - distance(item.hex, b.p.color))[0];
+  const ranked = shortlist.sort((a, b) => distance(item.hex, a.p.color) - distance(item.hex, b.p.color));
+  const chosen = ranked.find((c) => distance(item.hex, c.p.color) <= COLOUR_TOLERANCE);
 
   if (!chosen) {
     skipped++;
