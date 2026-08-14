@@ -1,0 +1,12 @@
+{
+  "namespace": "vto",
+  "recorded_at": "2026-08-14T13:37:22.979Z",
+  "value": {
+    "result_url": "https://yce-us.s3-accelerate.amazonaws.com/ttl30/491075152981788796/117121032471/v2/aeMNNB0KmUIP8rnQ996tC5Q/d3061646-9156-422d-ad4e-62112be99e8d.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20260814T133724Z&X-Amz-SignedHeaders=host&X-Amz-Expires=7200&X-Amz-Credential=AKIARB77EV5Y5D7DAE3S%2F20260814%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Signature=e366af83ef5b986bed6039e20d3ba1bb49f06889f7aeb78738b5363a200a629b",
+    "garments": [
+      "top-101"
+    ],
+    "category": "upper_body",
+    "mocked": false
+  }
+}

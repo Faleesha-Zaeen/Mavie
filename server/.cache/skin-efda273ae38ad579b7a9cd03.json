@@ -1,0 +1,33 @@
+{
+  "namespace": "skin",
+  "recorded_at": "2026-08-14T13:33:22.360Z",
+  "value": {
+    "preferred_finish": "natural",
+    "intensity": "light",
+    "direction": [
+      "fresh",
+      "soft",
+      "polished"
+    ],
+    "headline": "Fresh + Soft + Polished",
+    "guidance": [
+      "A natural, skin-like finish will read best on you.",
+      "Light coverage is enough — let your skin show through.",
+      "Cream formulas will sit more comfortably than heavy powders."
+    ],
+    "note": "This is beauty personalization, not a medical assessment. MAVIE does not diagnose skin conditions.",
+    "raw": {
+      "redness": 97,
+      "texture": 74,
+      "pore": 79,
+      "oiliness": 65,
+      "moisture": 65,
+      "acne": 99,
+      "wrinkle": 71,
+      "radiance": 77,
+      "all": 78,
+      "skin_age": 52
+    },
+    "mocked": false
+  }
+}

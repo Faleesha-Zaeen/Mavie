@@ -114,25 +114,25 @@ if (token) {
 
   // Distinguish "action not provisioned" from "parameters rejected" — they
   // need completely different fixes and only one of them is ours.
+  // A hosted sample image, so the probe exercises the real parameter set.
+  const SAMPLE = 'https://plugins-media.makeupar.com/strapi/assets/skin_analysis_01_5b5defd339.png';
+
   const probe = async (name, endpoint, body) => {
     try {
       const res = await resilientFetch(`${base}${endpoint}`, { method: 'POST', headers: H, body: JSON.stringify(body) });
       const text = await res.text();
       if (res.status === 404) return line(FAIL, name, 'endpoint 404', 'wrong path for this account');
       if (/action .* not found/i.test(text)) return line(FAIL, name, 'not provisioned', 'action missing on this plan');
-      if (/cannot be empty|must not be/i.test(text)) return line(WARN, name, 'endpoint live, params rejected', 'entitled action set unknown');
-      return line(OK, name, `HTTP ${res.status}`, 'reachable');
+      if (/is required|not one of the accepted/i.test(text)) return line(WARN, name, 'live, needs more params', 'shape not fully mapped');
+      return line(OK, name, res.status === 200 ? 'live — task accepted' : `HTTP ${res.status}`, '');
     } catch (err) {
       return line(FAIL, name, 'error', err.message.slice(0, 40));
     }
   };
 
-  await probe('Skin Analysis', '/s2s/v1.0/task/skin-analysis',
-    { request_id: 1, payload: { file_sets: { src_ids: ['probe'] }, actions: [{ id: 0, params: { dst_actions: ['wrinkle'] } }] } });
-  await probe('Makeup VTO', '/s2s/v1.0/task/makeup',
-    { request_id: 1, payload: { file_sets: { src_ids: ['probe'] }, actions: [{ id: 0, params: {} }] } });
-  await probe('Apparel VTO', '/s2s/v1.0/task/cloth-tryon',
-    { request_id: 1, payload: { file_sets: { src_ids: ['probe'] }, actions: [{ id: 0, params: {} }] } });
+  await probe('Skin Analysis', '/s2s/v2.0/task/skin-analysis', { src_file_url: SAMPLE, dst_actions: ['wrinkle'], format: 'json' });
+  await probe('Makeup VTO', '/s2s/v2.0/task/makeup-vto', { src_file_url: SAMPLE, effects: [] });
+  await probe('Apparel VTO', '/s2s/v2.0/task/cloth-v4', { src_file_url: SAMPLE, ref_file_url: SAMPLE, garment_category: 'upper_body' });
 }
 
 /* ── Catalog and photography ─────────────────────────────────────────── */

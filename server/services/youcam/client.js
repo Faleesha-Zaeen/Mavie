@@ -189,7 +189,18 @@ export async function youcamFetch(path, { method = 'POST', body, headers = {} } 
 export async function pollTask(pollPath, { attempts = 20, intervalMs = 1500 } = {}) {
   for (let i = 0; i < attempts; i++) {
     const data = await youcamFetch(pollPath, { method: 'GET' });
-    const status = data.result?.status || data.status;
+
+    // Two response conventions in play. The v1 task APIs report a string
+    // status; the v2 APIs return HTTP 200 throughout and signal completion by
+    // populating data.results. Waiting for a "success" string against a v2
+    // endpoint would poll until timeout on a task that had already finished.
+    const status = data.result?.status || (typeof data.status === 'string' ? data.status : null);
+    const v2Results = data.data?.results;
+    const v2Error = data.data?.error;
+
+    if (v2Error) throw new Error(`YouCam task failed: ${JSON.stringify(v2Error).slice(0, 160)}`);
+    if (v2Results) return data;
+
     if (status === 'success' || status === 'completed') return data;
     if (status === 'error' || status === 'failed') {
       throw new Error(`YouCam task failed: ${JSON.stringify(data).slice(0, 200)}`);
