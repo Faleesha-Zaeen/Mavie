@@ -11,7 +11,9 @@
     "find:youcam": "node scripts/find-youcam-host.js",
     "demo:record": "node scripts/record-demo.js",
     "demo:seed": "node -e \"fetch(`http://localhost:${process.env.PORT||5000}/api/demo/seed`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(r=>r.json()).then(d=>console.log(d.seeded?'demo seeded':d))\"",
-    "images:fetch": "node scripts/fetch-images.js"
+    "images:fetch": "node scripts/fetch-images.js",
+    "preflight": "node scripts/preflight.js",
+    "images:prune": "node scripts/prune-images.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

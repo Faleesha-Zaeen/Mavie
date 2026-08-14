@@ -11,7 +11,8 @@
     "check:youcam": "npm run check:youcam --prefix server",
     "find:youcam": "npm run find:youcam --prefix server",
     "build": "npm run build --prefix client",
-    "start": "npm start --prefix server"
+    "start": "npm start --prefix server",
+    "preflight": "npm run preflight --prefix server"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
