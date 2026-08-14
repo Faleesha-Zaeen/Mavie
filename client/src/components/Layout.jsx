@@ -8,6 +8,7 @@ const NAV = [
   { to: '/looks', label: 'Looks' },
   { to: '/try-on', label: 'Try on' },
   { to: '/aftermath', label: 'Aftermath' },
+  { to: '/found', label: 'Found it?' },
   { to: '/closet', label: 'Closet' },
   { to: '/profile', label: 'Profile' },
 ];

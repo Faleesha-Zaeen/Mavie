@@ -1,0 +1,271 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Upload, X, Sparkles } from 'lucide-react';
+
+import { api } from '../services/api.js';
+import { useMavie } from '../context/MavieContext.jsx';
+import { readImage } from '../utils/image.js';
+import Loader from '../components/Loader.jsx';
+import VerdictCard from '../components/VerdictCard.jsx';
+import AgentDebate from '../components/AgentDebate.jsx';
+import ScoreBar from '../components/ScoreBar.jsx';
+import ProductCard, { usd } from '../components/ProductCard.jsx';
+
+/**
+ * "I found this online."
+ *
+ * The second entry point into MAVIE. A screenshot from Instagram or a store
+ * page goes through the exact same decision engine as a curated look — which
+ * is the argument that MAVIE is a decision layer, not a catalogue.
+ */
+export default function Found() {
+  const { constraints, guest } = useMavie();
+
+  const [image, setImage] = useState(null);
+  const [price, setPrice] = useState('');
+  const [product, setProduct] = useState(null);
+  const [decision, setDecision] = useState(null);
+  const [stage, setStage] = useState(null);
+  const [error, setError] = useState(null);
+
+  async function handleUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError(null);
+    setProduct(null);
+    setDecision(null);
+
+    try {
+      const dataUrl = await readImage(file);
+      setImage(dataUrl);
+
+      setStage('vision');
+      const { product: found } = await api.analyseProduct({
+        imageBase64: dataUrl,
+        price: price ? Number(price) : null,
+      });
+      setProduct(found);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setStage(null);
+    }
+  }
+
+  async function shouldIBuy() {
+    if (!product) return;
+    setError(null);
+    setStage('aftermath');
+    try {
+      const withPrice = price ? { ...product, price: Number(price), price_known: true } : product;
+      const result = await api.productBuyConfidence({
+        product: withPrice,
+        constraints: constraints || {},
+        guest,
+      });
+      setDecision(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setStage(null);
+    }
+  }
+
+  function reset() {
+    setImage(null); setProduct(null); setDecision(null); setPrice(''); setError(null);
+  }
+
+  if (stage === 'vision') {
+    return <Loader stage="context" sub="MAVIE is reading the product from your screenshot." />;
+  }
+  if (stage === 'aftermath') {
+    return <Loader stage="aftermath" sub="The stylist and the skeptic are reviewing the same evidence." />;
+  }
+
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-14 space-y-14">
+      <header className="space-y-4 max-w-2xl">
+        <div className="eyebrow">Found this online?</div>
+        <h1 className="display text-5xl sm:text-6xl text-balance">
+          Thinking about buying this?
+        </h1>
+        <p className="serif-body text-pretty">
+          Screenshot it from Instagram or a store page. MAVIE reads the piece,
+          checks it against your style, budget and closet, and tells you
+          whether it&rsquo;s actually worth it.
+        </p>
+      </header>
+
+      {/* Upload */}
+      {!image && (
+        <section className="card p-10 sm:p-14 text-center space-y-6">
+          <label className="cursor-pointer inline-flex flex-col items-center gap-5">
+            <span className="w-16 h-16 rounded-full border border-line flex items-center justify-center
+                             text-espresso-mute hover:border-rose hover:text-rose transition-colors duration-500">
+              <Upload size={20} strokeWidth={1.3} />
+            </span>
+            <span className="font-display text-2xl font-light">Upload a screenshot</span>
+            <span className="text-[12px] text-espresso-mute">JPG, PNG or WebP · up to 8MB</span>
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUpload} className="hidden" />
+          </label>
+
+          <div className="pt-4 max-w-xs mx-auto">
+            <label className="eyebrow block mb-2">Price, if you know it</label>
+            <div className="flex items-center gap-2">
+              <span className="font-display text-xl text-espresso-mute">$</span>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="89"
+                className="flex-1 bg-white/70 border border-line rounded-[3px] px-4 py-2.5 text-sm
+                           focus:outline-none focus:border-rose transition-colors"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Extracted product */}
+      {image && product && (
+        <section className="grid md:grid-cols-2 gap-10">
+          <div className="relative">
+            <img src={image} alt="The piece you found" className="w-full rounded-[4px] border border-line shadow-lift" />
+            <button
+              onClick={reset}
+              className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-espresso text-ivory
+                         flex items-center justify-center hover:bg-rose transition-colors"
+              aria-label="Start over"
+            >
+              <X size={14} />
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles size={13} className="text-rose" />
+                <span className="eyebrow">What MAVIE sees</span>
+              </div>
+              <h2 className="display text-4xl">{product.name}</h2>
+              {product.notes && (
+                <p className="mt-2 text-[13px] text-espresso-mute leading-relaxed">{product.notes}</p>
+              )}
+            </div>
+
+            <div className="rule" />
+
+            <dl className="grid grid-cols-2 gap-x-8 gap-y-4">
+              <Row label="Category" value={product.category} />
+              <Row label="Fit" value={product.fit} />
+              <Row label="Colours" value={product.colors?.join(', ')} />
+              <Row label="Season" value={product.season} />
+              <Row label="Versatility" value={`${product.versatility}%`} />
+              <Row label="Care burden" value={`${product.maintenance}%`} />
+            </dl>
+
+            <div className="flex flex-wrap gap-1.5">
+              {product.style_tags?.map((t) => (
+                <span key={t} className="chip cursor-default">{t}</span>
+              ))}
+            </div>
+
+            {/* Price is load-bearing for the budget maths, so ask if unknown. */}
+            <div className="space-y-2">
+              <label className="eyebrow block">
+                {product.price_known ? 'Price' : 'MAVIE could not see a price — what does it cost?'}
+              </label>
+              <div className="flex items-center gap-2 max-w-[200px]">
+                <span className="font-display text-xl text-espresso-mute">$</span>
+                <input
+                  type="number"
+                  value={price || (product.price_known ? product.price : '')}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="89"
+                  className="flex-1 bg-white/70 border border-line rounded-[3px] px-4 py-2.5 text-sm
+                             focus:outline-none focus:border-rose transition-colors"
+                />
+              </div>
+            </div>
+
+            {product.confidence > 0 && (
+              <p className="text-[11px] text-espresso-mute">
+                Reading confidence {Math.round(product.confidence * 100)}% — correct anything above before deciding.
+              </p>
+            )}
+
+            <button onClick={shouldIBuy} className="btn-rose w-full">
+              Should I buy this?
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* Decision */}
+      {decision && (
+        <>
+          <section className="card p-8 sm:p-10">
+            <AgentDebate panel={decision.panel} />
+          </section>
+
+          <section className="space-y-8">
+            <h2 className="font-display text-3xl font-light">The evidence</h2>
+            <div className="grid sm:grid-cols-2 gap-x-14 gap-y-7">
+              <ScoreBar label="Occasion match" value={decision.metrics.occasion_match} />
+              <ScoreBar label="Style match" value={decision.metrics.style_match} delay={0.08} />
+              <ScoreBar label="Budget fit" value={decision.metrics.budget_fit} delay={0.16} />
+              <ScoreBar label="Versatility" value={decision.metrics.versatility} delay={0.24} />
+              <ScoreBar label="Rewear potential" value={decision.metrics.rewear_potential} delay={0.32} />
+              <ScoreBar label="Closet overlap" value={decision.metrics.closet_overlap} delay={0.4} inverse
+                hint="Lower is better — how much you already own something similar." />
+            </div>
+            <p className="text-[11px] text-espresso-mute border-t border-line pt-5 max-w-2xl leading-relaxed">
+              {decision.disclaimer}
+            </p>
+          </section>
+
+          <VerdictCard decision={decision} />
+
+          {decision.alternatives?.length > 0 && (
+            <motion.section
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-6"
+            >
+              <div className="space-y-2 max-w-xl">
+                <h2 className="font-display text-3xl font-light">Find a better match</h2>
+                <p className="text-[13px] text-espresso-mute leading-relaxed">
+                  Same feel, fewer of the concerns the skeptic raised.
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-3 gap-6">
+                {decision.alternatives.map((alt, i) => (
+                  <div key={alt.id} className="space-y-3">
+                    <ProductCard item={alt} index={i} />
+                    <p className="text-[11px] text-espresso-mute leading-relaxed px-1">{alt.why}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.section>
+          )}
+        </>
+      )}
+
+      {error && (
+        <p className="text-[12px] text-rust border border-rust/25 bg-rust/[0.05] px-4 py-3 rounded-[3px]">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Row({ label, value }) {
+  return (
+    <div>
+      <dt className="eyebrow">{label}</dt>
+      <dd className="font-display text-lg mt-0.5 capitalize">{value || '—'}</dd>
+    </div>
+  );
+}

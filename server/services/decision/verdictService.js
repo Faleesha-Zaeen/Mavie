@@ -78,25 +78,48 @@ export function findAlternatives({ items = [], constraints = {}, limit = 3 }) {
   const target = items[0];
   if (!target) return [];
 
-  const pool = searchCatalog(constraints, { category: target.category, limit: 12 });
+  const pool = searchCatalog(constraints, { category: target.category, limit: 20 });
+  const budget = constraints.budget;
 
   return pool
     .filter((c) => c.id !== target.id)
+    // An "alternative" that blows the budget is not an alternative.
+    .filter((c) => (budget ? c.price <= budget : true))
+    // It must actually reduce decision risk, not merely look similar.
+    .filter((c) => c.versatility > target.versatility || c.maintenance < target.maintenance - 15)
     .map((c) => ({
       ...c,
-      // Prefer items that keep the look but improve the things the Skeptic flags.
       improvement: Math.round(
         (c.versatility - target.versatility) * 0.5 +
         (target.maintenance - c.maintenance) * 0.3 +
-        (target.price - c.price) / 40,
+        (target.price - c.price) / 10,
       ),
       shares_aesthetic: c.style_tags.filter((t) => target.style_tags.includes(t)).length,
     }))
-    .filter((c) => c.shares_aesthetic >= 1)
-    .sort((a, b) => b.improvement - a.improvement)
+    .sort((a, b) => (b.shares_aesthetic - a.shares_aesthetic) || (b.improvement - a.improvement))
     .slice(0, limit)
-    .map((c) => ({
-      ...c,
-      why: `Similar ${c.style_tags[0]} feel, versatility ${c.versatility}%${c.price < target.price ? `, and $${(target.price - c.price).toLocaleString('en-US')} cheaper` : ''}.`,
-    }));
+    .map((c) => ({ ...c, why: whyBetter(c, target, budget) }));
+}
+
+/** Say exactly which of the Skeptic's concerns this piece answers. */
+function whyBetter(candidate, target, budget) {
+  const wins = [];
+
+  if (candidate.versatility > target.versatility) {
+    wins.push(`works in more contexts (${candidate.versatility}% vs ${target.versatility}%)`);
+  }
+  if (candidate.maintenance < target.maintenance - 15) {
+    wins.push('far easier to care for');
+  }
+  if (candidate.price < target.price) {
+    wins.push(`$${(target.price - candidate.price).toLocaleString('en-US')} cheaper`);
+  }
+  if (budget && candidate.price <= budget && target.price > budget) {
+    wins.push('inside your budget');
+  }
+
+  const shared = candidate.style_tags.find((t) => target.style_tags.includes(t));
+  const feel = shared ? `Same ${shared} feel` : 'Similar mood';
+
+  return wins.length ? `${feel} — ${wins.slice(0, 2).join(', ')}.` : `${feel}.`;
 }

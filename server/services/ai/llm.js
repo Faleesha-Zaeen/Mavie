@@ -23,7 +23,7 @@ export const isLive = () => provider() !== 'mock';
  * Ask the LLM for JSON. Always returns a parsed object, or null on any failure —
  * callers are expected to have a deterministic fallback.
  */
-export async function askJSON({ system, user, maxTokens = 2500 }) {
+export async function askJSON({ system, user, maxTokens = 2500, image = null }) {
   const p = provider();
   if (p === 'mock') return null;
 
@@ -35,8 +35,8 @@ export async function askJSON({ system, user, maxTokens = 2500 }) {
   for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
     try {
       const raw = p === 'openai'
-        ? await callOpenAI({ system, user, maxTokens })
-        : await callGemini({ system, user, maxTokens });
+        ? await callOpenAI({ system, user, maxTokens, image })
+        : await callGemini({ system, user, maxTokens, image });
       const parsed = extractJSON(raw);
       if (parsed) return parsed;
       throw new Error('response was not valid JSON');
@@ -66,7 +66,12 @@ async function callOpenAI({ system, user, maxTokens }) {
       model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
       messages: [
         { role: 'system', content: system },
-        { role: 'user', content: user },
+        {
+          role: 'user',
+          content: image
+            ? [{ type: 'text', text: user }, { type: 'image_url', image_url: { url: image } }]
+            : user,
+        },
       ],
       response_format: { type: 'json_object' },
       max_tokens: maxTokens,
@@ -78,15 +83,71 @@ async function callOpenAI({ system, user, maxTokens }) {
   return data.choices?.[0]?.message?.content ?? '';
 }
 
-async function callGemini({ system, user, maxTokens }) {
-  const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+/**
+ * Free-tier quota is metered PER MODEL
+ * (GenerateRequestsPerDayPerProjectPerModel), so exhausting one model's daily
+ * allowance does not touch the next. MAVIE walks down this list rather than
+ * dropping to the deterministic reasoner for the rest of the day.
+ */
+const GEMINI_FALLBACKS = [
+  'gemini-2.5-flash',
+  'gemini-flash-latest',
+  'gemini-2.5-flash-lite',
+  'gemini-flash-lite-latest',
+];
+
+/** Models known to be out of daily quota, so we stop retrying them. */
+const exhausted = new Set();
+
+function geminiModels() {
+  const primary = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
+  return [primary, ...GEMINI_FALLBACKS.filter((m) => m !== primary)]
+    .filter((m) => !exhausted.has(m));
+}
+
+async function callGemini({ system, user, maxTokens, image }) {
+  const models = geminiModels();
+  if (!models.length) throw new Error('all Gemini models are out of daily quota');
+
+  let lastErr;
+  for (const model of models) {
+    try {
+      return await callGeminiModel({ model, system, user, maxTokens, image });
+    } catch (err) {
+      lastErr = err;
+      if (/daily quota/i.test(err.message)) {
+        exhausted.add(model);
+        console.warn(`[llm] ${model} out of daily quota — trying next model`);
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastErr;
+}
+
+async function callGeminiModel({ model, system, user, maxTokens, image }) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+  const parts = [{ text: user }];
+  if (image) {
+    // Data URLs arrive as "data:image/png;base64,AAAA…" — Gemini wants the
+    // mime type and the payload separately.
+    const [meta, payload] = image.split(',');
+    parts.push({
+      inline_data: {
+        mime_type: (meta.match(/data:(.*?);/) || [, 'image/jpeg'])[1],
+        data: payload,
+      },
+    });
+  }
+
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: system }] },
-      contents: [{ role: 'user', parts: [{ text: user }] }],
+      contents: [{ role: 'user', parts }],
       generationConfig: {
         responseMimeType: 'application/json',
         maxOutputTokens: maxTokens,
@@ -94,7 +155,16 @@ async function callGemini({ system, user, maxTokens }) {
       },
     }),
   });
-  if (!res.ok) throw new Error(`Gemini ${res.status}`);
+  if (!res.ok) {
+    // Distinguish "this model is done for today" from a transient burst limit,
+    // because the two need completely different handling.
+    if (res.status === 429) {
+      const body = await res.json().catch(() => ({}));
+      const daily = JSON.stringify(body.error?.details || '').includes('PerDay');
+      throw new Error(daily ? `Gemini ${model}: daily quota exhausted` : `Gemini 429 rate limit`);
+    }
+    throw new Error(`Gemini ${res.status}`);
+  }
   const data = await res.json();
 
   // Gemini 3.x spends "thinking" tokens against maxOutputTokens. If the budget

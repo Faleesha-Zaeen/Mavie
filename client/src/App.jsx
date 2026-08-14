@@ -5,6 +5,7 @@ import Moment from './pages/Moment.jsx';
 import Looks from './pages/Looks.jsx';
 import TryOn from './pages/TryOn.jsx';
 import Aftermath from './pages/Aftermath.jsx';
+import Found from './pages/Found.jsx';
 import Closet from './pages/Closet.jsx';
 import Profile from './pages/Profile.jsx';
 
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/looks" element={<Looks />} />
         <Route path="/try-on" element={<TryOn />} />
         <Route path="/aftermath" element={<Aftermath />} />
+        <Route path="/found" element={<Found />} />
         <Route path="/closet" element={<Closet />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>

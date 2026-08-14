@@ -71,6 +71,17 @@ export const schemas = {
     style_tags: z.array(z.string()).optional(),
   }),
 
+  productAnalyse: z.object({
+    imageBase64: z.string().min(20, 'That image did not come through.'),
+    price: z.number().positive().nullable().optional(),
+  }),
+
+  productDecide: z.object({
+    product: z.object({ id: z.string(), category: z.string() }).passthrough(),
+    constraints: constraintsSchema.optional().default({}),
+    guest: z.boolean().optional(),
+  }),
+
   skin: z.object({
     imageUrl: z.string().nullable().optional(),
     imageBase64: z.string().nullable().optional(),
