@@ -9,6 +9,7 @@
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "check:youcam": "npm run check:youcam --prefix server",
+    "find:youcam": "npm run find:youcam --prefix server",
     "build": "npm run build --prefix client",
     "start": "npm start --prefix server"
   },
