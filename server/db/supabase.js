@@ -43,6 +43,27 @@ const safe = async (label, fn, fallback = null) => {
   }
 };
 
+/**
+ * closet_items, looks and decisions all reference profiles(id). Writes are
+ * mirrored fire-and-forget, so a dependent write can reach Postgres before the
+ * profile upsert does and fail with 23503 (foreign key violation).
+ *
+ * Rather than ordering every call site, any write that hits 23503 creates the
+ * missing profile row and retries once.
+ */
+const isMissingProfile = (err) => /23503/.test(err.message);
+
+async function withProfile(userId, label, fn) {
+  try {
+    return await fn();
+  } catch (err) {
+    if (!isMissingProfile(err)) throw err;
+    await db.upsertProfile({ id: userId });
+    console.warn(`[supabase] ${label}: created missing profile row, retrying`);
+    return fn();
+  }
+}
+
 export const db = {
   async getProfile(userId) {
     return safe('getProfile', async () => {
@@ -72,7 +93,9 @@ export const db = {
 
   async addClosetItem(item) {
     return safe('addClosetItem', () =>
-      rest('closet_items', { method: 'POST', body: [item], prefer: 'return=representation' }),
+      withProfile(item.user_id, 'addClosetItem', () =>
+        rest('closet_items', { method: 'POST', body: [item], prefer: 'return=representation' }),
+      ),
     );
   },
 
@@ -83,7 +106,7 @@ export const db = {
   },
 
   async saveLook(userId, look) {
-    return safe('saveLook', async () => {
+    return safe('saveLook', () => withProfile(userId, 'saveLook', async () => {
       await rest('looks', {
         method: 'POST',
         body: [{
@@ -105,7 +128,7 @@ export const db = {
         prefer: 'resolution=merge-duplicates',
       });
       return true;
-    });
+    }));
   },
 
   async listSavedLooks(userId) {
@@ -119,13 +142,17 @@ export const db = {
 
   async saveDecision(userId, decision) {
     return safe('saveDecision', () =>
-      rest('decisions', { method: 'POST', body: [{ ...decision, user_id: userId }] }),
+      withProfile(userId, 'saveDecision', () =>
+        rest('decisions', { method: 'POST', body: [{ ...decision, user_id: userId }] }),
+      ),
     );
   },
 
   async addFeedback(userId, entry) {
     return safe('addFeedback', () =>
-      rest('feedback', { method: 'POST', body: [{ ...entry, user_id: userId }] }),
+      withProfile(userId, 'addFeedback', () =>
+        rest('feedback', { method: 'POST', body: [{ ...entry, user_id: userId }] }),
+      ),
     );
   },
 

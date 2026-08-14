@@ -155,8 +155,16 @@ export const store = {
     const health = await db.healthCheck();
     if (!health.ok) return { hydrated: false, reason: health.error };
 
-    const profile = await db.getProfile(userId);
-    if (profile) mem.profiles.set(userId, profile);
+    // Guarantee the profile row exists before anything that references it.
+    // Every other table has a foreign key onto profiles(id), and mirrored
+    // writes are fire-and-forget — so without this, the first closet item or
+    // saved look of a fresh project races the profile insert and loses.
+    let profile = await db.getProfile(userId);
+    if (!profile) {
+      profile = defaultProfile(userId);
+      await db.upsertProfile(profile);
+    }
+    mem.profiles.set(userId, profile);
 
     const closet = await db.listCloset(userId);
     if (closet?.length) mem.closets.set(userId, closet);
