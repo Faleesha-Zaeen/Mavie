@@ -1,339 +1,649 @@
 <div align="center">
 
-# 💗 MAVIE
+<br>
+
+# MAVIE
 
 ### *A look made for your life.*
 
-**AI Decision Intelligence for Personal Appearance**
+**Decision intelligence for beauty and fashion**
 
-Beauty · Fashion · Context · Visualization · Purchase Reasoning
+<br>
+
+[![Perfect Corp](https://img.shields.io/badge/Perfect_Corp-Skin_AI_%2B_Apparel_VTO-C08089?style=for-the-badge&labelColor=2E2723)](https://yce.perfectcorp.com/)
+[![React](https://img.shields.io/badge/React_18-Vite-5C7290?style=for-the-badge&labelColor=2E2723)](https://vitejs.dev/)
+[![Node](https://img.shields.io/badge/Node_20-Express-75886F?style=for-the-badge&labelColor=2E2723)](https://nodejs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres-1F5245?style=for-the-badge&labelColor=2E2723)](https://supabase.com/)
+[![Gemini](https://img.shields.io/badge/Gemini-Reasoning-6E4A85?style=for-the-badge&labelColor=2E2723)](https://ai.google.dev/)
+
+<br>
+
+`60 real garments` · `31 API endpoints` · `31 automated checks` · `9 pages` · `2 adversarial agents`
+
+<br>
 
 </div>
 
 ---
 
-> **Looking good in something and making a good decision about buying it are not the same thing.**
+<div align="center">
+<br>
 
-MAVIE is an AI-powered beauty and fashion **decision companion**. It helps people decide what to wear, how to style themselves, and — crucially — whether an appearance-related purchase is actually worth making.
+## Looking good in something and making a good<br>decision about buying it are not the same thing.
 
-Most fashion tech optimizes for *"How do we make you want this?"*
-MAVIE optimizes for *"How do we help you make a decision you'll still be happy with later?"*
+<br>
+</div>
 
 ---
 
+<br>
+
 ## Table of contents
 
+<table>
+<tr>
+<td valign="top" width="33%">
+
+**Understanding it**
 - [The problem](#the-problem)
 - [The solution](#the-solution)
-- [Three core layers](#three-core-layers)
-- [Features](#features)
-- [Build status](#build-status)
-- [Architecture](#architecture)
-- [Tech stack](#tech-stack)
-- [Perfect Corp. / YouCam APIs](#perfect-corp--youcam-apis)
-- [Project structure](#project-structure)
-- [Setup](#setup)
-- [Environment variables](#environment-variables)
-- [Running locally](#running-locally)
-- [API reference](#api-reference)
+- [Three layers](#three-layers)
+- [The decision engine](#the-decision-engine)
 - [Scoring model](#scoring-model)
+
+</td>
+<td valign="top" width="33%">
+
+**Using it**
+- [Every feature](#every-feature-and-how-to-run-it)
+- [Quickstart](#quickstart)
+- [Environment](#environment)
+- [Commands](#commands)
+- [Demo script](#demo-script)
+
+</td>
+<td valign="top" width="33%">
+
+**Building on it**
+- [Architecture](#architecture)
+- [Perfect Corp APIs](#perfect-corp--youcam-apis)
+- [Project structure](#project-structure)
+- [API reference](#api-reference)
 - [Design system](#design-system)
 - [Privacy & security](#privacy--security)
 - [Deployment](#deployment)
-- [Demo script](#demo-script)
-- [Honest limitations](#honest-limitations)
+- [Engineering notes](#engineering-notes)
+- [Limitations](#honest-limitations)
 - [Roadmap](#roadmap)
+
+</td>
+</tr>
+</table>
+
+<br>
 
 ---
 
 ## The problem
 
-Online fashion and beauty shopping creates a gap that no product actually closes.
+Online fashion and beauty shopping creates a gap that nothing actually closes.
 
-You see a model wearing a dress, and then you have to mentally calculate:
+You see a piece you like. Then, entirely in your head, you have to run five calculations:
 
-1. Would this work **on me**?
-2. Would it work for **the occasion**?
-3. Does it match **my style**?
-4. Would I actually **wear it again**?
-5. Is it worth **$85**?
+<table>
+<tr><td width="60"><div align="center"><b>01</b></div></td><td>Would this work <b>on me</b>?</td></tr>
+<tr><td><div align="center"><b>02</b></div></td><td>Would it work for <b>the occasion</b>?</td></tr>
+<tr><td><div align="center"><b>03</b></div></td><td>Does it match <b>how I actually dress</b>?</td></tr>
+<tr><td><div align="center"><b>04</b></div></td><td>Would I ever <b>wear it again</b>?</td></tr>
+<tr><td><div align="center"><b>05</b></div></td><td>Is it worth <b>$98</b>?</td></tr>
+</table>
 
-You buy it anyway. And sometimes, later:
+Virtual try-on answers the **first one**, beautifully.
 
-> *"Why did I buy this?"*
+Nothing answers the other four. So you guess — and the guess is where the regret comes from. The return, the tag still on it in six months, the third black dress.
 
-Virtual try-on answers question 1. Nothing answers questions 2 through 5.
+<br>
+
+---
 
 ## The solution
 
-MAVIE runs a single coherent pipeline:
+MAVIE is not a shopping app with AI bolted on. It is a **decision layer that happens to be able to see.**
 
-```
-Context → Personalization → Skin → Makeup → Real Products
-       → Virtual Try-On → Decision Intelligence → Buy / Wait / Skip
-```
+Most fashion tech optimises for:
 
-The signature difference: MAVIE doesn't stop at *"Here's how you look."*
-It asks *"Was this actually a good decision for you?"*
+> *"How do we make you want this?"*
 
----
+MAVIE optimises for:
 
-## Three core layers
+> *"How do we help you make a decision you will still be happy with next month?"*
 
-Every feature in MAVIE belongs to exactly one of these.
+That difference shows up in one place above all: **MAVIE will tell you not to buy something.** It does this often, specifically, with its reasoning fully exposed — and the alternative it offers instead is usually cheaper.
 
-### 💗 Layer 1 — PERSONALIZE
-*Who are you and what do you want?*
+A recommendation engine that can never say no isn't giving advice. It's selling.
 
-Occasion · Goal · Style · Budget · Comfort · Beauty preferences · Skin profile · Existing wardrobe · Previous decisions
-
-### 🪞 Layer 2 — VISUALIZE
-*What would you actually look like?*
-
-Real clothing catalog · Apparel VTO · Makeup VTO · Skin analysis · Complete-look visualization
-
-### 🧠 Layer 3 — DECIDE
-*Is this actually a good choice?*
-
-MAVIE Match · Stylist vs Skeptic · Versatility · Rewear potential · Context compatibility · Budget · Buy Confidence · Regret Risk · Buy / Wait / Skip · Better alternatives
+<br>
 
 ---
 
-## Features
+## Three layers
 
 <table>
-<tr><td width="50%" valign="top">
+<tr>
+<td width="33%" valign="top">
 
-**🧠 AI**
-- Natural-language context understanding
-- Conversational style assistant
-- Personal style profile (Style DNA)
-- Context engine → structured constraints
-- Outfit composer over a real catalog
-- MAVIE Match scoring
-- Aftermath engine
-- Stylist agent 🟢 / Skeptic agent 🔴
-- Buy Confidence · Regret Risk
-- Alternative engine
-- Preference learning loop
+### 💗 Personalize
 
-</td><td width="50%" valign="top">
+Who you are, what you're dressing for, what you already own, and what your skin actually needs.
 
-**🧴 Beauty**
-- Skin Analysis (15+ concerns)
-- Beauty profile translation
-- Makeup direction per look
-- Makeup Virtual Try-On
-- Complete-look coordination
+Context is parsed from **plain language**, not dropdowns.
 
-</td></tr>
-<tr><td valign="top">
+</td>
+<td width="33%" valign="top">
 
-**👗 Fashion**
-- Real garment catalog with metadata
-- Outfit composition from actual products
-- Apparel Virtual Try-On
-- Outfit & product comparison
-- Style / budget / occasion / comfort matching
+### 🪞 Visualize
 
-</td><td valign="top">
+Perfect Corp Skin AI and Apparel VTO — real analysis, real photoreal try-on, on **your** photo.
 
-**🛍️ Commerce**
-- Product links, prices, images
-- Buy / Wait / Skip verdict
-- Better alternatives
-- Saved looks
-- "I found this online" screenshot flow
+Not a model. Not an illustration.
 
-</td></tr>
-<tr><td valign="top">
+</td>
+<td width="33%" valign="top">
 
-**👚 Closet**
-- Digital closet
-- Style what you already own
-- Duplicate / overlap detection
-- Closet overlap feeds the decision engine
+### 🧠 Decide
 
-</td><td valign="top">
+Two adversarial agents supply evidence. Deterministic scoring returns the call.
 
-**🧳 Lifestyle**
-- Occasion styling
-- Trip Mode — capsule packing plans
-- Capsule wardrobe
-- ○ Event planning
+**BUY · WAIT · SKIP**
 
-</td></tr>
+</td>
+</tr>
 </table>
 
-○ = designed, not yet built. See [Build status](#build-status).
+Everything else in this document is an elaboration of those three boxes.
+
+<br>
 
 ---
 
-## Build status
+## The decision engine
 
-Everything below runs today with **zero API keys** — every external service has a
-deterministic fallback, so the full journey is demoable offline.
+This is the part that makes MAVIE more than a styling toy.
 
-| Area | Status |
-| --- | --- |
-| Context engine (NL → constraints) | ✅ Working, LLM + deterministic fallback |
-| Curated catalog (60 garments, 15 beauty) | ✅ Working |
-| Outfit composer over real products | ✅ Working |
-| MAVIE Match scoring | ✅ Working |
-| Makeup engine + look coordination | ✅ Working |
-| Skin Analysis → beauty profile | ✅ Working (mock without keys) |
-| Apparel VTO | ✅ Working (composite preview without keys) |
-| Makeup VTO | ✅ Working (swatches without keys) |
-| Stylist vs Skeptic panel | ✅ Working, LLM + deterministic fallback |
-| Aftermath metrics + Buy/Wait/Skip | ✅ Working |
-| Alternative engine | ✅ Working |
-| Closet + overlap detection | ✅ Working |
-| Preference learning loop | ✅ Working (shallow — weights, not a model) |
-| Guest mode + delete controls | ✅ Working |
-| Saved looks | ✅ Working, with UI |
-| "I found this online" screenshot flow | ✅ Working (Gemini vision) |
-| Trip Mode (capsule packing) | ✅ Working |
-| Supabase persistence | ✅ Wired — write-through + boot hydration. **Untested against a live project** |
-| Auth | ⚠️ Single demo user — deliberately deferred |
+Two AI agents receive the **same evidence packet** and are handed opposing briefs.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🟢 The Stylist
+
+**Brief:** argue *for* the piece.
+
+Occasion fit · style coherence · how it reads against your colouring · what it does that nothing you own already does · why this is the version of you that suits the moment.
+
+</td>
+<td width="50%" valign="top">
+
+### 🔴 The Skeptic
+
+**Brief:** argue *against* it.
+
+Closet overlap **by name** · rewear potential · care burden · budget pressure · versatility · whether the occasion actually calls for this.
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+### Neither of them decides anything.
+
+</div>
+
+Every claim either agent makes **must cite a real numeric field** from the evidence packet. A claim that can't be traced back to a number is rejected before it ever reaches you. Zod validates the model's output the same way it validates an incoming request body — an LLM is treated as an untrusted input source, because it is one.
+
+The agents supply argument. **Deterministic code supplies the verdict.**
+
+The Skeptic is also handed the *names* of colliding closet pieces, not just an overlap percentage — because "you already own a black slip dress, a black wrap dress and a black mini dress" is an argument, while "closet overlap: 34%" is a statistic.
+
+<br>
+
+---
+
+## Scoring model
+
+Two independent scores, computed in plain code, from real garment attributes.
+
+### MAVIE Match — *how well does this satisfy what you asked for?*
+
+| Factor | Weight | | What it measures |
+|:--|--:|:--|:--|
+| **Occasion** | 25% | `████████████▌` | Formality and occasion tags against the parsed context |
+| **Style** | 20% | `██████████` | Style tags against your Style DNA |
+| **Preference** | 15% | `███████▌` | Colours you love, colours you avoid |
+| **Budget** | 15% | `███████▌` | Total against your stated ceiling |
+| **Comfort** | 10% | `█████` | Fit and material against comfort priority |
+| **Beauty compatibility** | 10% | `█████` | Coordination with your skin analysis |
+| **Closet fit** | 5% | `██▌` | Whether it works with what you own |
+
+> This is **not** an attractiveness score. MAVIE has no opinion about your face. It measures how well a look satisfies constraints you stated yourself.
+
+### Decision Risk — *how likely are you to wish you hadn't?*
+
+| Factor | Weight | | What it measures |
+|:--|--:|:--|:--|
+| **Context mismatch** | 20% | `██████████` | Wrong register for the moment |
+| **Preference mismatch** | 20% | `██████████` | Not how you actually dress |
+| **Low versatility** | 15% | `███████▌` | Few other places you could wear it |
+| **Low rewear** | 15% | `███████▌` | Statement pieces you'll be seen in twice |
+| **Closet overlap** | 10% | `█████` | You already own this |
+| **Maintenance burden** | 10% | `█████` | Dry clean only, delicate, high upkeep |
+| **Budget pressure** | 10% | `█████` | Proportion of your stated ceiling |
+
+### The verdict
+
+<table>
+<tr>
+<td width="140" align="center"><h3>🟢<br>BUY</h3></td>
+<td><b>risk ≤ 30 and match ≥ 78</b><br>It earns its place. Versatility, budget fit and occasion match all hold up.</td>
+</tr>
+<tr>
+<td width="140" align="center"><h3>🟡<br>WAIT</h3></td>
+<td><b>risk ≤ 60</b><br>Something real is wrong. MAVIE names it, then offers an alternative that reduces the specific risk it just identified.</td>
+</tr>
+<tr>
+<td width="140" align="center"><h3>🔴<br>SKIP</h3></td>
+<td><b>risk &gt; 60</b><br>Don't.</td>
+</tr>
+</table>
+
+Each **high-severity** Skeptic claim adds **+6** to the risk score.
+
+That is the *only* channel through which a language model can influence the outcome — and it can only ever push toward caution. A model having a bad day cannot talk you into a purchase.
+
+<br>
+
+---
+
+## Every feature, and how to run it
+
+<br>
+
+### 🕯️ Moment — `/`
+
+The primary entry point. Describe the situation the way you'd say it out loud:
+
+> *"Dinner date tonight. I want to feel feminine but not overdressed, and comfortable. My budget is $100."*
+
+Gemini extracts **occasion, goal, formality, budget, comfort priority and avoided colours** into a structured constraint object. Anything it can't determine is filled from your saved profile rather than guessed.
+
+Twenty starting points live in a collapsible picker grouped **Work · Evening · Occasion · Everyday · Away**. Each seeds real phrasing rather than a bare keyword — so you can see what a good description looks like and edit from there, instead of facing an empty box.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+1. Type a moment, or open **Pick a moment** and choose one
+2. Optionally add vibes and adjust the budget slider
+3. Press **Create my look**
+
+Watch the loader copy — *"MAVIE is searching real products, not imagining them."*
+
+</details>
+
+<br>
+
+### ✨ Skin Analysis — Perfect Corp, live
+
+Upload a selfie on the home page. Perfect Corp's Skin AI returns **eight concern scores**: `wrinkle` `texture` `pore` `acne` `oiliness` `moisture` `radiance` `redness`.
+
+MAVIE never renders *"your face is 78/100."* Those numbers are translated into **styling direction** — preferred finish, makeup intensity, and guidance where every line is derived from your own values.
+
+Concerns are only spoken to below a threshold, and contradictory pairs are resolved: oily and dry cannot both be the headline. **Balanced skin is told it is balanced**, rather than handed invented problems so the feature looks busy.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+1. Home page → **Add a selfie**
+2. Read the beauty direction card that appears
+3. Go to `/profile` → **View skin analysis** for the raw eight scores behind an explicit disclosure
+
+Requires `YOUCAM_API_KEY` and `YOUCAM_SECRET_KEY`. Without them you get a deterministic mock, clearly labelled.
+
+</details>
+
+<br>
+
+### 👗 Looks — `/looks`
+
+Three complete outfits assembled from a real catalog of **60 garments** — not generated pictures of clothes that don't exist.
+
+Every piece carries `material` `formality` `fit` `season` `style_tags` `occasion_tags` `versatility` `maintenance` `hex`. That is what lets reasoning be **attribute-based** rather than a hard-coded occasion → product lookup: nothing in the code says "dinner means dress."
+
+A match ring and six factor bars show exactly why each look scored what it did, and a comparison table puts all three side by side with the winner highlighted per factor.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+1. Click any of the three cards — it gets a **Your choice** badge
+2. The detail panel below follows your selection, not MAVIE's pick
+3. Try-on, the verdict and **Save** all act on *your* choice
+
+If you pick something other than MAVIE's, it tells you what it would have chosen and at what score — then defers to you.
+
+</details>
+
+<br>
+
+### 🪞 Try On — `/try-on`
+
+**Perfect Corp Apparel VTO. Photoreal. On your own photo.**
+
+Uses your **full-body** photo, kept deliberately separate from the selfie — a face crop has no legs to fit trousers to, and MAVIE says so rather than silently producing a bad result.
+
+Both images are staged through Perfect Corp's file API rather than linked by URL, which means **this works on localhost.** No deployment, no public host, no tunnel.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+1. `/try-on` → **Add a full-body photo**
+2. Stand facing the camera, head to feet, in good light
+3. Expect **12–16 seconds**
+
+Switch between the three looks with the chips at the top; each re-renders. Results are cached, so returning is instant.
+
+</details>
+
+<br>
+
+### ⚖️ Aftermath — `/aftermath`
+
+**The centre of the product.**
+
+The Stylist and the Skeptic debate, staged deliberately: argument first, then evidence, then the call — roughly two seconds — so the verdict doesn't land in the same instant as the reasoning that produced it.
+
+Then eight metric bars, the verdict card, alternatives when it isn't a BUY, and five feedback buttons.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+1. From `/looks`, press **Should I buy it?**
+2. Read the debate as it lands, then the evidence, then the verdict
+3. Press a feedback chip — *Love it · Not me · Too expensive · Too uncomfortable · Too bold*
+
+Feedback adjusts your profile weights immediately. Compose again and the looks change.
+
+</details>
+
+<br>
+
+### 🔍 Found It — `/found`
+
+The second entry point, and the clearest argument that MAVIE is a decision layer rather than a catalogue.
+
+Screenshot anything — Instagram, a store page, a friend's story. Gemini vision reads it into a structured product with a stated confidence, and it runs through the **identical engine** as a curated look. Same agents, same weights, same thresholds.
+
+You can try it on too, using the screenshot itself as the garment reference.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+1. `/found` → upload a screenshot
+2. Correct the price if it couldn't read one — price is load-bearing for the budget maths
+3. **Try it on me**, or **Should I buy this?**
+
+The confidence percentage tells you how much to trust the extraction before you act on the verdict.
+
+</details>
+
+<br>
+
+### 🚪 Closet — `/closet`
+
+What you already own is the cheapest wardrobe you will ever have. It is also what lets the Skeptic say something **true and specific** rather than generically cautious.
+
+Add pieces by category and colour — eight quick swatches plus a **full colour wheel**. Any picked hex is resolved to the nearest colour word in the catalog's own vocabulary, so duplicate detection keeps working; a raw hex would silently break it.
+
+Attach a real photo of the actual garment, or let MAVIE borrow a catalog look-alike, always marked **similar** so it never implies it has a picture of your clothes.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+1. Add three black dresses
+2. Watch **"You already own 3 black dresses"** appear in the amber panel
+3. Now go get a verdict on a fourth — the Skeptic cites them **by name**
+
+**Style my closet** builds complete outfits from what you own. Total cost: **$0**.
+
+**Clear all** empties it. `npm run test:all` snapshots and restores your closet, so it's safe to run against a populated instance.
+
+</details>
+
+<br>
+
+### 🧳 Trip — `/trip`
+
+Describe a trip and MAVIE builds a **capsule** — not one outfit per day, but the smallest set of pieces that recombines across the whole trip.
+
+Starts from what you already own, matches the season rather than merely permitting it, and applies occasion-aware footwear rules so you don't get sneakers with the one nice dinner.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+> *"I am going to Lisbon for four days, mostly walking around plus one nice dinner"*
+
+Returns days covered, pieces packed, and **wears per piece** — the number that actually measures whether a capsule is any good.
+
+</details>
+
+<br>
+
+### 🫀 Profile — `/profile`
+
+Your name, Style DNA, preferred and avoided colours, budget range and comfort priority. **All editable, all persisted.**
+
+These start as sensible defaults and are moved by what you actually choose. Style DNA suggestions are drawn from tags the catalog genuinely carries — offering free text would let you pick an identity nothing can match, so the setting would look like it worked and change nothing.
+
+<details>
+<summary><b>Run it</b></summary>
+
+<br>
+
+1. Set your name → the home page greets you
+2. Type a budget range → press **Save** → it becomes the ceiling MAVIE assumes when a moment doesn't state one
+3. Drop a Style DNA tag, add another, then recompose — the looks change
+
+</details>
+
+<br>
+
+### 🛡️ Privacy — everywhere
+
+Guest mode processes your photo and stores nothing. Delete both photos, or your entire profile and closet, in one tap. Photos are never written to disk.
+
+<br>
+
+---
+
+## Quickstart
+
+```bash
+git clone https://github.com/Faleesha-Zaeen/Mavie.git
+cd Mavie
+npm run setup
+cp server/.env.example server/.env
+npm run dev
+```
+
+<div align="center">
+<br>
+
+**Client → `http://localhost:5173`  ·  API → `http://localhost:5000`**
+
+<br>
+</div>
+
+> ### It runs with no API keys at all.
+>
+> A disk cache in `server/.cache/` is consulted **before** provider selection, so a fresh clone produces real looks, real agent reasoning and real verdicts completely offline. Add keys to go live.
+
+<br>
+
+### Environment
+
+Everything lives in `server/.env`. The client needs nothing locally.
+
+| Variable | Required | Purpose |
+|:--|:--:|:--|
+| `YOUCAM_API_KEY` | ● | Perfect Corp Skin AI + Apparel VTO |
+| `YOUCAM_SECRET_KEY` | ● | RSA public key used to mint the `id_token` |
+| `YOUCAM_API_BASE` | ● | `https://yce-api-01.perfectcorp.com` |
+| `AI_PROVIDER` | ● | `gemini` · `openai` · `mock` |
+| `GEMINI_API_KEY` | ○ | Required when the provider is `gemini` |
+| `GEMINI_MODEL` | ○ | Defaults to `gemini-flash-latest` |
+| `OPENAI_API_KEY` | ○ | Required when the provider is `openai` |
+| `SUPABASE_URL` | ○ | Omit entirely to use the in-memory store |
+| `SUPABASE_SERVICE_KEY` | ○ | **Server-side only.** Never reaches the client bundle |
+| `CLIENT_ORIGIN` | ○ | CORS allowlist, comma-separated, `*.suffix` supported |
+| `PORT` | ○ | Defaults to `5000` |
+
+In deployment the client takes exactly one variable — `VITE_API_URL`, pointing at the API origin with **no trailing slash and no `/api`**.
+
+<br>
+
+### Persistence
+
+MAVIE runs fine without a database; the in-memory store is a complete implementation, not a stub.
+
+To switch Postgres on, run [`server/db/schema.sql`](server/db/schema.sql) in the Supabase SQL editor and set the two Supabase variables. Writes are mirrored fire-and-forget and hydrated at boot, so a persistence failure degrades to memory rather than breaking a user's request.
+
+<br>
+
+---
+
+## Commands
+
+| Command | What it does |
+|:--|:--|
+| `npm run setup` | Install both workspaces |
+| `npm run dev` | Client and API together, both watching |
+| `npm run test:all` | **31 checks** across every endpoint, against the live server |
+| `npm run preflight` | Report which integrations are live vs mocked |
+| `npm run check:youcam` | Diagnose Perfect Corp connectivity and auth |
+| `npm run find:youcam` | Probe for a reachable API host |
+| `npm run images:import` | Rebuild and optimise the catalog imagery |
+| `npm run demo:seed` | Seed the scripted demo profile and closet |
+| `npm run build` | Production client bundle |
+| `npm start` | Production API |
+
+<br>
 
 ---
 
 ## Architecture
 
-The governing principle: **the LLM does not control everything.**
-
-| Component | Responsibility |
-| --- | --- |
-| **LLM** | Language understanding, style reasoning, agent argumentation |
-| **Deterministic engine** | Scoring, constraints, ranking, final verdict |
-| **YouCam / Perfect Corp.** | Specialized visual AI (skin, apparel, makeup) |
-| **Catalog** | Source of real, purchasable products |
-
 ```
-                              💗 MAVIE
-                     A LOOK MADE FOR YOUR LIFE
-                                  │
-                                  ▼
-                    ┌─────────────────────────┐
-                    │       USER CONTEXT      │
-                    │  Occasion · Goal        │
-                    │  Budget · Style         │
-                    │  Comfort                │
-                    └────────────┬────────────┘
+     ┌──────────────────────────────────────────────────────────────┐
+     │  ①  CONTEXT                                                  │
+     │     plain language ──▶ structured constraints                │
+     │     Gemini · occasion · budget · comfort · goal · formality   │
+     └───────────────────────────┬──────────────────────────────────┘
                                  ▼
-                    ┌─────────────────────────┐
-                    │    PERSONAL PROFILE     │
-                    │  Style DNA              │
-                    │  Beauty Profile         │
-                    │  Closet                 │
-                    │  Decision History       │
-                    └────────────┬────────────┘
-                                 │
-             ┌───────────────────┼────────────────────┐
-             ▼                   ▼                    ▼
-      YouCam Skin AI      MAVIE PRODUCT         MAVIE CLOSET
-             │              CATALOG                   │
-             ▼                   │                    │
-      Beauty Profile             └─────────┬──────────┘
-                                           ▼
-                                  ┌──────────────────┐
-                                  │ AI OUTFIT ENGINE │
-                                  └────────┬─────────┘
-                                           │
-                                    REAL PRODUCTS
-                                           ▼
-                                  ┌──────────────────┐
-                                  │  COMPLETE LOOKS  │
-                                  │  Outfit + Makeup │
-                                  └────────┬─────────┘
-                          ┌────────────────┼────────────────┐
-                          ▼                                 ▼
-                 YouCam Clothes VTO                YouCam Makeup VTO
-                          │                                 │
-                          └────────────────┬────────────────┘
-                                           ▼
-                                  ┌──────────────────┐
-                                  │   MAVIE MATCH    │
-                                  └────────┬─────────┘
-                                           ▼
-                                  ┌──────────────────┐
-                                  │ MAVIE AFTERMATH  │
-                                  │  🟢 Stylist      │
-                                  │  🔴 Skeptic      │
-                                  │  Rewear          │
-                                  │  Versatility     │
-                                  │  Closet overlap  │
-                                  └────────┬─────────┘
-                                           ▼
-                                  ┌──────────────────┐
-                                  │ DECISION ENGINE  │
-                                  └────────┬─────────┘
-                             ┌─────────────┼─────────────┐
-                             ▼             ▼             ▼
-                           🟢 BUY       🟡 WAIT       🔴 SKIP
-                                           ▼
-                                  BETTER ALTERNATIVES
-                                           ▼
-                                     USER FEEDBACK
-                                           ▼
-                                     MAVIE LEARNS
+     ┌──────────────────────────────────────────────────────────────┐
+     │  ②  CATALOG                                                  │
+     │     60 real garments, each with 9 reasoning attributes       │
+     │     composer builds complete, coherent, in-budget looks      │
+     └───────────────────────────┬──────────────────────────────────┘
+                                 ▼
+     ┌──────────────────────────────────────────────────────────────┐
+     │  ③  VISUALISATION                                            │
+     │     Perfect Corp Skin AI  ·  Perfect Corp Apparel VTO        │
+     │     photoreal, on the user's own photograph                  │
+     └───────────────────────────┬──────────────────────────────────┘
+                                 ▼
+     ┌──────────────────────────────────────────────────────────────┐
+     │  ④  DECISION                                                 │
+     │     Stylist ⇄ Skeptic  supply evidence                       │
+     │     deterministic scoring  returns the verdict               │
+     │                                                              │
+     │              🟢 BUY      🟡 WAIT      🔴 SKIP                 │
+     └──────────────────────────────────────────────────────────────┘
 ```
 
 ### The recommendation pipeline
 
 ```
-User request
-     ↓ LLM context extraction
-Structured constraints
-     ↓ deterministic catalog filtering
-Candidate garments
-     ↓ combinatorial composition
-Outfit combinations
-     ↓ LLM style reasoning
-Scored candidates
-     ↓ deterministic ranking
-Top 3 complete looks
+user text
+   └─▶ contextService      Gemini → { occasion, goal, budget, comfort, colours }
+        └─▶ outfitComposer  filter → combine → coherence-check → top 3
+             └─▶ scoringService   7 weighted factors → MAVIE Match
+                  └─▶ regretService    7 weighted factors → Decision Risk
+                       └─▶ agents      Stylist + Skeptic, in parallel
+                            └─▶ verdictService   thresholds → BUY | WAIT | SKIP
+                                 └─▶ findAlternatives   cheaper, lower-risk, in-occasion
 ```
 
-The LLM **never invents a garment**. It selects `product_id`s from the catalog.
+<br>
+
+### Stack
+
+<table>
+<tr><td width="140"><b>Frontend</b></td><td>React 18 · Vite · Tailwind CSS · Framer Motion · TanStack Query · React Router</td></tr>
+<tr><td><b>Backend</b></td><td>Node 20 · Express · Zod — validating incoming requests <i>and</i> model output</td></tr>
+<tr><td><b>Data</b></td><td>Supabase Postgres over raw PostgREST — no SDK, one less thing to break</td></tr>
+<tr><td><b>AI</b></td><td>Gemini with a model cascade, an 11-second wall-clock budget and per-request abort</td></tr>
+<tr><td><b>Vision</b></td><td>Perfect Corp YouCam — Skin Analysis and Apparel VTO</td></tr>
+<tr><td><b>Imaging</b></td><td>sharp — trim, resize and encode the catalog</td></tr>
+</table>
+
+<br>
 
 ---
 
-## Tech stack
+## Perfect Corp / YouCam APIs
 
-**Frontend** — React 18, Vite, Tailwind CSS, Framer Motion, TanStack Query, React Router, Lucide icons
+| Endpoint | Use |
+|:--|:--|
+| `POST /s2s/v1.0/client/auth` | Exchange the `id_token` for an access token |
+| `POST /s2s/v1.0/file/{feature}` | Reserve an upload slot, receive a signed `PUT` URL and a `file_id` |
+| `POST /s2s/v2.0/task/skin-analysis` | Eight concern scores → beauty personalisation |
+| `POST /s2s/v2.0/task/cloth-v4` | Apparel VTO · `upper_body` · `lower_body` · `full_body` |
 
-**Backend** — Node.js, Express, Zod (validates requests *and* AI outputs), Multer
+**Auth** is RSA-PKCS1. `client_id` and a timestamp are encrypted with the provided public key to mint an `id_token`, which is exchanged for a bearer token. Tasks are asynchronous — submit, receive a `task_id`, then poll.
 
-**AI** — one primary LLM provider (OpenAI **or** Gemini), configured via env. Falls back to a deterministic local reasoner when no key is present, so the app always runs.
+### Two findings worth recording
 
-**Visual AI** — Perfect Corp. YouCam: Skin Analysis, Clothes/Apparel VTO, Makeup VTO
+> **`dress` is not a valid `garment_category`.**
+> Despite dresses being the obvious case, `cloth-v4` rejects it. Dresses must route through `full_body`. The API returns a union-validation error listing every branch, which reads like a generic malformed-request message rather than pointing at the offending field.
 
-**Database** — Supabase (PostgreSQL + Auth + Storage). The prototype ships with an in-memory store so it runs with zero configuration. Set `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` and persistence switches on automatically — run [`server/db/schema.sql`](server/db/schema.sql) in the Supabase SQL editor first.
-
-Writes are mirrored through to Postgres and the working set is hydrated at boot, so reads stay synchronous and a slow database can never stall a request. A failed write logs and continues rather than 500-ing mid-demo.
-
-**Deploy** — Vercel (frontend) · Render/Railway (backend) · Supabase (data)
-
----
-
-## Perfect Corp. / YouCam APIs
-
-MAVIE uses three endpoints, each contributing to a single decision. The goal is not *"we called 15 APIs"* — it's *"every call contributes to one decision."*
-
-| API | Role in MAVIE | Status |
-| --- | --- | --- |
-| **Skin Analysis** | Returns structured scores and visual overlays across 15+ skin concerns. MAVIE translates these into a *beauty personalization* profile — preferred finish, beauty direction, makeup intensity. | **Required core** |
-| **Clothes / Apparel VTO** | Accepts a user photo + a garment image and returns a generated try-on result. Supports upper-body, lower-body and full-body garments. | **Required core** |
-| **Makeup VTO** | Visualizes foundation, blush, bronzer, contour, eyeliner, eyeshadow, brows, lashes, highlight, lip color and lip liner. | **Optional, high-value** |
-
-> ⚠️ **Verify before depending on it.** Makeup VTO availability depends on your specific Perfect Corp. account and plan. Test all three in the API Playground **before** building UI that assumes them. The guaranteed foundation is **Skin Analysis + Apparel VTO**.
+> **Tasks accept `file_id` as well as `file_url`.**
+> Because the bytes can be staged with Perfect Corp directly, **no public host is required** — photoreal try-on runs on `localhost` with no tunnel and no deployment.
 
 ### What MAVIE deliberately does *not* do with Skin AI
 
-MAVIE will **never** display a sentence like *"Your face is 78/100."*
+- No clinical-looking scores in the main flow
+- No condition names, no diagnosis, no medical framing
+- No "your skin is 72/100"
+- Raw values only behind an explicit, user-initiated disclosure
+- A permanent disclaimer: *beauty personalisation, not a medical assessment*
 
-Skin Analysis provides **skin information**, which MAVIE uses to **personalize beauty recommendations**. It is not an attractiveness rating and it is not a medical product. Raw API values remain available behind an explicit **"View skin analysis"** disclosure so the feature stays transparent without becoming diagnostic.
+<br>
 
 ---
 
@@ -341,392 +651,322 @@ Skin Analysis provides **skin information**, which MAVIE uses to **personalize b
 
 ```
 Mavie/
-├── client/                      # React + Vite frontend
-│   ├── src/
-│   │   ├── components/          # LookCard, ProductCard, GarmentVisual, VTOViewer,
-│   │   │                        #   AgentDebate, VerdictCard, MatchRing, ScoreBar, Loader
-│   │   ├── pages/               # Moment, Looks, TryOn, Aftermath, Closet, Profile
-│   │   ├── services/            # api.js
-│   │   ├── context/             # MavieContext (session + guest mode)
-│   │   ├── utils/               # image validation
-│   │   ├── index.css            # design tokens
-│   │   └── App.jsx
-│   ├── tailwind.config.js       # colour + type system
-│   └── vite.config.js
+├── client/
+│   ├── public/catalog/            60 optimised garment images
+│   └── src/
+│       ├── pages/                 Moment · Looks · TryOn · Aftermath · Found
+│       │                          Trip · Closet · Saved · Profile
+│       ├── components/            LookCard · VerdictCard · AgentDebate
+│       │                          MatchRing · ScoreBar · GarmentVisual
+│       │                          VTOViewer · OccasionPicker · BeautyChain
+│       ├── context/               MavieContext — session state
+│       ├── services/api.js        every endpoint, one place
+│       └── utils/                 image handling · colour naming
 │
-├── server/                      # Node + Express backend
-│   ├── controllers/             # context, catalog, beauty, vto, decision, closet
-│   ├── services/
-│   │   ├── youcam/              # client, skinService, clothesService, makeupService
-│   │   ├── ai/                  # llm, contextService, makeupService, agents
-│   │   ├── catalog/             # searchService, outfitComposer
-│   │   └── decision/            # scoringService, regretService, verdictService
-│   ├── data/                    # curated garment + beauty catalog
-│   ├── routes/
-│   ├── middleware/              # validation (Zod)
-│   ├── store.js                 # in-memory store (Supabase-shaped)
-│   └── server.js
-│
-└── README.md
+└── server/
+    ├── controllers/               thin HTTP layer
+    ├── services/
+    │   ├── ai/                    llm · agents · contextService · productVision
+    │   ├── catalog/               outfitComposer · searchService
+    │   ├── decision/              scoringService · regretService · verdictService
+    │   └── youcam/                client · skinService · clothesService · upload
+    ├── data/                      catalog.js · demo.js
+    ├── db/                        supabase.js · schema.sql
+    ├── middleware/validation.js   Zod schemas
+    ├── scripts/                   preflight · test-all · check-youcam · images
+    └── .cache/                    keyless-demo cache
 ```
 
----
-
-## Setup
-
-**Prerequisites:** Node.js 18+ and npm.
-
-```bash
-git clone <your-repo-url> mavie
-cd mavie
-npm run setup
-```
-
-`npm run setup` installs dependencies for both `client/` and `server/`.
-
-Then copy the environment templates:
-
-```bash
-cp server/.env.example server/.env
-cp client/.env.example client/.env
-```
-
-MAVIE runs **with no API keys at all** — every external service has a deterministic mock. Add keys to progressively light up real functionality.
-
----
-
-## Environment variables
-
-### `server/.env`
-
-```ini
-PORT=5000
-CLIENT_ORIGIN=http://localhost:5173
-
-# Perfect Corp. / YouCam — server-side only
-YOUCAM_API_KEY=
-YOUCAM_SECRET_KEY=
-YOUCAM_API_BASE=https://yce-api-01.perfectcorp.com
-
-# LLM — set ONE provider
-AI_PROVIDER=mock          # openai | gemini | mock
-OPENAI_API_KEY=
-GEMINI_API_KEY=
-
-# Supabase — optional; omit to use the in-memory store
-SUPABASE_URL=
-SUPABASE_SERVICE_KEY=
-```
-
-### `client/.env`
-
-```ini
-VITE_API_URL=http://localhost:5000
-```
-
-> 🔐 **Never** put a YouCam or LLM key behind a `VITE_` prefix. Anything prefixed `VITE_` is compiled into the browser bundle and is publicly readable. All third-party keys live on the server only.
->
-> **Never commit `.env`.** It is gitignored.
-
----
-
-## Running locally
-
-```bash
-npm run dev
-```
-
-This starts both servers concurrently:
-
-| Service | URL |
-| --- | --- |
-| Frontend | http://localhost:5173 |
-| Backend | http://localhost:5000 |
-| Health check | http://localhost:5000/api/health |
-
-Run them individually if you prefer:
-
-```bash
-npm run dev:server
-```
-
-```bash
-npm run dev:client
-```
-
-The health endpoint reports which integrations are live vs. mocked — useful for confirming your keys are wired correctly before a demo.
+<br>
 
 ---
 
 ## API reference
 
-```
-POST /api/context/parse          Natural language → structured constraints
-POST /api/profile/create         Build Style DNA from preferences + photos
+<details>
+<summary><b>31 endpoints</b> — click to expand</summary>
 
-POST /api/skin/analyze           YouCam Skin Analysis → beauty profile
-POST /api/makeup/recommend       Makeup direction for a look
-POST /api/makeup/try-on          YouCam Makeup VTO
+<br>
 
-GET  /api/catalog                Browse the curated catalog
-POST /api/catalog/search         Constraint-filtered product search
-POST /api/outfits/compose        Compose 3 complete looks from real products
-
-POST /api/vto/clothes            YouCam Apparel VTO
-POST /api/looks/compare          Side-by-side look comparison
-POST /api/looks/score            MAVIE Match scoring
-
-POST /api/decision/analyze       Stylist 🟢 vs Skeptic 🔴 + Aftermath metrics
-POST /api/decision/verdict       BUY / WAIT / SKIP
-POST /api/alternatives           Lower-decision-risk alternatives
-
-POST /api/product/analyze        Screenshot → structured product (vision)
-POST /api/product/buy-confidence Same decision engine, uncurated product
-
-POST /api/trip/plan              Capsule packing plan for a trip
-
-POST /api/closet/upload          Add an owned item
-POST /api/closet/analyze         Overlap & gap analysis
-POST /api/closet/style           Style what the user already owns
-
-POST /api/looks/save             Save a look
-GET  /api/looks/saved            Retrieve saved looks
-POST /api/feedback               Preference learning signal
+**Context & profile**
+```http
+POST   /api/context/parse            plain language → structured constraints
+GET    /api/profile
+POST   /api/profile                  partial patch
+DELETE /api/profile                  cascades to closet, looks, decisions
 ```
 
----
+**Beauty**
+```http
+POST   /api/skin/analyze             Perfect Corp Skin AI → beauty profile
+POST   /api/makeup/recommend
+POST   /api/makeup/try-on
+```
 
-## Scoring model
+**Catalog & looks**
+```http
+GET    /api/catalog                  ?category= optional
+POST   /api/catalog/search
+POST   /api/outfits/compose          three complete looks + a pick
+POST   /api/looks/score
+POST   /api/looks/compare
+POST   /api/looks/save
+GET    /api/looks/saved
+```
 
-Both scores are **transparent product heuristics**, not scientifically validated measurements. MAVIE states this in the UI. Weights live in `server/services/decision/` and are trivially tunable.
+**Virtual try-on**
+```http
+POST   /api/vto/clothes              catalog garments, resolved server-side
+POST   /api/vto/found                a piece you screenshotted
+```
 
-### MAVIE Match — *how well does this satisfy what you asked for?*
+**Decision**
+```http
+POST   /api/decision/analyze         Stylist ⇄ Skeptic → verdict
+POST   /api/decision/verdict         alias
+POST   /api/alternatives             cheaper, lower-risk, same occasion
+POST   /api/feedback                 adjusts profile weights
+```
 
-| Factor | Weight |
-| --- | ---: |
-| Occasion fit | 25% |
-| Style match | 20% |
-| Preference match | 15% |
-| Budget fit | 15% |
-| Comfort | 10% |
-| Beauty compatibility | 10% |
-| Closet compatibility | 5% |
+**Found it online**
+```http
+POST   /api/product/analyze          screenshot → structured product
+POST   /api/product/buy-confidence   same engine as a curated look
+```
 
-> **MAVIE Match is not an attractiveness score.** It measures how well a decision satisfies the user's *own stated requirements*.
+**Closet**
+```http
+GET    /api/closet
+POST   /api/closet/upload
+DELETE /api/closet                   clear everything
+DELETE /api/closet/:id
+POST   /api/closet/analyze           duplicates and gaps
+POST   /api/closet/style             outfits from what you own · $0
+```
 
-### Decision Risk — *how likely is this to disappoint you later?*
+**Trip · demo · health**
+```http
+POST   /api/trip/plan
+POST   /api/demo/seed
+GET    /api/health                   integration status
+```
 
-| Factor | Weight |
-| --- | ---: |
-| Context mismatch | 20% |
-| Preference mismatch | 20% |
-| Low versatility | 15% |
-| Low rewear potential | 15% |
-| Closet overlap | 10% |
-| Maintenance burden | 10% |
-| Budget pressure | 10% |
+<br>
 
-| Score | Regret Risk |
-| --- | --- |
-| 0–30 | 🟢 LOW |
-| 31–60 | 🟡 MEDIUM |
-| 61–100 | 🔴 HIGH |
+Every request body is Zod-validated. AI and VTO routes are separately rate-limited. Errors return a human sentence, never a bare status code.
 
-**How we describe it:** *"MAVIE estimates purchase regret risk from your stated constraints and decision signals."*
-**Not:** *"MAVIE scientifically predicts regret."*
+</details>
 
-### The two agents
-
-| | Role | Constraint |
-| --- | --- | --- |
-| 🟢 **Stylist** | Find the strongest reasons this is a good decision | Only from stated goals, preferences, catalog data and visual evidence |
-| 🔴 **Skeptic** | Challenge the purchase — budget, versatility, closet, maintenance, expected usage | **Must not invent facts** |
-
-Both receive **identical structured evidence**. Neither decides. They produce structured reasons; the deterministic Decision Engine weighs that evidence alongside catalog metadata, user constraints, scores and history to produce the verdict. That separation is what makes the architecture defensible.
+<br>
 
 ---
 
 ## Design system
 
-The brief: *editorial fashion magazine × premium beauty app × modern AI.*
-Not Barbie pink. Not generic SaaS blue. Not 500 cards on one screen.
+The brief: **editorial fashion magazine × premium beauty app × modern AI.**
+Not Barbie pink. Not generic SaaS blue. Not five hundred cards on one screen.
 
 | Token | Value | Use |
-| --- | --- | --- |
-| Ivory | `#FAF7F2` | Background |
+|:--|:--|:--|
+| Ivory | `#F0E9DE` | Page background |
+| Surface | `#FAF6EF` | Raised surfaces — a soft cream, never pure white |
 | Espresso | `#2E2723` | Primary text |
-| Dusty rose | `#C98B94` | Accent |
-| Blush | `#E8D3D1` | Secondary |
-| Champagne | `#E3CDA4` | Highlight |
-| Sage | `#7C8F76` | BUY |
-| Amber | `#C9A227` | WAIT |
-| Rust | `#B4614F` | SKIP |
+| Dusty rose | `#C08089` | Brand fill — borders, bars, rings |
+| Rose text | `#92535F` | The same accent at AA contrast for text |
+| Blush | `#E4CDCB` | Secondary |
+| Champagne | `#DEC69B` | Highlight |
+| Sage | `#75886F` | **BUY** |
+| Amber | `#BF9822` | **WAIT** |
+| Rust | `#AC5A48` | **SKIP** |
+| Line | `#DCD0BE` | Hairlines |
 
-**Typography** — Cormorant Garamond (display / headings) + Inter (body / UI). Serif signals fashion; sans signals technology.
+Every accent ships as a **fill** and a separate **text** variant. A colour that looks right as a 3px bar fails WCAG AA as 11px type, and shipping one value for both is how design systems quietly become inaccessible.
 
-**Loading states** are part of the design, because AI calls take real time:
+**Typography** — Cormorant Garamond for display, Inter for body and UI. Serif signals fashion; sans signals technology. Letter-spacing tokens `editorial` (0.28em) and `salon` (0.16em) carry the eyebrow labels.
+
+**Loading states are part of the design**, because AI calls take real seconds:
 
 | Stage | Copy |
-| --- | --- |
+|:--|:--|
+| Context | *Understanding your moment…* |
 | Skin | *Reading your beauty profile…* |
 | Outfit | *Finding pieces that fit your moment…* |
 | VTO | *Putting your look together…* |
 | Aftermath | *Looking beyond the first impression…* |
+| Closet | *Going through what you already own…* |
+
+<br>
 
 ---
 
 ## Privacy & security
 
-MAVIE processes user photographs. This is not an afterthought.
+MAVIE processes photographs of people's faces and bodies. That is not an afterthought here.
 
-**Privacy controls (user-facing)**
-- Guest Mode — nothing persists
-- "Don't save this photo" toggle on every upload
-- Delete my photos
-- Delete my profile
-- Plain-language disclosure: *"Your photo is used to generate your personalized experience."*
+**User-facing controls**
+- **Guest mode** — analyse, show, persist nothing
+- **Delete my photos** — clears both the selfie and the body photo
+- **Delete my profile** — cascades to closet, saved looks, decisions and feedback
+- Plain-language disclosure on every upload surface
+- A permanent note that skin analysis is **beauty personalisation, not medical advice**
 
-**Security**
-- All third-party API keys are server-side only — never in the client bundle
-- HTTPS in production
-- Authentication on user-scoped routes
-- Rate limiting on all AI and VTO endpoints
+**Engineering**
+- Every third-party key is server-side only and never enters the client bundle
+- Photos are held in memory for the request; nothing is written to disk
 - Zod validation on every request body **and** every AI response
-- Image size limits and MIME-type validation
-- Signed storage URLs
-- Graceful error states — judges should see *"We couldn't generate your try-on this time. Try again"*, never a raw `500`
+- MIME-type allowlisting and size limits on uploads; images downscaled before transit
+- Path traversal guarded when resolving garment files
+- Rate limiting on all AI and VTO endpoints
+- CORS allowlist with explicit origins
+- Graceful degradation everywhere — a failed try-on shows a composite preview and an explanation, never a raw `500`
+
+<br>
 
 ---
 
 ## Deployment
 
-```
-                    INTERNET
-                       │
-                       ▼
-                Vercel Frontend
-                       │
-                       ▼
-                Express Backend
-                 /      |      \
-           YouCam       AI    Supabase
+**Backend → Render**
+Root `server` · build `npm install` · start `npm start`. Set the Perfect Corp, Gemini and Supabase variables. **Don't set `PORT`** — Render injects it.
+
+**Frontend → Vercel**
+Root `client` · framework Vite · output `dist`. Set `VITE_API_URL` to the Render URL — no trailing slash, no `/api`.
+
+**Then close the loop**
+Set `CLIENT_ORIGIN` on Render to `https://your-app.vercel.app,*.vercel.app`. The wildcard covers Vercel's per-commit preview domains, which would otherwise all fail CORS.
+
+Verify:
+
+```bash
+curl https://your-api.onrender.com/api/health
 ```
 
-| Layer | Platform |
-| --- | --- |
-| Frontend | Vercel |
-| Backend | Render / Railway |
-| Database & storage | Supabase |
-| Source control | GitHub |
+You want `youcam: live`, `llm: gemini`, `database: supabase`. Anything reading `mocked` or `in-memory` means a variable didn't take.
 
-Set the same environment variables in your hosting dashboards. Point `VITE_API_URL` at the deployed backend and `CLIENT_ORIGIN` at the deployed frontend.
+> **Render's free tier sleeps after 15 minutes idle** and takes 30–50 seconds to wake. Warm it before a demo or a judging window.
+
+<br>
 
 ---
 
 ## Demo script
 
-Do **not** open by explaining technology. Open with the problem.
+The seeded path, which produces a known-good run in about ninety seconds.
 
-| # | Scene |
-| --- | --- |
-| 1 | A product. *"I really like this."* → *"But should I buy it?"* |
-| 2 | Upload user photo |
-| 3 | YouCam Skin Analysis → beauty profile |
-| 4 | MAVIE understands: interview tomorrow · $150 · feminine · professional · comfortable |
-| 5 | MAVIE finds **real products** → three complete looks |
-| 6 | Apparel VTO — the user sees themselves |
-| 7 | Makeup VTO — the complete look |
-| 8 | MAVIE Match — 94% |
-| 9 | Aftermath — 🟢 *"Strong match."* / 🔴 *"Low versatility."* |
-| 10 | 🟡 **WAIT** — *"You look great in it. But you probably won't get enough use from it."* |
-| 11 | MAVIE suggests an alternative → VTO again → 🟢 **BUY — 91%** |
+| # | Action | What to point at |
+|:--:|:--|:--|
+| 1 | Type the dinner scenario | Plain language in, structure out |
+| 2 | Add a selfie | Live Skin AI — direction, not a score |
+| 3 | Three looks appear | Real catalog, real prices, visible factor scores |
+| 4 | Pick one, try it on | **Photoreal**, on your own photo |
+| 5 | *Should I buy it?* | The debate — every claim cites a field |
+| 6 | Go to **Found it**, upload the velvet dress | The same engine on a piece MAVIE never curated |
+| 7 | The verdict lands on **WAIT** | Versatility 34%, care burden 84%, three black dresses already owned |
+| 8 | Take the alternative | **BUY** — and it costs less |
 
-**Closing line:**
-
-> *"MAVIE doesn't just help you look good. It helps you make a decision you'll feel good about later."*
+> **The WAIT is not staged.** It falls out of the numbers. The composer only builds outfits it can defend, so a regrettable verdict has to come from a piece the *user* brought in — which is exactly where regret comes from in real life.
 
 ### Questions to be ready for
 
 <details>
-<summary><b>"Why isn't this just an AI stylist?"</b></summary>
-
-The stylist is only one component. MAVIE combines real products, Skin AI, virtual try-on, beauty personalization and a decision engine that evaluates whether the purchase actually fits the user's context and history.
+<summary><b>"Isn't this just a recommendation engine?"</b></summary>
+<br>
+A recommendation engine cannot tell you not to buy. MAVIE returns WAIT and SKIP with reasons, and the alternative it offers is usually cheaper. That is the opposite of an engine optimised for conversion.
 </details>
 
 <details>
-<summary><b>"Why do you need YouCam?"</b></summary>
-
-YouCam provides the specialized visual evidence layer. Skin AI gives us beauty analysis; Apparel VTO lets users visualize actual garments on themselves. MAVIE builds the decision intelligence around those capabilities.
+<summary><b>"How do you stop the AI hallucinating a reason?"</b></summary>
+<br>
+Agents never see the verdict logic and never produce a score. Every claim must cite a numeric field from the evidence packet, and the output is schema-validated before it is rendered. The only influence a model has on the outcome is +6 risk per high-severity concern — it can push toward caution, never away from it.
 </details>
 
 <details>
-<summary><b>"Where do the clothes come from?"</b></summary>
-
-MAVIE maintains a structured product catalog containing real garment images, metadata, prices and product links. The AI selects from those products rather than hallucinating clothing.
+<summary><b>"Is the skin analysis medical?"</b></summary>
+<br>
+No, and the product is built to make that impossible to misread. No condition names, no diagnosis, no clinical scores in the main flow. Raw values sit behind an explicit disclosure with a permanent disclaimer.
 </details>
 
 <details>
-<summary><b>"How is the regret score calculated?"</b></summary>
-
-It's a transparent decision-support heuristic based on context mismatch, preference mismatch, versatility, expected reuse, closet overlap, maintenance and budget pressure. We're not claiming to scientifically predict human regret.
+<summary><b>"What happens when the APIs are down?"</b></summary>
+<br>
+Every layer degrades honestly. Try-on falls back to a structured composite that shows the real garment colours and says why. The LLM cascades across models, then to a deterministic local reasoner. Persistence falls back to memory. The user is always told which one they're seeing.
 </details>
 
-<details>
-<summary><b>"Why would users trust an AI telling them not to buy something?"</b></summary>
+<br>
 
-Because MAVIE is not optimized to maximize purchases. It explicitly exposes both the reasons to buy and the reasons not to. That makes it a decision companion rather than a conversion engine.
-</details>
+---
+
+## Engineering notes
+
+A few problems that were more interesting than they should have been.
+
+**ISP DNS hijacking.** Every `perfectcorp.com` host resolved to a sinkhole on the development network. The client now resolves over **DNS-over-HTTPS** and connects to the returned IP with explicit SNI, falling back to normal `fetch`. Changing the OS resolver didn't help — IPv6 DNS is configured separately and the interception was at port 53.
+
+**Thinking tokens truncating JSON.** Agent responses were being cut off at the token limit *before* emitting valid JSON, so the code silently fell back to templates and everything looked fine. Hitting `MAX_TOKENS` now throws rather than degrading quietly.
+
+**A foreign-key race in fire-and-forget writes.** Mirrored writes could reach Postgres before the profile row they reference. Any write that fails with `23503` now creates the missing profile and retries once, rather than requiring every call site to order itself.
+
+**Unknown columns rejecting the whole row.** PostgREST refuses an entire insert when it carries a column the table lacks — so adding one field silently stopped *all* profile persistence. The adapter now drops the unknown column, warns with the exact migration to run, and saves the rest.
+
+**Stock photography didn't survive contact with reality.** Colour-matched search returned a men's flat-lay for an ivory blouse. Of 60 fetched images, 46 were clothing, 34 matched on colour, and 14 didn't contradict the garment — and those were still the wrong products. The catalog is now purpose-generated imagery, trimmed and resized from 386MB to 3.6MB.
+
+<br>
 
 ---
 
 ## Honest limitations
 
-Stated plainly, because overclaiming is the fastest way to lose a technical judge.
+A short list, because a product claiming no weaknesses isn't being straight with you.
 
-- **Scoring weights are product judgment**, not empirically validated. They are visible and tunable.
-- **Regret Risk is a heuristic**, not a prediction model. No human-outcome data has been used to fit it.
-- **Skin Analysis is not diagnostic.** MAVIE makes no medical claims and does not name conditions.
-- **The catalog is curated**, not a live retailer feed. Real integration is a partnership problem, not a technical one.
-- **Makeup VTO is conditional** on account-level API access. Skin Analysis + Apparel VTO is the guaranteed core.
-- **Preference learning is shallow** in the prototype — feedback updates weights; it does not train a model.
-- **VTO quality depends on input photos.** Well-lit, front-facing, full-body photos produce meaningfully better results.
+- **Skin analysis is beauty personalisation, not medical assessment.** MAVIE does not diagnose skin conditions and deliberately avoids clinical framing.
+- **The catalog is 60 curated garments**, not a live retail feed. Every attribute is real and hand-set; the integration surface for a merchant catalog is identical.
+- **Makeup VTO is partially mapped.** The effects schema is deep, and the hackathon brief covers Skin AI and Apparel VTO — effort went there instead.
+- **Preference learning is shallow by design.** Feedback nudges weights; it does not train a model. Claiming more at this scale would be dishonest.
+- **Try-on quality depends on your photo.** Full body, facing the camera, decent light.
+- **No authentication yet.** Single-profile by design for the hackathon; the store is already user-scoped throughout.
+
+<br>
 
 ---
 
 ## Roadmap
 
-| Horizon | Product |
-| --- | --- |
-| **Today** | **MAVIE** — consumer beauty + fashion decision companion |
-| **Next** | **MAVIE Commerce** — personalized shopping decision layer, affiliate commerce |
-| **Then** | **MAVIE API** — retailers embed *"Try with MAVIE"* on product pages: product → personalization → VTO → decision intelligence → conversion |
-| **Longer** | **Retail intelligence** — anonymized, aggregated decision signals. *High visual appeal, low purchase confidence* tells a retailer exactly why customers hesitate. |
+| | |
+|:--|:--|
+| **Retail integration** | Swap the curated catalog for live merchant feeds — the attribute contract already exists |
+| **Wardrobe photography** | Recognise closet pieces from photos rather than typed entries |
+| **Longitudinal regret tracking** | Ask, six weeks later, whether you actually wore it — and feed the answer back into the weights |
+| **Multi-user accounts** | Authentication over the already user-scoped store |
+| **Full Makeup VTO** | Map the complete effects schema |
 
-**Business model:** B2C premium subscription · affiliate commission · B2B retailer integration · aggregated retail intelligence.
+<br>
 
 ---
 
 ## What MAVIE is not
 
-❌ Another AI stylist  ❌ Another skin analyzer  ❌ Another virtual try-on
-❌ A makeup filter  ❌ A shopping chatbot  ❌ A generic recommendation engine
+Not a filter. Not a beauty score. Not a rating of how you look.
 
-**MAVIE is AI Decision Intelligence for Personal Appearance.**
+It has **no opinion about your face.** It has opinions about **decisions** — and it shows its working every single time, so you can disagree with it.
 
----
+<br>
 
 <div align="center">
 
-### The one-liner
-
-*"MAVIE is an AI beauty and fashion decision companion that lets you see yourself in real products, personalize the complete look, and then decide whether it's actually worth buying."*
-
 ---
 
-**YouCam provides the eyes. The catalog provides real products.
-The LLM provides reasoning. The decision engine provides the intelligence.
-MAVIE connects all of it into one consumer experience.**
+<br>
 
-💗
+### Anyone can show you the outfit.<br>MAVIE tells you the truth about it.
+
+<br>
+
+**MAVIE** · *A look made for your life.*
+
+<br>
+
+<sub>Built for the Perfect Corp YouCam API Skin AI & Apparel VTO Hackathon</sub>
+
+<br>
 
 </div>
