@@ -142,8 +142,8 @@ MAVIE Match · Stylist vs Skeptic · Versatility · Rewear potential · Context 
 - Product links, prices, images
 - Buy / Wait / Skip verdict
 - Better alternatives
-- Saved looks *(API only)*
-- ○ "I found this online" screenshot flow
+- Saved looks
+- "I found this online" screenshot flow
 
 </td></tr>
 <tr><td valign="top">
@@ -158,9 +158,9 @@ MAVIE Match · Stylist vs Skeptic · Versatility · Rewear potential · Context 
 
 **🧳 Lifestyle**
 - Occasion styling
-- ○ Trip Mode (multi-day packing plans)
+- Trip Mode — capsule packing plans
+- Capsule wardrobe
 - ○ Event planning
-- ○ Capsule wardrobe
 
 </td></tr>
 </table>
@@ -190,11 +190,11 @@ deterministic fallback, so the full journey is demoable offline.
 | Closet + overlap detection | ✅ Working |
 | Preference learning loop | ✅ Working (shallow — weights, not a model) |
 | Guest mode + delete controls | ✅ Working |
-| Saved looks | ⚠️ API implemented, no UI yet |
-| Supabase persistence | ⚠️ In-memory store; schema documented, not wired |
-| Auth | ⚠️ Single demo user |
-| Product screenshot upload | ○ Not built |
-| Trip Mode | ○ Not built |
+| Saved looks | ✅ Working, with UI |
+| "I found this online" screenshot flow | ✅ Working (Gemini vision) |
+| Trip Mode (capsule packing) | ✅ Working |
+| Supabase persistence | ✅ Wired — write-through + boot hydration. **Untested against a live project** |
+| Auth | ⚠️ Single demo user — deliberately deferred |
 
 ---
 
@@ -309,7 +309,9 @@ The LLM **never invents a garment**. It selects `product_id`s from the catalog.
 
 **Visual AI** — Perfect Corp. YouCam: Skin Analysis, Clothes/Apparel VTO, Makeup VTO
 
-**Database** — Supabase (PostgreSQL + Auth + Storage). The prototype ships with an in-memory store so it runs with zero configuration.
+**Database** — Supabase (PostgreSQL + Auth + Storage). The prototype ships with an in-memory store so it runs with zero configuration. Set `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` and persistence switches on automatically — run [`server/db/schema.sql`](server/db/schema.sql) in the Supabase SQL editor first.
+
+Writes are mirrored through to Postgres and the working set is hydrated at boot, so reads stay synchronous and a slow database can never stall a request. A failed write logs and continues rather than 500-ing mid-demo.
 
 **Deploy** — Vercel (frontend) · Render/Railway (backend) · Supabase (data)
 
@@ -477,6 +479,11 @@ POST /api/looks/score            MAVIE Match scoring
 POST /api/decision/analyze       Stylist 🟢 vs Skeptic 🔴 + Aftermath metrics
 POST /api/decision/verdict       BUY / WAIT / SKIP
 POST /api/alternatives           Lower-decision-risk alternatives
+
+POST /api/product/analyze        Screenshot → structured product (vision)
+POST /api/product/buy-confidence Same decision engine, uncurated product
+
+POST /api/trip/plan              Capsule packing plan for a trip
 
 POST /api/closet/upload          Add an owned item
 POST /api/closet/analyze         Overlap & gap analysis

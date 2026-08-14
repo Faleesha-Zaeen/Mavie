@@ -82,6 +82,11 @@ export const schemas = {
     guest: z.boolean().optional(),
   }),
 
+  trip: z.object({
+    text: z.string().min(3, 'Tell MAVIE where you are going.').max(600),
+    budget: z.number().positive().nullable().optional(),
+  }),
+
   skin: z.object({
     imageUrl: z.string().nullable().optional(),
     imageBase64: z.string().nullable().optional(),

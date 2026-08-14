@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, Heart } from 'lucide-react';
+
+import { api } from '../services/api.js';
 
 import { useMavie } from '../context/MavieContext.jsx';
 import LookCard from '../components/LookCard.jsx';
@@ -20,6 +23,16 @@ const FACTORS = [
 export default function Looks() {
   const navigate = useNavigate();
   const { looks, selectedLook, selectedLookId, setSelectedLookId, constraints } = useMavie();
+  const [saved, setSaved] = useState(false);
+
+  async function saveLook() {
+    const look = selectedLook || looks[0];
+    if (!look) return;
+    try {
+      await api.saveLook(look);
+      setSaved(true);
+    } catch { /* saving is best-effort — never block the journey */ }
+  }
 
   if (!looks.length) {
     return <EmptyState title="No looks yet" body="Tell MAVIE what the moment is and it will build three complete looks from real products." cta="Start with a moment" to="/" />;
@@ -162,6 +175,10 @@ export default function Looks() {
               </button>
               <button onClick={() => navigate('/aftermath')} className="btn-ghost">
                 Should I buy it?
+              </button>
+              <button onClick={saveLook} disabled={saved} className="btn-ghost">
+                <Heart size={12} className={saved ? 'fill-rose text-rose' : ''} />
+                {saved ? 'Saved' : 'Save look'}
               </button>
             </div>
           </div>

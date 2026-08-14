@@ -39,6 +39,8 @@ export const api = {
 
   tryOnClothes: (payload) => request('/vto/clothes', { method: 'POST', body: payload }),
 
+  planTrip: (payload) => request('/trip/plan', { method: 'POST', body: payload }),
+
   analyseProduct: (payload) => request('/product/analyze', { method: 'POST', body: payload }),
   productBuyConfidence: (payload) => request('/product/buy-confidence', { method: 'POST', body: payload }),
 

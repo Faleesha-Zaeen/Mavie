@@ -9,7 +9,9 @@ const NAV = [
   { to: '/try-on', label: 'Try on' },
   { to: '/aftermath', label: 'Aftermath' },
   { to: '/found', label: 'Found it?' },
+  { to: '/trip', label: 'Trip' },
   { to: '/closet', label: 'Closet' },
+  { to: '/saved', label: 'Saved' },
   { to: '/profile', label: 'Profile' },
 ];
 

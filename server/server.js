@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import routes from './routes/index.js';
 import { hasCredentials } from './services/youcam/client.js';
 import { activeProvider } from './services/ai/llm.js';
+import { store } from './store.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,9 +34,19 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`\n  💗  MAVIE API  ·  http://localhost:${PORT}`);
   console.log(`      YouCam    ${hasCredentials() ? 'live' : 'mocked (no credentials)'}`);
   console.log(`      LLM       ${activeProvider()}`);
-  console.log(`      Database  ${process.env.SUPABASE_URL ? 'supabase' : 'in-memory'}\n`);
+
+  // Surface a bad Supabase URL or key at boot rather than mid-demo.
+  const result = await store.hydrate();
+  if (result.hydrated) {
+    console.log(`      Database  supabase · ${result.closet} closet items, ${result.saved_looks} saved looks`);
+  } else if (result.reason === 'no_supabase') {
+    console.log('      Database  in-memory (no Supabase configured)');
+  } else {
+    console.log(`      Database  in-memory — Supabase unreachable: ${result.reason}`);
+  }
+  console.log('');
 });
