@@ -9,6 +9,7 @@ import * as decision from '../controllers/decisionController.js';
 import * as closet from '../controllers/closetController.js';
 import * as product from '../controllers/productController.js';
 import * as trip from '../controllers/tripController.js';
+import * as demo from '../controllers/demoController.js';
 
 import { validate, schemas } from '../middleware/validation.js';
 import { hasCredentials } from '../services/youcam/client.js';
@@ -69,6 +70,9 @@ router.post('/feedback', validate(schemas.feedback), decision.feedback);
 // ─── "I found this online" ───────────────────────────────────────────
 router.post('/product/analyze', heavy, validate(schemas.productAnalyse), product.analyse);
 router.post('/product/buy-confidence', heavy, validate(schemas.productDecide), product.buyConfidence);
+
+// ─── Demo path ───────────────────────────────────────────────────────
+router.post('/demo/seed', demo.seed);
 
 // ─── Trip Mode ───────────────────────────────────────────────────────
 router.post('/trip/plan', heavy, validate(schemas.trip), trip.plan);

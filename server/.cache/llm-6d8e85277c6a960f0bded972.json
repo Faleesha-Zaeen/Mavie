@@ -1,0 +1,23 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:24:23.920Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The dress may be less versatile than needed for your limited closet size.",
+        "basis": "versatility",
+        "severity": "medium"
+      },
+      {
+        "claim": "The occasion tags suggest this dress is better suited for weddings or parties than a casual dinner.",
+        "basis": "occasion match",
+        "severity": "low"
+      },
+      {
+        "claim": "The maintenance requirements may be higher than desired for a simple dinner outfit.",
+        "basis": "maintenance burden",
+        "severity": "low"
+      }
+    ]
+  }
+}

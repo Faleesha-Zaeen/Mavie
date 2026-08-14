@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:19:08.065Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The item is primarily categorized for casual, everyday use rather than a dinner date.",
+        "basis": "occasion match",
+        "severity": "high"
+      },
+      {
+        "claim": "The low rewear potential suggests this piece may not provide long-term value for your wardrobe.",
+        "basis": "rewear potential",
+        "severity": "medium"
+      }
+    ]
+  }
+}

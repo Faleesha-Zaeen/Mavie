@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:25:34.691Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The black midi dress perfectly captures a feminine and elegant aesthetic that aligns with your personal style DNA.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At $75, this dress fits comfortably within your $100 budget while remaining ideal for a smart-casual dinner.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The timeless design is highly versatile, ensuring you can easily transition this piece from your dinner out to other future occasions.",
+        "basis": "versatility"
+      }
+    ]
+  }
+}

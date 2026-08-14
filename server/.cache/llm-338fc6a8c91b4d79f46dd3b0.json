@@ -1,0 +1,27 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:25:40.026Z",
+  "value": {
+    "name": "Plushie Embellished Mini Dress",
+    "category": "dress",
+    "colors": [
+      "multicolor"
+    ],
+    "hex": "#e8a4b6",
+    "style_tags": [
+      "bold",
+      "romantic"
+    ],
+    "occasion_tags": [
+      "party"
+    ],
+    "fit": "a-line",
+    "season": "all",
+    "price": null,
+    "currency": null,
+    "versatility": 5,
+    "maintenance": 90,
+    "confidence": 0.95,
+    "notes": "A mini dress entirely covered in miniature plush animal toys with matching accessories."
+  }
+}

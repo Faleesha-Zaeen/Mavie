@@ -1,0 +1,23 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:30:34.213Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "You already own a dusty rose midi dress, a dusty rose wrap dress, and a dusty rose slip dress.",
+        "basis": "closet_overlap",
+        "severity": "high"
+      },
+      {
+        "claim": "The dress is designed for weddings and parties, making it less suitable for a casual dinner.",
+        "basis": "occasion_match",
+        "severity": "medium"
+      },
+      {
+        "claim": "The low versatility score indicates this piece will not integrate well into your daily wardrobe.",
+        "basis": "versatility",
+        "severity": "medium"
+      }
+    ]
+  }
+}

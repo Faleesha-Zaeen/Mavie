@@ -1,0 +1,30 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:24:09.941Z",
+  "value": {
+    "name": "Black Collarless Blazer and Trouser Set",
+    "category": "outerwear",
+    "colors": [
+      "black"
+    ],
+    "hex": "#1a1a1a",
+    "style_tags": [
+      "minimal",
+      "structured",
+      "elegant"
+    ],
+    "occasion_tags": [
+      "interview",
+      "office",
+      "dinner"
+    ],
+    "fit": "regular",
+    "season": "all",
+    "price": null,
+    "currency": null,
+    "versatility": 85,
+    "maintenance": 60,
+    "confidence": 0.95,
+    "notes": "A classic black collarless blazer paired with matching straight-leg trousers, worn over a white button-down shirt."
+  }
+}

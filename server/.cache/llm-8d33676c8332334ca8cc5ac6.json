@@ -1,0 +1,28 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:25:49.534Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The item has extremely low versatility, limiting its use to specific party occasions.",
+        "basis": "versatility",
+        "severity": "high"
+      },
+      {
+        "claim": "The bold, multicolor aesthetic clashes with your minimal and elegant style DNA.",
+        "basis": "style_match",
+        "severity": "medium"
+      },
+      {
+        "claim": "The dress requires significant effort to clean and preserve, which may be impractical for a small closet.",
+        "basis": "maintenance_burden",
+        "severity": "medium"
+      },
+      {
+        "claim": "The item offers very little rewear potential, making it a poor long-term investment.",
+        "basis": "rewear_potential",
+        "severity": "high"
+      }
+    ]
+  }
+}

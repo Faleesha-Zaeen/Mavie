@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:25:36.214Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The dress has a relatively low rewear potential, which may limit its long-term value in a small closet.",
+        "basis": "rewear_potential",
+        "severity": "medium"
+      },
+      {
+        "claim": "The maintenance requirements may be higher than desired for a casual dinner outfit.",
+        "basis": "maintenance_burden",
+        "severity": "low"
+      }
+    ]
+  }
+}

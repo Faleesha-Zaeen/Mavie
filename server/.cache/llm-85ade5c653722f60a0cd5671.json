@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:24:25.658Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The soft sage hue and wrap silhouette perfectly capture the feminine aesthetic you requested for your dinner.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At $78, this dress fits comfortably within your $100 budget while leaving room for accessories.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The natural, soft style tags ensure you feel relaxed and comfortable rather than overdressed for your evening out.",
+        "basis": "visual_match"
+      }
+    ]
+  }
+}

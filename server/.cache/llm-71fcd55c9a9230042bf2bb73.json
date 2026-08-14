@@ -1,0 +1,13 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:18:59.307Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The ivory satin blouse requires more careful handling than other items in the set.",
+        "basis": "maintenance burden",
+        "severity": "low"
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:24:23.711Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "This set perfectly aligns with your minimal and elegant style DNA.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "The classic black colorway ensures this piece avoids any neon tones you prefer to skip.",
+        "basis": "visual_match"
+      },
+      {
+        "claim": "At $76, this coordinated set fits comfortably within your budget while offering multiple styling options.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The structured design transitions seamlessly from professional interviews to evening dinners.",
+        "basis": "versatility"
+      }
+    ]
+  }
+}

@@ -99,6 +99,19 @@ export const db = {
     );
   },
 
+  /** Used by the demo seed so a run always starts from the same closet. */
+  async replaceCloset(userId, items) {
+    return safe('replaceCloset', () =>
+      withProfile(userId, 'replaceCloset', async () => {
+        await rest(`closet_items?user_id=eq.${userId}`, { method: 'DELETE' });
+        if (items.length) {
+          await rest('closet_items', { method: 'POST', body: items, prefer: 'resolution=merge-duplicates' });
+        }
+        return true;
+      }),
+    );
+  },
+
   async removeClosetItem(userId, itemId) {
     return safe('removeClosetItem', () =>
       rest(`closet_items?id=eq.${itemId}&user_id=eq.${userId}`, { method: 'DELETE' }),

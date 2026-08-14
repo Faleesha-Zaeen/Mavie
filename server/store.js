@@ -183,6 +183,30 @@ export const store = {
     };
   },
 
+  /**
+   * Reset to the seeded demo state. Replaces the profile and closet outright
+   * so a demo run is identical every time, whatever was clicked before it.
+   */
+  seedDemo(profile, closetItems = []) {
+    const userId = DEMO_USER;
+    mem.profiles.set(userId, { ...profile, created_at: new Date().toISOString() });
+    mem.savedLooks.set(userId, []);
+
+    const items = closetItems.map((item, i) => ({
+      id: `demo-closet-${i + 1}`,
+      ...item,
+      created_at: new Date().toISOString(),
+    }));
+    mem.closets.set(userId, items);
+
+    mirror(async () => {
+      await db.upsertProfile({ ...profile, id: userId });
+      await db.replaceCloset(userId, items.map((i) => ({ ...i, user_id: userId })));
+    });
+
+    return { profile: mem.profiles.get(userId), closet: items };
+  },
+
   feedbackHistory: () => mem.feedback,
   DEMO_USER,
 };

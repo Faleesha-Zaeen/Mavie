@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:30:36.751Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The maintenance burden of 45 indicates this item requires more care than a low-maintenance dinner outfit.",
+        "basis": "maintenance",
+        "severity": "low"
+      },
+      {
+        "claim": "The rewear potential of 66 suggests this piece will not integrate into your wardrobe as frequently as other options.",
+        "basis": "rewear potential",
+        "severity": "medium"
+      }
+    ]
+  }
+}

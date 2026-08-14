@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:36:28.538Z",
+  "value": {
+    "occasion": "dinner",
+    "formality": "smart-casual",
+    "goal": [
+      "feminine",
+      "comfortable"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.8,
+    "style_preferences": [
+      "feminine",
+      "relaxed"
+    ],
+    "avoided_colors": [],
+    "summary": "I hope you have a lovely dinner out feeling both comfortable and beautifully feminine."
+  }
+}

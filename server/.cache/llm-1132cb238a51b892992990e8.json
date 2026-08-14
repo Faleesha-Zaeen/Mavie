@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:30:35.428Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The dusty rose color and romantic silhouette perfectly capture your feminine aesthetic.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At $85, this piece fits comfortably within your $100 budget for tonight's dinner.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The midi length and soft design ensure you feel relaxed and comfortable while looking polished.",
+        "basis": "visual_match"
+      }
+    ]
+  }
+}

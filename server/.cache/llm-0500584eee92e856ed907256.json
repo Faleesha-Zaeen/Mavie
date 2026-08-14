@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T05:24:23.925Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The item has a low rewear potential, which may limit its long-term value in your small closet.",
+        "basis": "rewear potential",
+        "severity": "medium"
+      },
+      {
+        "claim": "The maintenance level is moderate, which could be inconvenient for a set intended for frequent office or interview wear.",
+        "basis": "maintenance burden",
+        "severity": "low"
+      }
+    ]
+  }
+}
