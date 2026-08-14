@@ -10,6 +10,7 @@ import LookCard from '../components/LookCard.jsx';
 import MatchRing from '../components/MatchRing.jsx';
 import ScoreBar from '../components/ScoreBar.jsx';
 import EmptyState from '../components/EmptyState.jsx';
+import BeautyChain from '../components/BeautyChain.jsx';
 
 const FACTORS = [
   ['occasion', 'Occasion'],
@@ -22,7 +23,7 @@ const FACTORS = [
 
 export default function Looks() {
   const navigate = useNavigate();
-  const { looks, selectedLook, selectedLookId, setSelectedLookId, constraints } = useMavie();
+  const { looks, selectedLook, selectedLookId, setSelectedLookId, constraints, beauty } = useMavie();
   const [saved, setSaved] = useState(false);
 
   async function saveLook() {
@@ -168,28 +169,17 @@ export default function Looks() {
             </div>
 
             {selectedLook?.makeup && (
-              <div id="beauty-chain" className="pt-5 border-t border-line space-y-3 scroll-mt-24">
+              <div className="pt-5 border-t border-line space-y-3">
                 <div className="eyebrow">Complete the look</div>
 
-                {/* The combined-track chain, stated in one line so it is
-                    legible on screen and not just true in the code. */}
-                <div className={`flex items-start gap-2.5 rounded-[3px] px-4 py-3 border ${
-                  selectedLook.makeup.finish_source === 'skin_analysis'
-                    ? 'border-rose-soft bg-blush/25'
-                    : 'border-line bg-surface/60'
-                }`}>
-                  <Sparkles size={12} className="text-rose-text mt-0.5 shrink-0" />
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-editorial text-espresso-mute">
-                      <span>Skin</span><ArrowRight size={9} />
-                      <span>Makeup</span><ArrowRight size={9} />
-                      <span>Outfit</span>
-                    </div>
-                    <p className="text-[12px] leading-relaxed text-espresso-soft">
-                      {selectedLook.makeup.provenance}
-                    </p>
-                  </div>
-                </div>
+                {/* Each step of the chain with the value it actually produced,
+                    so the link between skin, makeup and outfit is visible
+                    rather than only true in the code. */}
+                <BeautyChain
+                  beauty={beauty}
+                  makeup={selectedLook.makeup}
+                  items={selectedLook.items}
+                />
 
                 <div className="flex flex-wrap items-center gap-4">
                   {Object.entries(selectedLook.makeup.direction).map(([part, value]) => (
