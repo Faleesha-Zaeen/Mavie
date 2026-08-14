@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:25:00.023Z",
+  "value": {
+    "occasion": "college",
+    "formality": "casual",
+    "goal": [
+      "comfortable",
+      "confident"
+    ],
+    "budget": 390,
+    "comfort_priority": 0.9,
+    "style_preferences": [
+      "relaxed",
+      "minimal"
+    ],
+    "avoided_colors": [],
+    "summary": "I'll help you curate a comfortable and stylish look perfect for your daily routine at college."
+  }
+}

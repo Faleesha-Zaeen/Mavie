@@ -1,0 +1,24 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:56:09.597Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The emerald wrap dress perfectly captures the feminine and elegant aesthetic you desire for your dinner date.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At a combined price of $120, these pieces fit comfortably within your $150 budget.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The gold layered necklace adds a refined, minimal touch that is ideal for a smart-casual date.",
+        "basis": "occasion_match"
+      },
+      {
+        "claim": "These versatile items offer high rewear potential, ensuring you get great value beyond tonight's dinner.",
+        "basis": "rewear_potential"
+      }
+    ]
+  }
+}

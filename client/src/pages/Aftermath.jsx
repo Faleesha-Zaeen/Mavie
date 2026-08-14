@@ -10,7 +10,8 @@ import AgentDebate from '../components/AgentDebate.jsx';
 import VerdictCard from '../components/VerdictCard.jsx';
 import ErrorState from '../components/ErrorState.jsx';
 import ScoreBar from '../components/ScoreBar.jsx';
-import ProductCard from '../components/ProductCard.jsx';
+import ProductCard, { usd } from '../components/ProductCard.jsx';
+import GarmentVisual from '../components/GarmentVisual.jsx';
 
 const FEEDBACK = [
   { type: 'love', label: '♡ Love it' },
@@ -113,6 +114,32 @@ export default function Aftermath() {
           harder one — is this a decision you&rsquo;ll still be happy with in a month?
         </p>
       </header>
+
+      {/* Name what is actually being judged. The page argued about "this
+          outfit" without ever showing which one, so the verdict floated free
+          of the thing it was about. */}
+      <section className="card p-5 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <div className="flex gap-px bg-line rounded-[3px] overflow-hidden shrink-0">
+          {selectedLook.items.slice(0, 4).map((item) => (
+            <div key={item.id} className="w-14 h-[74px] bg-white">
+              <GarmentVisual item={item} fit="contain" />
+            </div>
+          ))}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="eyebrow">Deciding on</div>
+          <h2 className="font-display text-2xl leading-snug mt-0.5">{selectedLook.name}</h2>
+          <p className="text-[12px] text-espresso-mute mt-1 leading-relaxed">
+            {selectedLook.items.map((i) => i.name).join(' · ')}
+          </p>
+        </div>
+
+        <div className="text-right shrink-0">
+          <div className="display text-3xl">{usd(selectedLook.total)}</div>
+          <div className="eyebrow mt-0.5">{selectedLook.scores?.overall}% match</div>
+        </div>
+      </section>
 
       {/* The debate */}
       <section className="card p-8 sm:p-10">

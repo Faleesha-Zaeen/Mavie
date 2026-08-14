@@ -1,0 +1,24 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:25:34.986Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "This entire outfit comes to $133, keeping you well within your $150 budget for your interview.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The combination of the button-down and high-waisted trousers perfectly balances a professional aesthetic with the feminine, minimal style you prefer.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "These pieces are highly versatile and suitable for both your interview and future office wear, ensuring great rewear potential.",
+        "basis": "versatility"
+      },
+      {
+        "claim": "The selection is specifically curated for interview settings, helping you project the confidence and professionalism you need.",
+        "basis": "occasion_match"
+      }
+    ]
+  }
+}

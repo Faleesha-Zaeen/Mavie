@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:25:15.945Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The emerald wrap silhouette perfectly captures the feminine aesthetic you requested for your dinner.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At $86, this dress fits comfortably within your $100 budget while remaining elegant for a smart-casual setting.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The wrap design offers a relaxed yet polished look that aligns with your preference for comfort.",
+        "basis": "occasion_match"
+      }
+    ]
+  }
+}

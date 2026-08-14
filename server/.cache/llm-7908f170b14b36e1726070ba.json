@@ -1,0 +1,22 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:12:19.417Z",
+  "value": {
+    "occasion": "interview",
+    "formality": "formal",
+    "goal": [
+      "professional",
+      "feminine",
+      "comfortable"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.8,
+    "style_preferences": [
+      "feminine",
+      "elegant",
+      "classic"
+    ],
+    "avoided_colors": [],
+    "summary": "Here is a polished, feminine, and comfortable outfit tailored for your interview tomorrow, keeping within your $150 budget."
+  }
+}

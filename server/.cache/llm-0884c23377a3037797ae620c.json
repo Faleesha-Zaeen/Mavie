@@ -1,0 +1,21 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:50:39.691Z",
+  "value": {
+    "occasion": "office",
+    "formality": "smart-casual",
+    "goal": [
+      "professional",
+      "confident",
+      "elegant"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.7,
+    "style_preferences": [
+      "classic",
+      "elegant"
+    ],
+    "avoided_colors": [],
+    "summary": "You are looking for a versatile outfit that transitions seamlessly from your professional office setting to a relaxed evening of drinks."
+  }
+}

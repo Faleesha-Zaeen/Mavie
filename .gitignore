@@ -12,3 +12,18 @@ Thumbs.db
 .idea/
 server/uploads/
 coverage/
+
+# Personal photos — test images of real people must never be committed
+photo.*
+*.photo.*
+test-photo.*
+/photos/
+uploads/
+
+# Generated catalog imagery (regenerate with images:import)
+client/public/catalog/
+
+# Try-on cache holds pre-signed S3 URLs that expire in two hours, so committing
+# them would ship dead links. The LLM and skin caches are plain JSON and do
+# make a keyless clone work, so those are kept.
+server/.cache/vto-*.json

@@ -21,8 +21,10 @@ export function search(req, res, next) {
 
 export function compose(req, res, next) {
   try {
-    const { constraints, guest } = req.body;
-    const profile = store.getProfile();
+    const { constraints, guest, beauty = null } = req.body;
+    // Guest mode never persists the skin analysis, so the client passes it
+    // through to keep the skin → makeup → outfit chain intact.
+    const profile = beauty ? { ...store.getProfile(), beauty } : store.getProfile();
     const closet = store.closet();
 
     const looks = composeLooks(constraints, profile, closet);

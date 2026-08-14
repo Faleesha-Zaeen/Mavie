@@ -1,0 +1,23 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:24:29.552Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The formal velvet fabric and evening design are too dressy for a smart-casual dinner.",
+        "basis": "occasion match",
+        "severity": "high"
+      },
+      {
+        "claim": "The high maintenance requirements of velvet conflict with a relaxed comfort priority.",
+        "basis": "maintenance burden",
+        "severity": "medium"
+      },
+      {
+        "claim": "The dress lacks versatility and will rarely be worn outside of formal events.",
+        "basis": "versatility",
+        "severity": "medium"
+      }
+    ]
+  }
+}

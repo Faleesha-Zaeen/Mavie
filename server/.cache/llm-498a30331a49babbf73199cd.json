@@ -1,0 +1,23 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:50:17.929Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The bold, romantic style and multicolor palette clash with your established minimal and elegant aesthetic.",
+        "basis": "style match",
+        "severity": "high"
+      },
+      {
+        "claim": "The dress is limited to party wear and lacks the versatility required for a functional wardrobe.",
+        "basis": "versatility",
+        "severity": "high"
+      },
+      {
+        "claim": "The high maintenance burden makes this piece difficult to integrate into daily rotation.",
+        "basis": "maintenance burden",
+        "severity": "medium"
+      }
+    ]
+  }
+}

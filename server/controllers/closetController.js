@@ -1,14 +1,43 @@
 import { store } from '../store.js';
+import { catalog } from '../data/catalog.js';
 import { composeLooks } from '../services/catalog/outfitComposer.js';
 import { scoreLook } from '../services/decision/scoringService.js';
 
 export function list(req, res) {
-  const items = store.closet();
+  const items = store.closet().map(withStandInImage);
   res.json({ items, counts: countByCategory(items) });
+}
+
+/**
+ * Closet pieces are typed in, not photographed, so they rendered as drawn
+ * silhouettes beside a fully photographed catalog — which made the page look
+ * half-finished rather than deliberate.
+ *
+ * Where a closet entry clearly corresponds to a catalog garment (same category,
+ * same colour) we borrow that product shot as a visual stand-in, flagged so the
+ * UI can say it is representative rather than implying MAVIE has a photo of
+ * the user's actual clothes.
+ */
+function withStandInImage(item) {
+  if (item.image_url) return item;
+
+  const colour = (item.color || (item.colors || [])[0] || '').toLowerCase();
+  const match = catalog.find(
+    (c) => c.image_url && c.category === item.category
+      && c.colors.some((x) => x.toLowerCase() === colour),
+  );
+
+  return match
+    ? { ...item, image_url: match.image_url, image_is_representative: true }
+    : item;
 }
 
 export function add(req, res) {
   res.json({ item: store.addClosetItem(store.DEMO_USER, req.body) });
+}
+
+export function clear(req, res) {
+  res.json(store.clearCloset(store.DEMO_USER));
 }
 
 export function remove(req, res) {

@@ -26,7 +26,11 @@ export function composeLooks(constraints, profile = {}, closet = []) {
     bottom: searchCatalog(constraints, { category: 'bottom', limit: 14 }),
     dress: searchCatalog(constraints, { category: 'dress', limit: 12 }),
     outerwear: searchCatalog(constraints, { category: 'outerwear', limit: 8 }),
-    shoes: searchCatalog(constraints, { category: 'shoes', limit: 8 }),
+    // Footwear has to match the register of the evening. Relevance alone gave
+    // partial credit for adjacent occasions, which put flat sandals with a
+    // party outfit — the sort of detail that makes a good outfit read as
+    // auto-generated.
+    shoes: footwearFor(constraints, searchCatalog(constraints, { category: 'shoes', limit: 8 })),
     accessory: searchCatalog(constraints, { category: 'accessory', limit: 8 }),
   };
 
@@ -60,6 +64,23 @@ export function composeLooks(constraints, profile = {}, closet = []) {
   });
 
   return looks.sort((a, b) => b.scores.overall - a.scores.overall);
+}
+
+/** Drop footwear that clashes with the formality of the occasion. */
+function footwearFor(constraints, shoes) {
+  const DRESSY = ['party', 'dinner', 'wedding', 'formal', 'date'];
+  const WORK = ['interview', 'office'];
+  const occasion = constraints.occasion;
+
+  const banned = DRESSY.includes(occasion)
+    ? ['sandal', 'sneaker']
+    : WORK.includes(occasion)
+      ? ['sandal', 'chunky']
+      : [];
+
+  const kept = shoes.filter((s) => !banned.some((w) => s.name.toLowerCase().includes(w)));
+  // Never leave the composer with nothing to put on her feet.
+  return kept.length ? kept : shoes;
 }
 
 function buildSeparatesLook(pools, arch, used, budget) {

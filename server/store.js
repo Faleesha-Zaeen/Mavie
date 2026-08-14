@@ -33,6 +33,7 @@ const DEMO_USER = 'demo-user';
 
 const defaultProfile = (userId) => ({
   id: userId,
+  name: null,
   style_dna: ['minimal', 'feminine', 'elegant'],
   preferred_colors: ['ivory', 'beige', 'black', 'dusty rose'],
   avoided_colors: ['neon'],
@@ -42,6 +43,36 @@ const defaultProfile = (userId) => ({
   created_at: new Date().toISOString(),
 });
 
+/**
+ * Fill in anything a stored profile is missing.
+ *
+ * A row hydrated from Postgres carries the table's own column defaults — empty
+ * arrays — so a profile that had never been edited came back with no Style
+ * DNA, no colours and nothing to avoid. The Profile page then rendered blank
+ * lists and the composer scored every look against nothing. The defaults are
+ * a starting point the feedback loop moves away from, so they have to be
+ * present from the first load, not only on a profile MAVIE happened to create
+ * in memory.
+ *
+ * `name` is deliberately exempt: nobody is called by a default.
+ */
+function withDefaults(profile, userId = DEMO_USER) {
+  const base = defaultProfile(userId);
+  const filled = { ...base, ...profile };
+
+  for (const key of ['style_dna', 'preferred_colors', 'avoided_colors']) {
+    if (!Array.isArray(filled[key]) || !filled[key].length) filled[key] = base[key];
+  }
+  if (!Array.isArray(filled.budget_range) || filled.budget_range.length !== 2) {
+    filled.budget_range = base.budget_range;
+  }
+  if (typeof filled.comfort_priority !== 'number' || Number.isNaN(filled.comfort_priority)) {
+    filled.comfort_priority = base.comfort_priority;
+  }
+
+  return filled;
+}
+
 export const store = {
   getProfile(userId = DEMO_USER) {
     if (!mem.profiles.has(userId)) {
@@ -49,7 +80,7 @@ export const store = {
       mem.profiles.set(userId, profile);
       mirror(() => db.upsertProfile(profile));
     }
-    return mem.profiles.get(userId);
+    return withDefaults(mem.profiles.get(userId), userId);
   },
 
   updateProfile(userId = DEMO_USER, patch = {}) {
@@ -106,6 +137,18 @@ export const store = {
     mirror(() => db.addClosetItem({ ...entry, user_id: userId }));
     return entry;
   },
+  /**
+   * Empty the closet outright. The demo seed writes six pieces in, and
+   * `npm run test:all` re-seeds on every run — so a real wardrobe ends up
+   * mixed with sample data with no way back but deleting tiles one at a time.
+   */
+  clearCloset(userId = DEMO_USER) {
+    const removed = (mem.closets.get(userId) || []).length;
+    mem.closets.set(userId, []);
+    mirror(() => db.replaceCloset(userId, []));
+    return { cleared: true, removed };
+  },
+
   removeClosetItem(userId = DEMO_USER, itemId) {
     mem.closets.set(userId, (mem.closets.get(userId) || []).filter((i) => i.id !== itemId));
     mirror(() => db.removeClosetItem(userId, itemId));
@@ -164,7 +207,9 @@ export const store = {
       profile = defaultProfile(userId);
       await db.upsertProfile(profile);
     }
-    mem.profiles.set(userId, profile);
+    // A hydrated row can carry the table's empty-array defaults, so fill the
+    // gaps before anything reads it.
+    mem.profiles.set(userId, withDefaults(profile, userId));
 
     const closet = await db.listCloset(userId);
     if (closet?.length) mem.closets.set(userId, closet);

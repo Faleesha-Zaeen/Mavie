@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:09:06.934Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "You already own a white button-down shirt and black ballet flats, making these redundant additions to your closet.",
+        "basis": "closet_overlap",
+        "severity": "high"
+      },
+      {
+        "claim": "The white oversized shirt requires frequent laundering to maintain a crisp, professional appearance for interviews.",
+        "basis": "maintenance_burden",
+        "severity": "low"
+      }
+    ]
+  }
+}

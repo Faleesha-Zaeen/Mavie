@@ -12,7 +12,9 @@
     "find:youcam": "npm run find:youcam --prefix server",
     "build": "npm run build --prefix client",
     "start": "npm start --prefix server",
-    "preflight": "npm run preflight --prefix server"
+    "preflight": "npm run preflight --prefix server",
+    "test:all": "npm run test:all --prefix server --",
+    "images:import": "npm run images:import --prefix server --"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

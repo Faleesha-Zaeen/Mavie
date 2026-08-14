@@ -1,0 +1,19 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:47:19.509Z",
+  "value": {
+    "occasion": "casual",
+    "formality": "casual",
+    "goal": [
+      "comfortable"
+    ],
+    "budget": 80,
+    "comfort_priority": 0.9,
+    "style_preferences": [
+      "relaxed",
+      "minimal"
+    ],
+    "avoided_colors": [],
+    "summary": "Enjoy your relaxed coffee outing with your friend, staying comfortably within your budget."
+  }
+}

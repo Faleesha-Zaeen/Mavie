@@ -1,0 +1,19 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:27:58.035Z",
+  "value": {
+    "occasion": "party",
+    "formality": "statement",
+    "goal": [
+      "confident",
+      "bold"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.5,
+    "style_preferences": [
+      "bold"
+    ],
+    "avoided_colors": [],
+    "summary": "You are going to look absolutely stunning and command the room at your party this weekend with a bold, high-presence outfit."
+  }
+}

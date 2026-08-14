@@ -11,7 +11,7 @@
 
 import 'dotenv/config';
 import zlib from 'node:zlib';
-import { DEMO_SCENARIO, DEMO_SELECT_CATEGORY, demoPhoto } from '../data/demo.js';
+import { DEMO_SCENARIO, DEMO_SELECT_CATEGORY, DEMO_PHOTO_SIZE, DEMO_PHOTO_URL, DEMO_FOUND_ITEM, demoPhoto } from '../data/demo.js';
 
 const BASE = `http://localhost:${process.env.PORT || 5000}/api`;
 
@@ -32,7 +32,7 @@ async function post(path, body) {
 
 /** Encode the generated demo portrait as a PNG data URL. */
 function demoPhotoDataUrl() {
-  const W = 240; const H = 320;
+  const { width: W, height: H } = DEMO_PHOTO_SIZE;
   const raw = demoPhoto();
   const table = [...Array(256)].map((_, n) => {
     let c = n;
@@ -74,8 +74,8 @@ expect(seeded.closet_size >= 6, `closet seeded with ${seeded.closet_size} pieces
 /* 2 ── skin ─────────────────────────────────────────────────────────── */
 step(2, 'Skin analysis on the demo photo');
 const photo = demoPhotoDataUrl();
-const { beauty } = await post('/skin/analyze', { imageBase64: photo });
-expect(Boolean(beauty?.preferred_finish), `beauty direction: ${beauty?.headline} (finish: ${beauty?.preferred_finish})`);
+const { beauty } = await post('/skin/analyze', { imageUrl: DEMO_PHOTO_URL });
+expect(beauty?.mocked === false || beauty?.cached, `${beauty?.mocked ? 'MOCKED' : 'LIVE'} — ${beauty?.headline} (finish: ${beauty?.preferred_finish})`);
 
 /* 3 ── context ──────────────────────────────────────────────────────── */
 step(3, 'Parsing the moment');
@@ -99,21 +99,33 @@ step(5, 'Virtual try-on');
 const { result: vto } = await post('/vto/clothes', { userImage: photo, items: pick.items.map((i) => ({ id: i.id })) });
 expect(Boolean(vto.result_url || vto.composite), vto.result_url ? 'photoreal try-on' : 'local composite preview');
 
-/* 6 ── aftermath ────────────────────────────────────────────────────── */
-step(6, 'Aftermath');
+/* 6 ── aftermath on MAVIE's own pick ────────────────────────────────── */
+step(6, "Aftermath on MAVIE's own pick");
 const decision = await post('/decision/analyze', {
   items: pick.items.map((i) => ({ id: i.id })),
   constraints,
   matchScores: pick.scores,
 });
-console.log(`     versatility ${decision.metrics.versatility}% · rewear ${decision.metrics.rewear_potential}% · closet overlap ${decision.metrics.closet_overlap}%`);
-decision.panel.skeptic.forEach((c) => console.log(`     SKEPTIC [${c.basis}] ${c.claim}`));
-expect(decision.verdict === 'WAIT', `verdict is WAIT (got ${decision.verdict}, confidence ${decision.buy_confidence})`);
-expect(decision.metrics.closet_overlap > 0, `closet overlap drives it: ${decision.metrics.closet_overlap}%`);
+console.log(`     versatility ${decision.metrics.versatility}% · rewear ${decision.metrics.rewear_potential}%`);
+expect(
+  decision.verdict === 'BUY',
+  `MAVIE stands behind what it composed (${decision.verdict}, confidence ${decision.buy_confidence})`,
+);
+
+/* 6b ── the piece she saw online ────────────────────────────────────── */
+// The WAIT belongs here. The composer only builds looks it can defend, so
+// forcing a regrettable one would mean tuning the scoring until it lies. A
+// piece the user brings in herself has passed through no such filter.
+step('6b', 'She sees something online and asks MAVIE about it');
+console.log(`     ${DEMO_FOUND_ITEM.name} — $${DEMO_FOUND_ITEM.price}`);
+const found = await post('/product/buy-confidence', { product: DEMO_FOUND_ITEM, constraints });
+found.panel.skeptic.forEach((c) => console.log(`     SKEPTIC [${c.basis}] ${c.claim}`));
+expect(found.verdict === 'WAIT', `verdict is WAIT (got ${found.verdict}, confidence ${found.buy_confidence})`);
+expect(found.metrics.versatility < 50, `low versatility drives it: ${found.metrics.versatility}%`);
 
 /* 7 ── alternative ──────────────────────────────────────────────────── */
 step(7, 'Better alternative');
-const { alternatives } = await post('/alternatives', { items: pick.items.map((i) => ({ id: i.id })), constraints });
+const alternatives = found.alternatives || [];
 expect(alternatives.length > 0, `${alternatives.length} alternatives offered`);
 const alt = alternatives[0];
 console.log(`     ${alt.name} — $${alt.price} — ${alt.why}`);

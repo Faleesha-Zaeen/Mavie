@@ -1,0 +1,24 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T19:27:50.527Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The white linen sundress and tan sandals perfectly capture the relaxed, coastal aesthetic you requested for your beach day.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "With a total cost of $138, this entire outfit comfortably stays under your $150 budget.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "These pieces are specifically curated for casual settings, ensuring you feel at ease while spending time with your friends.",
+        "basis": "occasion_match"
+      },
+      {
+        "claim": "The gold layered necklace adds a touch of your signature elegant style while remaining versatile enough for future events.",
+        "basis": "versatility"
+      }
+    ]
+  }
+}

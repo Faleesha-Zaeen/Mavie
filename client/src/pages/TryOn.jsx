@@ -12,16 +12,25 @@ import ProductCard, { usd } from '../components/ProductCard.jsx';
 
 export default function TryOn() {
   const navigate = useNavigate();
-  const { looks, selectedLook, selectedLookId, setSelectedLookId, userImage, setUserImage, vtoResult, setVtoResult } = useMavie();
+  const {
+    looks, selectedLook, selectedLookId, setSelectedLookId,
+    userImage, bodyImage, setBodyImage, vtoResult, setVtoResult,
+  } = useMavie();
 
   const [makeupResult, setMakeupResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Try-on runs on the full-body photo. Falling back to the selfie is better
+  // than nothing, but it is not silent — the user is told the result will be
+  // limited, because a face crop has no legs to fit trousers to.
+  const tryOnImage = bodyImage || userImage;
+  const usingSelfieOnly = !bodyImage && Boolean(userImage);
+
   useEffect(() => {
     if (selectedLook) runTryOn();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLookId, userImage]);
+  }, [selectedLookId, tryOnImage]);
 
   async function runTryOn() {
     if (!selectedLook) return;
@@ -29,9 +38,10 @@ export default function TryOn() {
     setError(null);
     try {
       const [clothes, makeup] = await Promise.all([
-        api.tryOnClothes({ userImage, lookId: selectedLook.id, items: selectedLook.items.map((i) => ({ id: i.id })) }),
+        api.tryOnClothes({ userImage: tryOnImage, lookId: selectedLook.id, items: selectedLook.items.map((i) => ({ id: i.id })) }),
+        // Makeup always reads the face, so it uses the selfie when there is one.
         selectedLook.makeup
-          ? api.makeupVTO({ userImage, makeup: selectedLook.makeup }).catch(() => null)
+          ? api.makeupVTO({ userImage: userImage || tryOnImage, makeup: selectedLook.makeup }).catch(() => null)
           : Promise.resolve(null),
       ]);
       setVtoResult(clothes.result);
@@ -47,7 +57,7 @@ export default function TryOn() {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      setUserImage(await readImage(file));
+      setBodyImage(await readImage(file));
     } catch (err) {
       setError(err.message);
     }
@@ -86,15 +96,26 @@ export default function TryOn() {
           {loading ? (
             <div className="aspect-[3/4] rounded-[4px] border border-line shimmer" />
           ) : (
-            <VTOViewer result={vtoResult} userImage={userImage} makeupVTO={makeupResult} />
+            <VTOViewer result={vtoResult} userImage={tryOnImage} />
           )}
 
-          {!userImage && (
-            <label className="btn-ghost w-full cursor-pointer">
-              <Camera size={13} /> Add your photo
+          {/* Try-on wants a different photo from skin analysis, so ask for it
+              here explicitly rather than silently reusing the selfie. */}
+          <div className="space-y-2.5">
+            <label className={`w-full cursor-pointer ${bodyImage ? 'btn-ghost' : 'btn-rose'}`}>
+              <Camera size={13} />
+              {bodyImage ? 'Use a different full-body photo' : 'Add a full-body photo'}
               <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhoto} className="hidden" />
             </label>
-          )}
+
+            <p className="text-[11px] leading-relaxed text-espresso-mute">
+              {usingSelfieOnly
+                ? 'Showing your selfie for now — try-on needs a full-body photo to fit clothes properly. Stand facing the camera, head to feet, in good light.'
+                : bodyImage
+                  ? 'Front-facing, head to feet, plain background gives the best result.'
+                  : 'Stand facing the camera, head to feet, in good light. Different from the selfie MAVIE used for your skin.'}
+            </p>
+          </div>
 
           {error && <ErrorState message={error} onRetry={runTryOn} retryLabel="Try the look again" />}
         </div>

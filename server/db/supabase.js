@@ -73,13 +73,33 @@ export const db = {
   },
 
   async upsertProfile(profile) {
-    return safe('upsertProfile', () =>
+    const write = (row) =>
       rest('profiles', {
         method: 'POST',
-        body: [{ ...profile, updated_at: new Date().toISOString() }],
+        body: [{ ...row, updated_at: new Date().toISOString() }],
         prefer: 'resolution=merge-duplicates,return=representation',
-      }),
-    );
+      });
+
+    return safe('upsertProfile', async () => {
+      try {
+        return await write(profile);
+      } catch (err) {
+        // PostgREST rejects the WHOLE row when it carries a column the table
+        // doesn't have, so a schema that predates a new field would silently
+        // stop persisting everything else too. Drop the unknown column, warn
+        // once, and save the rest.
+        const missing = /Could not find the '([^']+)' column/.exec(err.message);
+        if (!missing) throw err;
+
+        console.warn(
+          `[supabase] profiles.${missing[1]} does not exist — saving the rest of the profile.`,
+          `Run: alter table profiles add column ${missing[1]} text;`,
+        );
+
+        const { [missing[1]]: _dropped, ...rest_ } = profile;
+        return write(rest_);
+      }
+    });
   },
 
   async deleteProfile(userId) {

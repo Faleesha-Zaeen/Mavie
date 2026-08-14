@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:03:14.663Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "This monochromatic ensemble creates a sharp, confident silhouette that perfectly captures the bold aesthetic you want for your photoshoot.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "The total cost of $147 stays safely under your $150 budget while providing a complete, high-impact look.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "Each piece is highly versatile and suitable for parties, ensuring you get significant wear beyond your weekend shoot.",
+        "basis": "versatility"
+      }
+    ]
+  }
+}

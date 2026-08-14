@@ -1,0 +1,24 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:24:52.996Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The combination of the ivory camisole, pleated midi skirt, and pointed-toe pumps creates an elegant, feminine silhouette perfectly suited for a formal wedding.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At a total cost of $148, this complete outfit stays comfortably within your $150 budget.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "Each piece is highly versatile and suitable for future occasions like dinner dates or professional events, ensuring you get great value.",
+        "basis": "versatility"
+      },
+      {
+        "claim": "The classic, minimal design of these items aligns perfectly with your personal style DNA while ensuring you feel confident and special.",
+        "basis": "visual_match"
+      }
+    ]
+  }
+}

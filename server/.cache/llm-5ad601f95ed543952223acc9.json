@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:49:20.624Z",
+  "value": {
+    "occasion": "travel",
+    "formality": "casual",
+    "goal": [
+      "comfortable"
+    ],
+    "budget": 120,
+    "comfort_priority": 1,
+    "style_preferences": [
+      "relaxed"
+    ],
+    "avoided_colors": [],
+    "summary": "Get ready for a comfortable and stylish adventure in Rome!"
+  }
+}

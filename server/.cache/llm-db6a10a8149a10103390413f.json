@@ -1,0 +1,23 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:22:53.591Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The formal velvet fabric and statement design are ill-suited for a casual dinner.",
+        "basis": "occasion match",
+        "severity": "high"
+      },
+      {
+        "claim": "The dress offers limited styling options, restricting its use to formal events.",
+        "basis": "versatility",
+        "severity": "medium"
+      },
+      {
+        "claim": "The high maintenance burden of velvet requires specialized care that contradicts a comfortable, low-effort wardrobe.",
+        "basis": "maintenance burden",
+        "severity": "medium"
+      }
+    ]
+  }
+}

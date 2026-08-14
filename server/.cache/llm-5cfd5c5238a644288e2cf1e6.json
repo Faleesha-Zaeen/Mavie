@@ -1,0 +1,24 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:25:46.593Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "This entire curated look fits well within your $390 budget, leaving you with plenty of room to spare.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The selection of wide-leg jeans and an oversized hoodie perfectly captures the relaxed, minimal aesthetic you want for campus life.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "Each piece is specifically tagged for college, ensuring you feel comfortable and confident throughout your daily routine.",
+        "basis": "occasion_match"
+      },
+      {
+        "claim": "With a high rewear potential, these versatile essentials will easily become the foundation of your everyday wardrobe.",
+        "basis": "rewear_potential"
+      }
+    ]
+  }
+}

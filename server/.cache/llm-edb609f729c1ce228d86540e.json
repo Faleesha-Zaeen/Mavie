@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:58:14.728Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "This dress has very low rewear potential, making it a poor long-term investment for a small closet.",
+        "basis": "rewear potential",
+        "severity": "medium"
+      },
+      {
+        "claim": "The casual nature of this piece creates a mismatch with the smart-casual requirement for your dinner date.",
+        "basis": "occasion match",
+        "severity": "medium"
+      }
+    ]
+  }
+}

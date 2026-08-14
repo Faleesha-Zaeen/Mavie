@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:29:16.819Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "This piece perfectly aligns with your minimal style preference, ensuring you feel confident and authentic on campus.",
+        "basis": "style match"
+      },
+      {
+        "claim": "At $22, this choice leaves you well within your $390 budget while keeping your daily college look effortless.",
+        "basis": "budget fit"
+      },
+      {
+        "claim": "The casual nature of this dress is ideal for your daily routine, providing the comfort you prioritized for your college days.",
+        "basis": "occasion match"
+      }
+    ]
+  }
+}

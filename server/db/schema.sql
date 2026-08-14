@@ -6,6 +6,7 @@
 
 create table if not exists profiles (
   id                text primary key,
+  name              text,
   style_dna         text[]  default '{}',
   preferred_colors  text[]  default '{}',
   avoided_colors    text[]  default '{}',

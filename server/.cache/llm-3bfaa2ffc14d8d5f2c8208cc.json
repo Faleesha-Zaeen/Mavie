@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:15:41.834Z",
+  "value": {
+    "occasion": "casual",
+    "formality": "casual",
+    "goal": [
+      "comfortable"
+    ],
+    "budget": 97,
+    "comfort_priority": 0.9,
+    "style_preferences": [
+      "relaxed"
+    ],
+    "avoided_colors": [],
+    "summary": "Enjoy a warm and relaxed Saturday coffee with your friend within your $97 budget."
+  }
+}

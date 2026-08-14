@@ -1,0 +1,32 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:21:33.064Z",
+  "value": {
+    "destination": "Lisbon",
+    "days": 4,
+    "climate": "mild",
+    "schedule": [
+      {
+        "day": 1,
+        "label": "Arrival in Lisbon",
+        "occasion": "travel"
+      },
+      {
+        "day": 2,
+        "label": "Exploring Lisbon's neighborhoods",
+        "occasion": "casual"
+      },
+      {
+        "day": 3,
+        "label": "Lisbon sights & fine dining",
+        "occasion": "dinner"
+      },
+      {
+        "day": 4,
+        "label": "Departure from Lisbon",
+        "occasion": "travel"
+      }
+    ],
+    "summary": "Enjoy four wonderful days exploring the charming streets of Lisbon, complete with a special evening out."
+  }
+}

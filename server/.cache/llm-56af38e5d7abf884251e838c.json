@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:49:16.296Z",
+  "value": {
+    "occasion": "wedding",
+    "formality": "formal",
+    "goal": [
+      "elegant"
+    ],
+    "budget": 200,
+    "comfort_priority": 0.5,
+    "style_preferences": [
+      "elegant"
+    ],
+    "avoided_colors": [],
+    "summary": "Getting ready for your friend's wedding with an elegant touch and a clear budget in mind sounds wonderful!"
+  }
+}

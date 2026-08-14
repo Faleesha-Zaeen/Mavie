@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T19:15:53.035Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The maintenance score of 45 indicates this dress requires more care than your low-maintenance preference suggests.",
+        "basis": "maintenance burden",
+        "severity": "low"
+      },
+      {
+        "claim": "The dress versatility score of 70 limits your ability to style this piece beyond specific formal or semi-formal events.",
+        "basis": "versatility",
+        "severity": "low"
+      }
+    ]
+  }
+}

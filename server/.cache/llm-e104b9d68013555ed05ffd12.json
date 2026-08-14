@@ -1,0 +1,29 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:53:04.826Z",
+  "value": {
+    "name": "Avant-Garde Shaggy Textured Coat",
+    "category": "outerwear",
+    "colors": [
+      "white",
+      "grey",
+      "silver"
+    ],
+    "hex": "#D3D3D3",
+    "style_tags": [
+      "bold",
+      "structured"
+    ],
+    "occasion_tags": [
+      "party"
+    ],
+    "fit": "oversized",
+    "season": "winter",
+    "price": null,
+    "currency": null,
+    "versatility": 5,
+    "maintenance": 95,
+    "confidence": 0.95,
+    "notes": "An avant-garde runway piece featuring extreme shaggy texture and voluminous sleeves."
+  }
+}

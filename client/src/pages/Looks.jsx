@@ -24,14 +24,17 @@ const FACTORS = [
 export default function Looks() {
   const navigate = useNavigate();
   const { looks, selectedLook, selectedLookId, setSelectedLookId, constraints, beauty } = useMavie();
-  const [saved, setSaved] = useState(false);
 
-  async function saveLook() {
-    const look = selectedLook || looks[0];
-    if (!look) return;
+  // Tracked per look, not as one boolean. A single flag meant that once you
+  // saved anything the button stayed disabled for the rest of the session —
+  // so having saved MAVIE's pick, you could no longer save your own choice.
+  const [savedIds, setSavedIds] = useState([]);
+
+  async function saveLook(look) {
+    if (!look || savedIds.includes(look.id)) return;
     try {
       await api.saveLook(look);
-      setSaved(true);
+      setSavedIds((prev) => [...prev, look.id]);
     } catch { /* saving is best-effort — never block the journey */ }
   }
 
@@ -40,6 +43,14 @@ export default function Looks() {
   }
 
   const pick = looks[0];
+
+  // The detail card used to be hardwired to looks[0] while the makeup section
+  // inside it read from the selection — so choosing look two showed look two's
+  // makeup under look one's name, score and explanation. It follows the
+  // selection now, and says which one you are looking at.
+  const detail = selectedLook || pick;
+  const isPick = detail.id === pick.id;
+  const isSaved = savedIds.includes(detail.id);
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-14 space-y-16">
@@ -139,7 +150,7 @@ export default function Looks() {
         </div>
       </section>
 
-      {/* MAVIE's pick */}
+      {/* Whichever look is selected — MAVIE's by default, yours once you pick */}
       <motion.section
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -148,27 +159,32 @@ export default function Looks() {
       >
         <div className="grid lg:grid-cols-[auto,1fr] gap-12 items-center">
           <div className="flex justify-center">
-            <MatchRing value={pick.scores.overall} size={188} />
+            <MatchRing key={detail.id} value={detail.scores.overall} size={188} />
           </div>
 
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={13} className="text-rose-text" />
-                <span className="eyebrow">MAVIE's pick</span>
+                <span className="eyebrow">{isPick ? "MAVIE's pick" : 'Your choice'}</span>
               </div>
-              <h3 className="display text-4xl">{pick.name}</h3>
+              <h3 className="display text-4xl">{detail.name}</h3>
+              {!isPick && (
+                <p className="mt-1.5 text-[11px] text-espresso-mute">
+                  MAVIE picked {pick.name} at {pick.scores.overall}%. Yours is the one that gets saved and tried on.
+                </p>
+              )}
             </div>
 
-            <p className="serif-body text-pretty">{pick.explanation}</p>
+            <p className="serif-body text-pretty">{detail.explanation}</p>
 
             <div className="grid sm:grid-cols-2 gap-x-10 gap-y-5">
               {FACTORS.slice(0, 4).map(([key, label], i) => (
-                <ScoreBar key={key} label={label} value={pick.scores[key]} delay={i * 0.1} />
+                <ScoreBar key={`${detail.id}-${key}`} label={label} value={detail.scores[key]} delay={i * 0.1} />
               ))}
             </div>
 
-            {selectedLook?.makeup && (
+            {detail.makeup && (
               <div className="pt-5 border-t border-line space-y-3">
                 <div className="eyebrow">Complete the look</div>
 
@@ -177,12 +193,12 @@ export default function Looks() {
                     rather than only true in the code. */}
                 <BeautyChain
                   beauty={beauty}
-                  makeup={selectedLook.makeup}
-                  items={selectedLook.items}
+                  makeup={detail.makeup}
+                  items={detail.items}
                 />
 
                 <div className="flex flex-wrap items-center gap-4">
-                  {Object.entries(selectedLook.makeup.direction).map(([part, value]) => (
+                  {Object.entries(detail.makeup.direction).map(([part, value]) => (
                     <div key={part} className="text-[12px]">
                       <span className="text-espresso-mute capitalize">{part}: </span>
                       <span className="text-espresso">{value}</span>
@@ -190,7 +206,7 @@ export default function Looks() {
                   ))}
                 </div>
                 <p className="text-[12px] text-espresso-mute italic leading-relaxed">
-                  {selectedLook.makeup.why}
+                  {detail.makeup.why}
                 </p>
               </div>
             )}
@@ -203,9 +219,9 @@ export default function Looks() {
               <button onClick={() => navigate('/aftermath')} className="btn-ghost">
                 Should I buy it?
               </button>
-              <button onClick={saveLook} disabled={saved} className="btn-ghost">
-                <Heart size={12} className={saved ? 'fill-rose text-rose-text' : ''} />
-                {saved ? 'Saved' : 'Save look'}
+              <button onClick={() => saveLook(detail)} disabled={isSaved} className="btn-ghost">
+                <Heart size={12} className={isSaved ? 'fill-rose text-rose-text' : ''} />
+                {isSaved ? 'Saved' : `Save ${isPick ? 'this look' : detail.name}`}
               </button>
             </div>
           </div>

@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:08:59.689Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The $75 price point leaves you well within your $100 budget for tonight.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The elegant, minimal aesthetic perfectly aligns with your desire for a feminine yet relaxed dinner look.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "This midi dress is specifically curated to suit dinner occasions while ensuring you feel comfortable and not overdressed.",
+        "basis": "occasion_match"
+      }
+    ]
+  }
+}

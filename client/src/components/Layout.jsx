@@ -1,7 +1,9 @@
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { EyeOff } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useMavie } from '../context/MavieContext.jsx';
+import { api } from '../services/api.js';
 
 const NAV = [
   { to: '/', label: 'Moment', end: true },
@@ -18,6 +20,18 @@ const NAV = [
 export default function Layout({ children }) {
   const { guest, setGuest } = useMavie();
   const { pathname } = useLocation();
+
+  // Only credit a photo source while photography is actually in use — the
+  // catalog falls back to drawn renderings when no accurate photo exists.
+  const { data: catalog } = useQuery({
+    queryKey: ['catalog-photography'],
+    queryFn: () => api.catalog(),
+    staleTime: Infinity,
+  });
+  // Credit the source only when a photo actually came from it. Generated
+  // imagery carries no credit, and crediting Unsplash for it would be a
+  // misattribution rather than a courtesy.
+  const hasPhotography = Boolean(catalog?.items?.some((i) => i.image_credit?.source === 'Unsplash'));
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -114,18 +128,21 @@ export default function Layout({ children }) {
             <span>Skin analysis is beauty personalization, not medical advice</span>
           </div>
 
-          <p className="text-[10px] tracking-wide text-espresso-mute/80">
-            Catalog photography from{' '}
-            <a
-              href="https://unsplash.com"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="border-b border-dotted border-line hover:border-rose hover:text-rose transition-colors"
-            >
-              Unsplash
-            </a>
-            . Individual photographers are credited on each product image.
-          </p>
+          {/* Credit only appears when photography is actually in use. */}
+          {hasPhotography && (
+            <p className="text-[10px] tracking-wide text-espresso-mute/80">
+              Catalog photography from{' '}
+              <a
+                href="https://unsplash.com"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="border-b border-dotted border-line hover:border-rose hover:text-rose transition-colors"
+              >
+                Unsplash
+              </a>
+              . Individual photographers are credited on each product image.
+            </p>
+          )}
         </div>
       </footer>
     </div>

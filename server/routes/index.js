@@ -60,6 +60,7 @@ router.get('/looks/saved', catalog.savedLooks);
 
 // ─── Virtual try-on ──────────────────────────────────────────────────
 router.post('/vto/clothes', heavy, validate(schemas.vtoClothes), vto.clothes);
+router.post('/vto/found', heavy, vto.found);
 
 // ─── Decision intelligence ───────────────────────────────────────────
 router.post('/decision/analyze', heavy, validate(schemas.decide), decision.analyse);
@@ -80,6 +81,8 @@ router.post('/trip/plan', heavy, validate(schemas.trip), trip.plan);
 // ─── Closet ──────────────────────────────────────────────────────────
 router.get('/closet', closet.list);
 router.post('/closet/upload', validate(schemas.closetItem), closet.add);
+// Ahead of /closet/:id, or "clear" would be read as an item id.
+router.delete('/closet', closet.clear);
 router.delete('/closet/:id', closet.remove);
 router.post('/closet/analyze', closet.analyse);
 router.post('/closet/style', closet.style);

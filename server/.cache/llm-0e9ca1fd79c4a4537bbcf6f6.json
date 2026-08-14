@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T19:15:59.686Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The Emerald Green Wrap Midi Dress perfectly captures the feminine aesthetic you desire for your party look.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At a combined price of $120, these pieces comfortably respect your $150 budget while providing a complete, high-presence outfit.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "This selection is perfectly suited for your upcoming party, ensuring you feel confident and appropriately dressed.",
+        "basis": "occasion_match"
+      }
+    ]
+  }
+}

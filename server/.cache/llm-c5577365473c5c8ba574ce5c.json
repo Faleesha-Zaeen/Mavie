@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:09:05.880Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "This outfit perfectly aligns with your professional interview requirements while maintaining a feminine and elegant aesthetic.",
+        "basis": "occasion_match"
+      },
+      {
+        "claim": "The total cost of $133 stays comfortably within your $150 budget while providing a complete, polished look.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "These pieces are highly versatile and designed for frequent wear beyond your interview, ensuring long-term value.",
+        "basis": "versatility"
+      }
+    ]
+  }
+}

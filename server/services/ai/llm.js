@@ -42,17 +42,29 @@ export async function askJSON({ system, user, maxTokens = 2500, image = null }) 
   // a silent drop to the deterministic reasoner.
   const RETRY_DELAYS = [1200, 3500];
 
+  // Hard wall-clock budget. Retries multiply with the model cascade — five
+  // models times three attempts times backoff — and during a Gemini outage that
+  // compounded into a 96-second context parse, which is unusable in a demo.
+  // The deterministic reasoner is always there, so waiting longer than this
+  // buys nothing a user would prefer.
+  const deadline = Date.now() + Number(process.env.LLM_TIMEOUT_MS || 11000);
+  const outOfTime = () => Date.now() > deadline;
+
   for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+    if (outOfTime()) {
+      console.warn('[llm] budget exhausted, using deterministic reasoner');
+      return null;
+    }
     try {
       const raw = p === 'openai'
         ? await callOpenAI({ system, user, maxTokens, image })
-        : await callGemini({ system, user, maxTokens, image });
+        : await callGemini({ system, user, maxTokens, image, deadline });
       const parsed = extractJSON(raw);
       if (parsed) return cache.write('llm', cacheKey, parsed);
       throw new Error('response was not valid JSON');
     } catch (err) {
       const retryable = /429|503|rate|quota|timeout|fetch failed/i.test(err.message);
-      if (retryable && attempt < RETRY_DELAYS.length) {
+      if (retryable && attempt < RETRY_DELAYS.length && !outOfTime()) {
         await sleep(RETRY_DELAYS[attempt]);
         continue;
       }
@@ -68,6 +80,20 @@ const imageFingerprint = (dataUrl) =>
   crypto.createHash('sha256').update(dataUrl).digest('hex').slice(0, 32);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** Run a fetch with a hard per-request timeout. */
+async function withTimeout(fn, ms = Number(process.env.LLM_REQUEST_TIMEOUT_MS || 7000)) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fn(controller.signal);
+  } catch (err) {
+    if (err.name === 'AbortError') throw new Error(`request timeout after ${ms}ms`);
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 async function callOpenAI({ system, user, maxTokens }) {
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -120,13 +146,14 @@ function geminiModels() {
     .filter((m) => !exhausted.has(m));
 }
 
-async function callGemini({ system, user, maxTokens, image }) {
+async function callGemini({ system, user, maxTokens, image, deadline }) {
   const models = geminiModels();
   if (!models.length) throw new Error('all Gemini models are out of daily quota');
 
   let lastErr;
   for (const model of models) {
     try {
+      if (deadline && Date.now() > deadline) throw new Error("budget exhausted");
       return await callGeminiModel({ model, system, user, maxTokens, image });
     } catch (err) {
       lastErr = err;
@@ -157,8 +184,12 @@ async function callGeminiModel({ model, system, user, maxTokens, image }) {
     });
   }
 
-  const res = await fetch(url, {
+  // A single call can hang far longer than the retry budget allows for — one
+  // context parse sat at 55s while the provider was degraded. Abort per request
+  // so the overall deadline actually means something.
+  const res = await withTimeout((signal) => fetch(url, {
     method: 'POST',
+    signal,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: system }] },
@@ -169,7 +200,7 @@ async function callGeminiModel({ model, system, user, maxTokens, image }) {
         temperature: 0.4,
       },
     }),
-  });
+  }));
   if (!res.ok) {
     // Distinguish "this model is done for today" from a transient burst limit,
     // because the two need completely different handling.

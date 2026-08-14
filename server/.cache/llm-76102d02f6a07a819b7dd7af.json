@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T19:20:04.345Z",
+  "value": {
+    "occasion": "brunch",
+    "formality": "casual",
+    "goal": [
+      "comfortable",
+      "minimal"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.9,
+    "style_preferences": [
+      "relaxed",
+      "minimal"
+    ],
+    "avoided_colors": [],
+    "summary": "I hope you have a wonderful and relaxing time catching up with your friend over coffee."
+  }
+}

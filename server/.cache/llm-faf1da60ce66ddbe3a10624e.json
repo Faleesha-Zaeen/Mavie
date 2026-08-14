@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:04:20.121Z",
+  "value": {
+    "occasion": "travel",
+    "formality": "casual",
+    "goal": [
+      "comfortable"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.9,
+    "style_preferences": [
+      "relaxed"
+    ],
+    "avoided_colors": [],
+    "summary": "It sounds like you're planning a wonderful day of exploration, prioritizing ease and practicality for your $150 budget."
+  }
+}

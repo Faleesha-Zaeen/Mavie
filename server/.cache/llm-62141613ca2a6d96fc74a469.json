@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:21:17.165Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The dress is listed as formal and wedding attire, which contradicts the goal of not being overdressed for a dinner.",
+        "basis": "occasion match",
+        "severity": "medium"
+      },
+      {
+        "claim": "The maintenance score of 42 indicates a higher level of care required than a simple wash-and-wear item.",
+        "basis": "maintenance burden",
+        "severity": "low"
+      }
+    ]
+  }
+}

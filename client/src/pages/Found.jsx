@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, X, Sparkles } from 'lucide-react';
+import { Upload, X, Sparkles, Shirt } from 'lucide-react';
 
 import { api } from '../services/api.js';
 import { useMavie } from '../context/MavieContext.jsx';
@@ -20,14 +20,58 @@ import ErrorState from '../components/ErrorState.jsx';
  * is the argument that MAVIE is a decision layer, not a catalogue.
  */
 export default function Found() {
-  const { constraints, guest } = useMavie();
+  const { constraints, guest, bodyImage, setBodyImage } = useMavie();
 
   const [image, setImage] = useState(null);
   const [price, setPrice] = useState('');
   const [product, setProduct] = useState(null);
   const [decision, setDecision] = useState(null);
+  const [tryOn, setTryOn] = useState(null);
   const [stage, setStage] = useState(null);
   const [error, setError] = useState(null);
+  const bodyInput = useRef(null);
+
+  /**
+   * Try the found piece on. The screenshot doubles as the garment reference,
+   * so nothing extra is needed beyond a full-body photo of the user — which
+   * is the same one the curated try-on uses, not the face selfie.
+   */
+  async function tryItOn(candidate) {
+    // Only ever a data URL. Anything else means a caller passed an event.
+    const photo = typeof candidate === 'string' ? candidate : bodyImage;
+
+    if (!photo) return bodyInput.current?.click();
+    if (!image) return;
+
+    setError(null);
+    setStage('tryon');
+    try {
+      const { result } = await api.tryOnFound({
+        userImage: photo,
+        garmentImage: image,
+        product,
+      });
+      setTryOn(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setStage(null);
+    }
+  }
+
+  async function pickBodyPhoto(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const dataUrl = await readImage(file);
+      setBodyImage(dataUrl);
+      // Carry straight on rather than making them press the button twice —
+      // state hasn't landed yet, so pass the photo through directly.
+      tryItOn(dataUrl);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
 
   async function handleUpload(e) {
     const file = e.target.files?.[0];
@@ -78,6 +122,9 @@ export default function Found() {
 
   if (stage === 'vision') {
     return <Loader stage="context" sub="MAVIE is reading the product from your screenshot." />;
+  }
+  if (stage === 'tryon') {
+    return <Loader stage="vto" sub={`MAVIE is putting ${product?.name || 'this piece'} on your photo.`} />;
   }
   if (stage === 'aftermath') {
     return <Loader stage="aftermath" sub="The stylist and the skeptic are reviewing the same evidence." />;
@@ -195,10 +242,68 @@ export default function Found() {
               </p>
             )}
 
-            <button onClick={shouldIBuy} className="btn-rose w-full">
-              Should I buy this?
+            <div className="flex flex-wrap gap-3">
+              <button onClick={shouldIBuy} className="btn-rose flex-1 min-w-[200px]">
+                Should I buy this?
+              </button>
+              {/* Seeing it on yourself is part of deciding, so it belongs
+                  beside the verdict rather than only in the curated flow. */}
+              {/* Called with no argument on purpose — passing the handler
+                  directly hands React's click event in as the photo. */}
+              <button onClick={() => tryItOn()} className="btn-ghost flex-1 min-w-[180px] justify-center">
+                <Shirt size={13} /> Try it on me
+              </button>
+            </div>
+
+            {/* Opened by "Try it on me" when no full-body photo exists yet. */}
+            <input
+              ref={bodyInput}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={pickBodyPhoto}
+              className="hidden"
+            />
+
+            {!bodyImage && (
+              <p className="text-[11px] text-espresso-mute">
+                Try-on needs a full-body photo of you — MAVIE will ask for one.
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Try-on */}
+      {tryOn && (
+        <section className="card p-8 sm:p-10 space-y-5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="eyebrow">On you</div>
+              <h2 className="display text-3xl mt-1">{product?.name}</h2>
+            </div>
+            <button onClick={() => setTryOn(null)} className="btn-ghost shrink-0">
+              <X size={12} /> Close
             </button>
           </div>
+
+          {tryOn.result_url ? (
+            <img
+              src={tryOn.result_url}
+              alt={`${product?.name} on you`}
+              className="w-full max-w-md mx-auto rounded-[3px] border border-line"
+            />
+          ) : (
+            <div className="space-y-3">
+              {tryOn.composite?.user_image && (
+                <img
+                  src={tryOn.composite.user_image}
+                  alt="You"
+                  className="w-full max-w-xs mx-auto rounded-[3px] border border-line"
+                />
+              )}
+              <p className="text-[12px] text-espresso-mute text-center">{tryOn.message}</p>
+            </div>
+          )}
         </section>
       )}
 

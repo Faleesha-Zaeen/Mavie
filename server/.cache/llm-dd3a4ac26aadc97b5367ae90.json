@@ -1,0 +1,13 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:56:12.962Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The wrap dress requires more frequent ironing or steaming than other fabrics to maintain its elegant appearance.",
+        "basis": "maintenance burden",
+        "severity": "medium"
+      }
+    ]
+  }
+}

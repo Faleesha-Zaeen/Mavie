@@ -1,0 +1,24 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:47:11.814Z",
+  "value": {
+    "occasion": "dinner",
+    "formality": "smart-casual",
+    "goal": [
+      "feminine",
+      "confident",
+      "comfortable"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.7,
+    "style_preferences": [
+      "feminine",
+      "classic",
+      "relaxed"
+    ],
+    "avoided_colors": [
+      "neon"
+    ],
+    "summary": "For your birthday dinner with friends, we'll help you find a cute and comfortable look that's just right, without being overdressed."
+  }
+}

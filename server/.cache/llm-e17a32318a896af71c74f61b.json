@@ -1,0 +1,22 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:38:25.045Z",
+  "value": {
+    "occasion": "interview",
+    "formality": "formal",
+    "goal": [
+      "professional",
+      "feminine",
+      "comfortable",
+      "bold"
+    ],
+    "budget": 260,
+    "comfort_priority": 0.8,
+    "style_preferences": [
+      "feminine",
+      "bold"
+    ],
+    "avoided_colors": [],
+    "summary": "You are going to look professional, feminine, and bold for your big interview tomorrow while staying comfortable."
+  }
+}

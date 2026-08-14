@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:24:31.061Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The rich burgundy hue and elegant velvet fabric perfectly capture the feminine aesthetic you want for your dinner.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At $98, this piece fits perfectly within your $100 budget for the evening.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The sophisticated design aligns seamlessly with your minimalist and elegant style DNA.",
+        "basis": "visual_match"
+      }
+    ]
+  }
+}

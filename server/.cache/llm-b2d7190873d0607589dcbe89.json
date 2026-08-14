@@ -1,0 +1,23 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:24:50.251Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "You already own an ivory silk blouse and black pointed flats which overlap with the camisole and pumps.",
+        "basis": "closet_overlap",
+        "severity": "high"
+      },
+      {
+        "claim": "The ivory satin camisole requires delicate care and frequent maintenance.",
+        "basis": "maintenance_burden",
+        "severity": "medium"
+      },
+      {
+        "claim": "The total cost of $148 leaves almost no room in your $150 budget for accessories or styling.",
+        "basis": "budget_pressure",
+        "severity": "low"
+      }
+    ]
+  }
+}

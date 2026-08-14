@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:00:07.060Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The casual nature of these items fails to meet the bold statement requirement for a photoshoot.",
+        "basis": "style match",
+        "severity": "high"
+      },
+      {
+        "claim": "The visual match score of 72 indicates this outfit lacks the striking impact needed for professional photography.",
+        "basis": "visual match",
+        "severity": "medium"
+      }
+    ]
+  }
+}

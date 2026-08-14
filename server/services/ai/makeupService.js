@@ -43,7 +43,10 @@ export function recommendMakeup(constraints = {}, profile = {}, items = []) {
     ? 'medium-bold'
     : wantsSoft ? 'light' : INTENSITY_BY_FORMALITY[formality] || 'light-medium';
 
-  const name = wantsBold ? 'Defined Evening' : wantsSoft ? 'Soft Professional' : 'Polished Natural';
+  // Name the look for the occasion it is actually for. "Soft Professional"
+  // turning up on a birthday dinner with friends reads as a template that was
+  // never told what the evening is.
+  const name = makeupName({ occasion: constraints.occasion, wantsBold, wantsSoft });
 
   return {
     name,
@@ -77,10 +80,48 @@ export function recommendMakeup(constraints = {}, profile = {}, items = []) {
       lipstick: lip?.hex,
       intensity,
     },
-    why: wantsBold
-      ? 'You asked for something with presence, so MAVIE raised the definition on the eyes and deepened the lip.'
-      : 'You asked to look put together without looking heavily made up, so MAVIE kept the base light and let the skin show through.',
+    why: makeupWhy({ goals, occasion: constraints.occasion, wantsBold, wantsSoft, finish, skinFinish }),
   };
+}
+
+/** Occasion-aware naming, so the label matches the evening the user described. */
+function makeupName({ occasion, wantsBold, wantsSoft }) {
+  const WORK = ['interview', 'office', 'formal'];
+  const EVENING = ['dinner', 'date', 'party', 'wedding'];
+
+  if (WORK.includes(occasion)) return wantsBold ? 'Sharp Professional' : 'Soft Professional';
+  if (EVENING.includes(occasion)) return wantsBold ? 'Defined Evening' : wantsSoft ? 'Soft Evening' : 'Polished Evening';
+  if (occasion === 'college' || occasion === 'casual') return wantsBold ? 'Easy Statement' : 'Everyday Fresh';
+  if (occasion === 'brunch') return 'Fresh Daylight';
+  if (occasion === 'travel') return 'Low Maintenance';
+  return wantsBold ? 'Defined' : wantsSoft ? 'Soft Natural' : 'Polished Natural';
+}
+
+/**
+ * Explain the choice using what the user ACTUALLY said. The previous copy
+ * asserted "You asked to look put together without looking heavily made up"
+ * to everyone, including people who never said anything of the sort — putting
+ * words in the user's mouth is the fastest way to lose their trust.
+ */
+function makeupWhy({ goals, occasion, wantsBold, wantsSoft, finish, skinFinish }) {
+  const said = goals.filter((g) => ['bold', 'minimal', 'feminine', 'comfortable', 'elegant', 'professional'].includes(g));
+
+  // "for a casual" is not a sentence. Occasion slugs need a human phrasing.
+  const PHRASE = {
+    interview: 'for an interview', office: 'for work', formal: 'for a formal event',
+    dinner: 'for dinner', date: 'for a date', party: 'for a party',
+    wedding: 'for a wedding', college: 'for college', brunch: 'for brunch',
+    travel: 'for travelling', casual: 'for a relaxed day',
+  };
+  const asFor = occasion ? ` ${PHRASE[occasion] || `for ${occasion}`}` : '';
+
+  if (said.length) {
+    return `You asked to feel ${said.slice(0, 2).join(' and ')}${asFor}, so MAVIE kept the makeup ${wantsBold ? 'defined rather than soft' : 'soft rather than high-contrast'}.`;
+  }
+  if (skinFinish) {
+    return `You didn't specify a makeup preference, so MAVIE followed your skin analysis and set a ${finish} base${asFor}.`;
+  }
+  return `You didn't specify a makeup preference, so MAVIE chose a ${finish} base that suits${asFor ? asFor.replace(' for ',' ') : ' the occasion'}.`;
 }
 
 const product = (id) => beautyCatalog.find((b) => b.id === id) || null;

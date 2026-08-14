@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:53:29.176Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "This coat aligns perfectly with your budget, leaving you with minimal financial pressure.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The sophisticated white and silver palette avoids any neon tones, keeping your look elegant.",
+        "basis": "style_dna"
+      },
+      {
+        "claim": "The structured design serves as a standout piece for your upcoming party engagements.",
+        "basis": "occasion_match"
+      }
+    ]
+  }
+}

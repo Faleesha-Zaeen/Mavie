@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Camera, Sparkles, X } from 'lucide-react';
@@ -8,13 +8,65 @@ import { useMavie } from '../context/MavieContext.jsx';
 import { readImage } from '../utils/image.js';
 import Loader from '../components/Loader.jsx';
 import ErrorState from '../components/ErrorState.jsx';
+import OccasionPicker from '../components/OccasionPicker.jsx';
 
 const VIBES = ['Soft', 'Minimal', 'Elegant', 'Bold', 'Feminine', 'Comfortable'];
 
-const EXAMPLES = [
-  'I have a job interview tomorrow. I want to look professional but still feminine. Nothing uncomfortable, and I have $150.',
-  'Birthday dinner with my friends tonight — cute but not overdressed.',
-  'Graduation ceremony. Elegant, feminine and sophisticated. Budget $200.',
+/**
+ * A starting point for people who don't want to write a sentence.
+ *
+ * Each one seeds the box with real phrasing rather than a bare keyword, so the
+ * context engine gets something to actually read — and so the user can see what
+ * a good description looks like and edit from there.
+ *
+ * Grouped, because a flat list of twenty is a menu, not a choice.
+ */
+const OCCASIONS = [
+  {
+    group: 'Work',
+    items: [
+      { label: 'Job interview', text: 'I have a job interview tomorrow. I want to look professional but still feminine, and comfortable.' },
+      { label: 'Presentation', text: 'I am presenting to my team tomorrow. I want to look confident and put together.' },
+      { label: 'First day', text: 'First day at a new job. I want to look polished but approachable.' },
+      { label: 'Office day', text: 'A normal day at the office. Smart but comfortable, nothing fussy.' },
+    ],
+  },
+  {
+    group: 'Evening',
+    items: [
+      { label: 'Dinner date', text: 'Dinner date tonight. I want to feel feminine but not overdressed.' },
+      { label: 'Birthday dinner', text: 'Birthday dinner with my friends tonight — cute but not overdressed.' },
+      { label: 'Party', text: 'A party this weekend. I want something with a bit of presence.' },
+      { label: 'Drinks after work', text: 'Drinks after work. Something I can wear straight from the office.' },
+    ],
+  },
+  {
+    group: 'Occasion',
+    items: [
+      { label: 'Wedding guest', text: "A friend's wedding next month. I want to feel elegant and a little special." },
+      { label: 'Graduation', text: 'My graduation ceremony. Elegant, feminine and sophisticated.' },
+      { label: 'Family event', text: 'A family gathering this weekend. Modest, polished and comfortable.' },
+      { label: 'Photoshoot', text: 'I have photos being taken. I want something that photographs well and feels like me.' },
+    ],
+  },
+  {
+    group: 'Everyday',
+    items: [
+      { label: 'Brunch', text: 'Weekend brunch with friends. Relaxed but put together.' },
+      { label: 'Coffee', text: 'Coffee with a friend. Nothing fancy, just easy and nice.' },
+      { label: 'College', text: 'A normal day at college. Comfortable, and I still want to look good.' },
+      { label: 'Errands', text: 'Running errands all day. Comfortable above everything.' },
+    ],
+  },
+  {
+    group: 'Away',
+    items: [
+      { label: 'Travel day', text: 'A long travel day. Comfortable, easy to move in, still presentable.' },
+      { label: 'Holiday dinner', text: 'Dinner out while on holiday somewhere warm. Feminine and relaxed.' },
+      { label: 'Sightseeing', text: 'A day of sightseeing and walking. Comfortable and practical.' },
+      { label: 'Beach day', text: 'A beach day with friends. Light, easy and relaxed.' },
+    ],
+  },
 ];
 
 export default function Moment() {
@@ -23,9 +75,17 @@ export default function Moment() {
 
   const [text, setText] = useState('');
   const [vibes, setVibes] = useState([]);
+  const [selectedOccasion, setSelectedOccasion] = useState(null);
   const [budget, setBudget] = useState(150);
   const [stage, setStage] = useState(null);
   const [error, setError] = useState(null);
+
+  // The greeting reads the persisted profile rather than session state, so it
+  // survives a reload the same way the rest of the profile does.
+  const [name, setName] = useState('');
+  useEffect(() => {
+    api.getProfile().then(({ profile }) => setName(profile?.name || '')).catch(() => {});
+  }, []);
 
   const toggleVibe = (v) =>
     setVibes((prev) => (prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]));
@@ -64,7 +124,7 @@ export default function Moment() {
       setConstraints(constraints);
 
       setStage('outfit');
-      const { looks, pick } = await api.composeLooks(constraints, guest);
+      const { looks, pick } = await api.composeLooks(constraints, guest, beauty);
       setLooks(looks);
       setSelectedLookId(pick);
 
@@ -93,8 +153,6 @@ export default function Moment() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="eyebrow mb-7">AI decision intelligence for personal appearance</div>
-
           <h1 className="display text-6xl sm:text-8xl">MAVIE</h1>
 
           <p className="mt-4 font-display italic text-xl sm:text-2xl text-espresso-mute font-light">
@@ -103,7 +161,15 @@ export default function Moment() {
 
           <div className="mt-10 mx-auto w-14 rule" />
 
-          <h2 className="mt-10 display text-4xl sm:text-5xl text-balance">
+          {/* Greeting only once there is a name to greet — "Hello, there."
+              is worse than no greeting at all. */}
+          {name && (
+            <p className="mt-9 font-display italic text-2xl sm:text-3xl text-espresso-soft font-light">
+              Hello, {name}.
+            </p>
+          )}
+
+          <h2 className={`${name ? 'mt-3' : 'mt-10'} display text-4xl sm:text-5xl text-balance`}>
             What&rsquo;s the moment?
           </h2>
         </motion.div>
@@ -119,25 +185,22 @@ export default function Moment() {
         <div>
           <textarea
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => { setText(e.target.value); setSelectedOccasion(null); }}
             rows={3}
             placeholder="Dinner with my friends tonight — I want something cute but not overdressed…"
             className="field resize-none"
           />
 
-          <div className="mt-3 flex flex-wrap gap-2">
-            {EXAMPLES.map((ex, i) => (
-              <button
-                key={i}
-                onClick={() => setText(ex)}
-                className="text-[10px] tracking-wide text-espresso-mute hover:text-rose transition-colors
-                           border-b border-dotted border-line hover:border-rose"
-              >
-                {ex.slice(0, 42)}…
-              </button>
-            ))}
-          </div>
         </div>
+
+        {/* Twenty chips laid out flat pushed the input itself below the fold,
+            which inverts the point of the page. Same range, one quiet control. */}
+        <OccasionPicker
+          groups={OCCASIONS}
+          selected={selectedOccasion}
+          onSelect={(o) => { setText(o.text); setSelectedOccasion(o.label); }}
+          onClear={() => { setText(''); setSelectedOccasion(null); }}
+        />
 
         {/* Vibe */}
         <div className="space-y-3.5">
@@ -185,9 +248,13 @@ export default function Moment() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="eyebrow">Optional</div>
-              <h3 className="font-display text-xl mt-1">Add a photo</h3>
+              <h3 className="font-display text-xl mt-1">Add a selfie</h3>
+              {/* Say what the photo is FOR and what it should look like. Skin
+                  analysis needs the face large in frame; a full-body shot gives
+                  a face too small to read. Try-on asks for its own photo. */}
               <p className="text-[12px] text-espresso-mute mt-1.5 max-w-sm leading-relaxed">
-                MAVIE uses it for your beauty profile and to show you the look on yourself.
+                A clear, front-facing photo of your face — MAVIE reads your skin from it
+                and sets your beauty profile. You&rsquo;ll add a full-body photo later for try-on.
                 {guest && ' Guest mode is on — nothing is stored.'}
               </p>
             </div>

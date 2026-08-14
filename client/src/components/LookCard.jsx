@@ -6,7 +6,19 @@ import { usd } from './ProductCard.jsx';
 export default function LookCard({ look, index = 0, selected, isPick, onSelect }) {
   if (!look) return null;
 
-  const garments = look.items.filter((i) => i.category !== 'accessory').slice(0, 3);
+  /**
+   * Which pieces to show, and in how many columns.
+   *
+   * Excluding accessories outright left a dress-and-necklace look with one
+   * garment in a three-column grid — two empty cells reading as a broken
+   * layout. So accessories are used to fill out a short look, and the grid
+   * matches however many pieces there actually are.
+   */
+  const primary = look.items.filter((i) => i.category !== 'accessory');
+  const extras = look.items.filter((i) => i.category === 'accessory');
+  const garments = [...primary, ...extras].slice(0, 3);
+
+  const columns = { 1: 'grid-cols-1', 2: 'grid-cols-2' }[garments.length] || 'grid-cols-3';
 
   return (
     <motion.button
@@ -20,17 +32,32 @@ export default function LookCard({ look, index = 0, selected, isPick, onSelect }
           ? 'border-rose shadow-glow bg-surface/85'
           : 'border-line bg-surface/70 hover:border-rose-soft hover:shadow-lift hover:-translate-y-1'}`}
     >
+      {/* Two different things worth saying: which one MAVIE rated highest, and
+          which one you are actually acting on. Without the second, choosing a
+          look changed the page below with no acknowledgement up here. */}
       {isPick && (
         <div className="absolute top-0 right-0 z-10 bg-espresso text-ivory text-[9px] uppercase tracking-editorial px-3 py-1.5">
           MAVIE's pick
         </div>
       )}
 
-      {/* Garment triptych */}
-      <div className="grid grid-cols-3 gap-px bg-line aspect-[4/3]">
+      {selected && (
+        <div className="absolute top-0 left-0 z-10 bg-rose text-white text-[9px] uppercase tracking-editorial px-3 py-1.5">
+          Your choice
+        </div>
+      )}
+
+      {/* Garment triptych. `contain` rather than `cover`: these are product
+          shots, and cropping a garment to fill a narrow column defeats the
+          point of photographing the whole thing. */}
+      <div className={`grid ${columns} gap-px bg-line aspect-[4/3]`}>
         {garments.map((item) => (
-          <div key={item.id} className="relative overflow-hidden">
-            <GarmentVisual item={item} className="transition-transform duration-700 group-hover:scale-105" />
+          <div key={item.id} className="relative overflow-hidden bg-white">
+            <GarmentVisual
+              item={item}
+              fit="contain"
+              className="transition-transform duration-700 group-hover:scale-[1.04]"
+            />
           </div>
         ))}
       </div>

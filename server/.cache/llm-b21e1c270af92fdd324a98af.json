@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:45:10.553Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "You already own black pointed flats, making the black ballet flats redundant.",
+        "basis": "closet_overlap",
+        "severity": "high"
+      },
+      {
+        "claim": "A button-down shirt and pleated skirt lack the formal impact required for a graduation ceremony.",
+        "basis": "occasion_match",
+        "severity": "medium"
+      }
+    ]
+  }
+}

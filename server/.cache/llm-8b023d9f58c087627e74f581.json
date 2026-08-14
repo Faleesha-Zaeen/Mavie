@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:45:07.223Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The pleated midi skirt and ballet flats perfectly embody the feminine and elegant aesthetic you requested for your graduation.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "This entire outfit totals $126, keeping you well under your $150 budget while providing a complete, sophisticated look.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "Each piece is highly versatile and suitable for college events, ensuring you can easily rewear them for future professional or social occasions.",
+        "basis": "versatility"
+      }
+    ]
+  }
+}

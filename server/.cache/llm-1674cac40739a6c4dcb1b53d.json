@@ -1,0 +1,22 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:19:42.198Z",
+  "value": {
+    "occasion": "interview",
+    "formality": "smart-casual",
+    "goal": [
+      "professional",
+      "feminine",
+      "comfortable"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.8,
+    "style_preferences": [
+      "feminine"
+    ],
+    "avoided_colors": [
+      "neon"
+    ],
+    "summary": "Preparing for your interview, you want to project professionalism and confidence while feeling at ease."
+  }
+}

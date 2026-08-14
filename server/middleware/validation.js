@@ -35,6 +35,7 @@ export const schemas = {
   compose: z.object({
     constraints: constraintsSchema,
     guest: z.boolean().optional(),
+    beauty: z.object({}).passthrough().nullable().optional(),
   }),
 
   vtoClothes: z.object({

@@ -16,13 +16,40 @@
 export const DEMO_SCENARIO =
   'Dinner out tonight. I want to feel feminine but not overdressed, and comfortable. My budget is $100.';
 
-/**
- * The demo user chooses the DRESS, not MAVIE's top-scoring pick — which is what
- * people actually do. She likes it (85% match) and it is comfortably inside her
- * budget. The WAIT comes from one place only: she already owns three dresses
- * doing the same job.
- */
 export const DEMO_SELECT_CATEGORY = 'dress';
+
+/**
+ * The piece she saw online — the moment MAVIE exists for.
+ *
+ * The WAIT belongs here, not on a composed look. The composer only builds
+ * outfits it can defend, so asking it to produce a regrettable one means either
+ * tuning the scoring until it lies, or seeding a closet contrived enough to
+ * force a collision. Both are staged.
+ *
+ * A piece the user brings in herself is different: nothing filtered it. This
+ * velvet dress is beautiful and genuinely wrong for a weeknight dinner —
+ * versatility 34, care burden 84, cut for formal events. That verdict falls
+ * straight out of the evidence.
+ */
+export const DEMO_FOUND_ITEM = {
+  id: 'found-demo-1',
+  name: 'Burgundy Velvet Evening Dress',
+  category: 'dress',
+  body_area: 'full',
+  price: 98,
+  currency: 'USD',
+  hex: '#5E2233',
+  colors: ['burgundy'],
+  material: 'velvet',
+  formality: 'formal',
+  style_tags: ['luxe', 'statement', 'elegant'],
+  occasion_tags: ['formal', 'wedding', 'party'],
+  fit: 'fitted',
+  season: 'winter',
+  versatility: 34,
+  maintenance: 84,
+  found: true,
+};
 
 export const DEMO_PROFILE = {
   id: 'demo-user',
@@ -38,17 +65,22 @@ export const DEMO_PROFILE = {
  * Deliberately duplicate-heavy around black occasion wear. This is what gives
  * the Skeptic something true and specific to say.
  */
+/**
+ * A believable wardrobe, in colours the catalog also carries — so every closet
+ * tile can borrow a matching product shot instead of sitting there as a drawing
+ * beside a fully photographed catalog.
+ *
+ * Three black dresses is the detail that gives the Skeptic something concrete
+ * to say the moment she considers a fourth.
+ */
 export const DEMO_CLOSET = [
-  // Three dresses in the same family as the one she is about to buy. This is
-  // the whole reason the verdict is WAIT — nothing else is doing the work.
-  { name: 'Dusty rose midi dress', category: 'dress', color: 'dusty rose', colors: ['dusty rose'], hex: '#C98B94', style_tags: ['feminine', 'elegant'] },
-  { name: 'Dusty rose wrap dress', category: 'dress', color: 'dusty rose', colors: ['dusty rose'], hex: '#CE97A0', style_tags: ['feminine', 'soft'] },
-  { name: 'Dusty rose slip dress', category: 'dress', color: 'dusty rose', colors: ['dusty rose'], hex: '#D9A0A6', style_tags: ['feminine', 'minimal'] },
+  { name: 'Black slip dress', category: 'dress', color: 'black', colors: ['black'], hex: '#1C1917', style_tags: ['minimal', 'elegant'] },
+  { name: 'Black wrap dress', category: 'dress', color: 'black', colors: ['black'], hex: '#211D1B', style_tags: ['feminine', 'elegant'] },
+  { name: 'Black mini dress', category: 'dress', color: 'black', colors: ['black'], hex: '#232019', style_tags: ['feminine', 'evening'] },
 
-  // The rest of a believable wardrobe, none of which collides with the pick.
-  { name: 'Ivory silk blouse', category: 'top', color: 'ivory', colors: ['ivory'], hex: '#F2E9DC', style_tags: ['feminine', 'minimal'] },
-  { name: 'Beige trousers', category: 'bottom', color: 'beige', colors: ['beige'], hex: '#D7C6AC', style_tags: ['minimal', 'comfort'] },
-  { name: 'Black pointed flats', category: 'shoes', color: 'black', colors: ['black'], hex: '#201C1A', style_tags: ['minimal', 'comfort'] },
+  { name: 'White button-down shirt', category: 'top', color: 'white', colors: ['white'], hex: '#FBFAF7', style_tags: ['classic', 'minimal'] },
+  { name: 'Beige wide-leg trousers', category: 'bottom', color: 'beige', colors: ['beige'], hex: '#D7C6AC', style_tags: ['minimal', 'comfort'] },
+  { name: 'Black ballet flats', category: 'shoes', color: 'black', colors: ['black'], hex: '#201C1A', style_tags: ['minimal', 'comfort'] },
 ];
 
 /**
@@ -56,18 +88,32 @@ export const DEMO_CLOSET = [
  * the repo carries no photograph of a real person. Try-on renders the real
  * garment colours over it.
  */
+/**
+ * Skin Analysis needs an actual face. A generated stand-in is rejected under
+ * 480px ("error_below_min_image_size") and, once large enough, simply runs
+ * forever because there is no face to detect — which silently degrades the demo
+ * to mock analysis while looking like it worked.
+ *
+ * So the demo uses the vendor's own published sample portrait. It exercises the
+ * real API end to end, and the repo carries no photograph of a real person.
+ */
+export const DEMO_PHOTO_URL =
+  'https://plugins-media.makeupar.com/strapi/assets/skin_analysis_01_5b5defd339.png';
+
+export const DEMO_PHOTO_SIZE = { width: 600, height: 800 };
+
 export function demoPhoto() {
-  const W = 240;
-  const H = 320;
+  const { width: W, height: H } = DEMO_PHOTO_SIZE;
+  const scale = W / 240;
   const px = (x, y) => {
     const cx = W / 2;
     // head
-    if (Math.hypot(x - cx, y - 74) < 46) return [232, 206, 186];
+    if (Math.hypot(x - cx, y - 74 * scale) < 46 * scale) return [232, 206, 186];
     // neck
-    if (y > 112 && y < 140 && Math.abs(x - cx) < 20) return [224, 196, 176];
+    if (y > 112 * scale && y < 140 * scale && Math.abs(x - cx) < 20 * scale) return [224, 196, 176];
     // shoulders and torso
-    if (y >= 138) {
-      const spread = 58 + (y - 138) * 0.16;
+    if (y >= 138 * scale) {
+      const spread = (58 + (y / scale - 138) * 0.16) * scale;
       if (Math.abs(x - cx) < spread) return [212, 200, 188];
     }
     return [233, 226, 215]; // backdrop

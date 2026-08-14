@@ -15,8 +15,8 @@
  */
 
 import crypto from 'node:crypto';
-import https from 'node:https';
 import { hasCredentials, youcamFetch, pollTask } from './client.js';
+import { uploadImage } from './upload.js';
 import * as cache from '../cache.js';
 
 const fingerprint = (s) =>
@@ -39,7 +39,7 @@ export async function analyseSkin({ imageUrl, imageBase64 }) {
     // staged first, since the API takes a URL or a file id, never raw bytes.
     const source = imageUrl
       ? { src_file_url: imageUrl }
-      : { src_file_id: await uploadImage(imageBase64) };
+      : { src_file_id: await uploadImage('skin-analysis', imageBase64) };
 
     const started = await youcamFetch('/s2s/v2.0/task/skin-analysis', {
       body: {
@@ -53,7 +53,10 @@ export async function analyseSkin({ imageUrl, imageBase64 }) {
     const taskId = started.data?.task_id || started.result?.task_id;
     if (!taskId) throw new Error('no task_id returned');
 
-    const done = await pollTask(`/s2s/v2.0/task/skin-analysis/${taskId}`);
+    // A real portrait completes in a few seconds, but the default 30s window is
+    // too tight for a large upload on a slow connection — and a timeout drops
+    // the user to mock analysis, which looks like success.
+    const done = await pollTask(`/s2s/v2.0/task/skin-analysis/${taskId}`, { attempts: 40, intervalMs: 2000 });
     const raw = normaliseScores(done.data?.results?.output || []);
 
     return cache.write('skin', key, { ...toBeautyProfile(raw), raw, mocked: false });
@@ -63,78 +66,97 @@ export async function analyseSkin({ imageUrl, imageBase64 }) {
   }
 }
 
-/** Reserve an upload slot, PUT the bytes, return the file id. */
-async function uploadImage(image) {
-  const bytes = Buffer.from(String(image).replace(/^data:[^,]+,/, ''), 'base64');
-
-  const reserved = await youcamFetch('/s2s/v1.0/file/skin-analysis', {
-    body: { files: [{ content_type: 'image/png', file_name: 'user.png', file_size: bytes.length }] },
-  });
-
-  const file = reserved.result?.files?.[0];
-  if (!file) throw new Error('no upload slot returned');
-
-  const put = file.requests[0];
-  const url = new URL(put.url);
-
-  await new Promise((resolve, reject) => {
-    const req = https.request(
-      {
-        host: url.hostname,
-        path: url.pathname + url.search,
-        method: put.method || 'PUT',
-        headers: { ...(put.headers || {}), 'Content-Length': bytes.length },
-      },
-      (res) => {
-        res.resume();
-        res.on('end', () => (res.statusCode < 300 ? resolve() : reject(new Error(`upload ${res.statusCode}`))));
-      },
-    );
-    req.on('error', reject);
-    req.write(bytes);
-    req.end();
-  });
-
-  return file.file_id;
-}
-
 /**
  * The important translation: clinical-looking numbers become styling direction.
  * This is where MAVIE stops being a skin analyzer and becomes a beauty input.
  */
+/**
+ * Turn concern scores into styling direction.
+ *
+ * Every line here has to be EARNED by the numbers. A previous version ended
+ * with a fixed sentence about cream formulas that was shown to everyone
+ * regardless of their skin — advice that is true of nobody in particular reads
+ * as filler, and it undermines the readings that are real.
+ *
+ * Higher ui_score means better skin in this API, so a low score marks the areas
+ * worth speaking to.
+ */
 export function toBeautyProfile(raw) {
-  const oiliness = raw.oiliness ?? 50;
-  const moisture = raw.moisture ?? 60;
-  const radiance = raw.radiance ?? 65;
-  const redness = raw.redness ?? 40;
-  const texture = raw.texture ?? 60;
+  const s = {
+    oiliness: raw.oiliness ?? 65,
+    moisture: raw.moisture ?? 65,
+    radiance: raw.radiance ?? 70,
+    redness: raw.redness ?? 80,
+    texture: raw.texture ?? 70,
+    pore: raw.pore ?? 75,
+    wrinkle: raw.wrinkle ?? 75,
+    acne: raw.acne ?? 85,
+  };
 
-  const preferred_finish =
-    oiliness < 45 ? 'natural'
-      : radiance < 70 || moisture < 60 ? 'luminous'
-        : 'natural';
+  // Oily skin sits better under a natural finish; dull or dry skin lifts with
+  // a luminous one.
+  const preferred_finish = s.oiliness < 55 ? 'natural'
+    : (s.radiance < 72 || s.moisture < 62) ? 'luminous'
+      : 'natural';
 
-  const intensity = redness < 70 || texture < 60 ? 'light-medium' : 'light';
+  // Coverage tracks how much there is to even out.
+  const evenness = Math.min(s.redness, s.texture, s.acne);
+  const intensity = evenness < 62 ? 'medium' : evenness < 78 ? 'light-medium' : 'light';
 
   const direction = [
-    moisture < 60 ? 'hydrating' : 'fresh',
-    radiance < 70 ? 'luminous' : 'soft',
-    redness < 70 ? 'evening' : 'polished',
+    s.moisture < 62 ? 'hydrating' : s.oiliness < 55 ? 'balancing' : 'fresh',
+    s.radiance < 72 ? 'luminous' : 'soft',
+    s.redness < 75 ? 'evening' : s.texture < 70 ? 'smoothing' : 'polished',
   ];
+
+  // Speak to the two lowest-scoring concerns by name.
+  const ADVICE = {
+    oiliness: 'Your T-zone runs oily, so a longwear base will hold better than a rich cream.',
+    moisture: 'Your skin reads dry, so hydrate before base — makeup will sit far more evenly.',
+    radiance: 'Radiance is the number to lift here: a luminous base and a touch of highlighter do more than coverage.',
+    redness: 'There is some redness to even out, so a colour-correcting base beats piling on foundation.',
+    texture: 'Texture is worth smoothing with primer rather than hiding under heavier product.',
+    pore: 'Pores show a little, so a blurring primer around the centre of the face will help.',
+    wrinkle: 'Fine lines read more with powder, so keep the finish creamy where you can.',
+    acne: 'Spot-conceal rather than covering the whole face — it will look lighter and last longer.',
+  };
+
+  // Only speak to concerns that are genuinely low. Taking the two lowest
+  // regardless of value produced advice for skin that was doing fine — and on
+  // balanced skin it paired "your T-zone runs oily" with "your skin reads dry",
+  // which is self-contradicting nonsense.
+  const CONCERN_THRESHOLD = 70;
+  const ranked = Object.entries(s)
+    .filter(([, value]) => value < CONCERN_THRESHOLD)
+    .sort((a, b) => a[1] - b[1])
+    .map(([key]) => key);
+
+  // Oiliness and dryness cannot both be the headline; keep whichever scored lower.
+  const opposites = ['oiliness', 'moisture'];
+  const firstOpposite = ranked.find((k) => opposites.includes(k));
+  const concerns = ranked.filter((k) => !opposites.includes(k) || k === firstOpposite);
+
+  const weakest = concerns.slice(0, 2).map((key) => ADVICE[key]).filter(Boolean);
+
+  // Balanced skin deserves to be told so, rather than handed invented problems.
+  if (!weakest.length) {
+    weakest.push(
+      intensity === 'light'
+        ? 'Nothing here needs correcting — light coverage is genuinely enough.'
+        : 'No single concern stands out, so keep the base light and spot-conceal where you want to.',
+    );
+  }
 
   return {
     preferred_finish,
     intensity,
     direction,
-    headline: `${direction[0]} + ${direction[1]} + ${direction[2]}`.replace(/\b\w/g, (c) => c.toUpperCase()),
+    headline: direction.join(' + ').replace(/\b\w/g, (c) => c.toUpperCase()),
     guidance: [
       preferred_finish === 'luminous'
         ? 'A luminous base will suit you better than a flat matte one.'
         : 'A natural, skin-like finish will read best on you.',
-      intensity === 'light'
-        ? 'Light coverage is enough — let your skin show through.'
-        : 'Light-to-medium coverage gives you evenness without looking heavy.',
-      'Cream formulas will sit more comfortably than heavy powders.',
+      ...weakest,
     ],
     note: 'This is beauty personalization, not a medical assessment. MAVIE does not diagnose skin conditions.',
   };

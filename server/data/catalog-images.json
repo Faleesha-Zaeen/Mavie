@@ -1,173 +1,302 @@
 {
-  "top-104": {
-    "photo_id": "YX9-nFpr3sA",
-    "url": "https://images.unsplash.com/photo-1652677481595-925d4e6be7d4?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8Mjh8fHdvbWVucyUyMHRvcCUyMGNsb3RoaW5nJTIwcmFja3xlbnwxfDF8fHwxNzg2NzEwNzAyfDA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#d9d9d9",
-    "alt": "a pair of shoes and a shirt hanging on a rack",
-    "photographer": "Kristine Zalakmentina",
-    "photographer_url": "https://unsplash.com/@qistiine",
-    "source": "Unsplash"
-  },
-  "top-105": {
-    "photo_id": "PMVYSAtLlLE",
-    "url": "https://images.unsplash.com/photo-1634653131107-ecc30d4501ac?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTV8fHdvbWVucyUyMGtuaXQlMjBzd2VhdGVyfGVufDF8MXx8fDE3ODY3MTA2OTl8MA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#c0c0a6",
-    "alt": "a stack of different colored sweaters sitting on top of each other",
-    "photographer": "Kateryna Hliznitsova",
-    "photographer_url": "https://unsplash.com/@kate_gliz",
-    "source": "Unsplash"
-  },
-  "top-106": {
-    "photo_id": "9gOBrsMJPrI",
-    "url": "https://images.unsplash.com/photo-1636017510501-ab5e3d121c90?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTF8fHdvbWVucyUyMHRvcCUyMGNsb3RoaW5nJTIwcmFja3xlbnwxfDF8fHwxNzg2NzEwNzAyfDA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#f3f3f3",
-    "alt": "a black and white shirt on a hanger",
-    "photographer": "Markus Spiske",
-    "photographer_url": "https://unsplash.com/@markusspiske",
-    "source": "Unsplash"
-  },
-  "top-109": {
-    "photo_id": "eD8ztaw49rg",
-    "url": "https://images.unsplash.com/photo-1634901581982-6b408cf4226a?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTR8fHdvbWVucyUyMGtuaXQlMjBzd2VhdGVyfGVufDF8MXx8fDE3ODY3MTA2OTl8MA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#c0c0c0",
-    "alt": "three different colors of sweaters laying on a bed",
-    "photographer": "Kateryna Hliznitsova",
-    "photographer_url": "https://unsplash.com/@kate_gliz",
-    "source": "Unsplash"
+  "top-101": {
+    "url": "/catalog/top-101.jpg",
+    "alt": "White Oversized Button-Down Shirt",
+    "source": "generated"
   },
   "top-110": {
-    "photo_id": "xXJ6utyoSw0",
-    "url": "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MXx8d29tZW5zJTIwdG9wJTIwY2xvdGhpbmclMjByYWNrfGVufDF8MXx8fDE3ODY3MTA3MDJ8MA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#264040",
-    "alt": "assorted-color shirt lot hang on rack",
-    "photographer": "Marcus Loke",
-    "photographer_url": "https://unsplash.com/@marcusloke",
-    "source": "Unsplash"
+    "url": "/catalog/top-110.jpg",
+    "alt": "Blue Striped Relaxed Shirt",
+    "source": "generated"
+  },
+  "top-111": {
+    "url": "/catalog/top-111.jpg",
+    "alt": "Chocolate Brown Halter Top",
+    "source": "generated"
+  },
+  "top-112": {
+    "url": "/catalog/top-112.jpg",
+    "alt": "Heather Grey Oversized Sweatshirt",
+    "source": "generated"
+  },
+  "top-113": {
+    "url": "/catalog/top-113.jpg",
+    "alt": "Soft Pink Puff-Sleeve Blouse",
+    "source": "generated"
+  },
+  "top-114": {
+    "url": "/catalog/top-114.jpg",
+    "alt": "Black One-Shoulder Top",
+    "source": "generated"
+  },
+  "top-115": {
+    "url": "/catalog/top-115.jpg",
+    "alt": "Ivory Satin Camisole",
+    "source": "generated"
   },
   "bot-201": {
-    "photo_id": "JmZ3MXXnf-w",
-    "url": "https://images.unsplash.com/photo-1713880453423-f9b1cd8e1749?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MjZ8fHdvbWVucyUyMGplYW5zJTIwZGVuaW0lMjBmYXNoaW9ufGVufDF8MXx8fDE3ODY3MTA3MDV8MA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#d9d9d9",
-    "alt": "a chair made out of a pair of jeans",
-    "photographer": "TuanAnh Blue",
-    "photographer_url": "https://unsplash.com/@blueeyeaa",
-    "source": "Unsplash"
+    "url": "/catalog/bot-201.jpg",
+    "alt": "Dark Indigo Straight-Leg Jeans",
+    "source": "generated"
+  },
+  "bot-202": {
+    "url": "/catalog/bot-202.jpg",
+    "alt": "Light Wash Wide-Leg Jeans",
+    "source": "generated"
   },
   "bot-203": {
-    "photo_id": "j_3IlDX-6uQ",
-    "url": "https://images.unsplash.com/photo-1715758890151-2c15d5d482aa?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTB8fHdvbWVucyUyMGplYW5zJTIwZGVuaW0lMjBmYXNoaW9ufGVufDF8MXx8fDE3ODY3MTA3MDV8MA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#405973",
-    "alt": "a pair of jeans hanging on a clothes rack",
-    "photographer": "TuanAnh Blue",
-    "photographer_url": "https://unsplash.com/@blueeyeaa",
-    "source": "Unsplash"
+    "url": "/catalog/bot-203.jpg",
+    "alt": "Black High-Waisted Trousers",
+    "source": "generated"
   },
   "bot-204": {
-    "photo_id": "XdXk39Bj3B0",
-    "url": "https://images.unsplash.com/photo-1721637286605-ae9be19d681f?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8NHx8d29tZW5zJTIwamVhbnMlMjBkZW5pbSUyMGZhc2hpb258ZW58MXwxfHx8MTc4NjcxMDcwNXww&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#f3f3f3",
-    "alt": "A pile of jeans laying on top of each other",
-    "photographer": "TuanAnh Blue",
-    "photographer_url": "https://unsplash.com/@blueeyeaa",
-    "source": "Unsplash"
+    "url": "/catalog/bot-204.jpg",
+    "alt": "Beige Wide-Leg Trousers",
+    "source": "generated"
+  },
+  "top-102": {
+    "url": "/catalog/top-102.jpg",
+    "alt": "Black Fitted Ribbed Top",
+    "source": "generated"
+  },
+  "bot-205": {
+    "url": "/catalog/bot-205.jpg",
+    "alt": "Charcoal Tailored Trousers",
+    "source": "generated"
+  },
+  "bot-206": {
+    "url": "/catalog/bot-206.jpg",
+    "alt": "Olive Green Cargo Pants",
+    "source": "generated"
+  },
+  "bot-207": {
+    "url": "/catalog/bot-207.jpg",
+    "alt": "Black Denim Mini Skirt",
+    "source": "generated"
   },
   "bot-208": {
-    "photo_id": "EtOMMg1nSR8",
-    "url": "https://images.unsplash.com/photo-1602293589930-45aad59ba3ab?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MXx8d29tZW5zJTIwamVhbnMlMjBkZW5pbSUyMGZhc2hpb258ZW58MXwxfHx8MTc4NjcxMDcwNXww&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#8ca6a6",
-    "alt": "blue denim jeans on brown clothes hanger",
-    "photographer": "Jason Leung",
-    "photographer_url": "https://unsplash.com/@ninjason",
-    "source": "Unsplash"
+    "url": "/catalog/bot-208.jpg",
+    "alt": "Blue Denim Midi Skirt",
+    "source": "generated"
+  },
+  "bot-209": {
+    "url": "/catalog/bot-209.jpg",
+    "alt": "Black Pleated Midi Skirt",
+    "source": "generated"
+  },
+  "bot-210": {
+    "url": "/catalog/bot-210.jpg",
+    "alt": "White Linen Wide-Leg Pants",
+    "source": "generated"
+  },
+  "bot-211": {
+    "url": "/catalog/bot-211.jpg",
+    "alt": "Chocolate Brown Relaxed Trousers",
+    "source": "generated"
   },
   "bot-212": {
-    "photo_id": "Y99t-LAsXmM",
-    "url": "https://images.unsplash.com/photo-1699706983784-94954a1e1a4e?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTN8fHdvbWVucyUyMGplYW5zJTIwZGVuaW0lMjBmYXNoaW9ufGVufDF8MXx8fDE3ODY3MTA3MDV8MA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#404040",
-    "alt": "a row of jeans that are sitting on a rack",
-    "photographer": "Martin Bammer",
-    "photographer_url": "https://unsplash.com/@digital_m_art_in",
-    "source": "Unsplash"
+    "url": "/catalog/bot-212.jpg",
+    "alt": "Heather Grey Jogger Pants",
+    "source": "generated"
+  },
+  "drs-301": {
+    "url": "/catalog/drs-301.jpg",
+    "alt": "Little Black Midi Dress",
+    "source": "generated"
+  },
+  "drs-302": {
+    "url": "/catalog/drs-302.jpg",
+    "alt": "Red Satin Slip Dress",
+    "source": "generated"
+  },
+  "top-103": {
+    "url": "/catalog/top-103.jpg",
+    "alt": "Baby Blue Cropped Shirt",
+    "source": "generated"
+  },
+  "drs-303": {
+    "url": "/catalog/drs-303.jpg",
+    "alt": "Emerald Green Wrap Midi Dress",
+    "source": "generated"
   },
   "drs-304": {
-    "photo_id": "8jsozLmCdCA",
-    "url": "https://images.unsplash.com/photo-1593770723718-af06160219e8?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8OHx8c2xpcCUyMGRyZXNzJTIwd29tYW58ZW58MXwxfHx8MTc4NjcxMDcxMHww&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#d9d9d9",
-    "alt": "girl in white tank dress standing on green grass field during daytime",
-    "photographer": "Kateryna Hliznitsova",
-    "photographer_url": "https://unsplash.com/@kate_gliz",
-    "source": "Unsplash"
+    "url": "/catalog/drs-304.jpg",
+    "alt": "Powder Blue A-Line Midi Dress",
+    "source": "generated"
+  },
+  "drs-305": {
+    "url": "/catalog/drs-305.jpg",
+    "alt": "Floral Print Summer Midi Dress",
+    "source": "generated"
+  },
+  "drs-306": {
+    "url": "/catalog/drs-306.jpg",
+    "alt": "Black Fitted Mini Party Dress",
+    "source": "generated"
+  },
+  "drs-307": {
+    "url": "/catalog/drs-307.jpg",
+    "alt": "Burgundy Velvet Evening Dress",
+    "source": "generated"
   },
   "drs-308": {
-    "photo_id": "fP_2M__7rYk",
-    "url": "https://images.unsplash.com/photo-1760287363707-851f4780b98c?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTd8fGVsZWdhbnQlMjBkcmVzcyUyMHdvbWFuJTIwZmFzaGlvbnxlbnwxfDF8fHwxNzg2NzEwNzEyfDA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#d9d9a6",
-    "alt": "Mannequin wearing a teal dress with lace trim.",
-    "photographer": "Zayed Ahmed Zadu",
-    "photographer_url": "https://unsplash.com/@zayed_ahmed_zadu",
-    "source": "Unsplash"
+    "url": "/catalog/drs-308.jpg",
+    "alt": "White Linen Sundress",
+    "source": "generated"
+  },
+  "drs-309": {
+    "url": "/catalog/drs-309.jpg",
+    "alt": "Sage Green Flowing Maxi Dress",
+    "source": "generated"
+  },
+  "drs-310": {
+    "url": "/catalog/drs-310.jpg",
+    "alt": "Blush Pink Tiered Midi Dress",
+    "source": "generated"
+  },
+  "drs-311": {
+    "url": "/catalog/drs-311.jpg",
+    "alt": "Navy Blue Shirt Dress",
+    "source": "generated"
+  },
+  "drs-312": {
+    "url": "/catalog/drs-312.jpg",
+    "alt": "Chocolate Brown Knit Midi Dress",
+    "source": "generated"
+  },
+  "top-104": {
+    "url": "/catalog/top-104.jpg",
+    "alt": "Burgundy Satin Blouse",
+    "source": "generated"
+  },
+  "out-401": {
+    "url": "/catalog/out-401.jpg",
+    "alt": "Black Oversized Blazer",
+    "source": "generated"
   },
   "out-402": {
-    "photo_id": "dSxJcvgcA-E",
-    "url": "https://images.unsplash.com/photo-1664917983529-2d691180aa00?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTR8fHdvbWVucyUyMHdvb2wlMjBjb2F0fGVufDF8MXx8fDE3ODY3MTA3MTR8MA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#262626",
-    "alt": "a person in a long coat",
-    "photographer": "Cezar Sampaio",
-    "photographer_url": "https://unsplash.com/@cezarsmpio",
-    "source": "Unsplash"
+    "url": "/catalog/out-402.jpg",
+    "alt": "Beige Tailored Blazer",
+    "source": "generated"
+  },
+  "out-403": {
+    "url": "/catalog/out-403.jpg",
+    "alt": "Blue Denim Jacket",
+    "source": "generated"
+  },
+  "out-404": {
+    "url": "/catalog/out-404.jpg",
+    "alt": "Black Cropped Leather Jacket",
+    "source": "generated"
+  },
+  "out-405": {
+    "url": "/catalog/out-405.jpg",
+    "alt": "Camel Wool Coat",
+    "source": "generated"
+  },
+  "out-406": {
+    "url": "/catalog/out-406.jpg",
+    "alt": "Olive Green Utility Jacket",
+    "source": "generated"
+  },
+  "out-407": {
+    "url": "/catalog/out-407.jpg",
+    "alt": "Cream Cropped Knit Cardigan",
+    "source": "generated"
+  },
+  "out-408": {
+    "url": "/catalog/out-408.jpg",
+    "alt": "Charcoal Oversized Zip Hoodie",
+    "source": "generated"
   },
   "shoe-501": {
-    "photo_id": "vfnOOwv541Y",
-    "url": "https://images.unsplash.com/photo-1770757685173-94df47a52b68?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8NXx8c2FuZGFscyUyMHdvbWVucyUyMHNob2VzfGVufDF8MXx8fDE3ODY3MTA3MjR8MA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#c0a68c",
-    "alt": "A pair of beige strappy heeled sandals",
-    "photographer": "Alexander Mass",
-    "photographer_url": "https://unsplash.com/@alexandermassph",
-    "source": "Unsplash"
+    "url": "/catalog/shoe-501.jpg",
+    "alt": "White Leather Sneakers",
+    "source": "generated"
+  },
+  "shoe-502": {
+    "url": "/catalog/shoe-502.jpg",
+    "alt": "Black Ballet Flats",
+    "source": "generated"
+  },
+  "top-105": {
+    "url": "/catalog/top-105.jpg",
+    "alt": "Cream Knit Polo Top",
+    "source": "generated"
+  },
+  "shoe-503": {
+    "url": "/catalog/shoe-503.jpg",
+    "alt": "Black Pointed-Toe Pumps",
+    "source": "generated"
+  },
+  "shoe-504": {
+    "url": "/catalog/shoe-504.jpg",
+    "alt": "Nude Block-Heel Shoes",
+    "source": "generated"
+  },
+  "shoe-505": {
+    "url": "/catalog/shoe-505.jpg",
+    "alt": "Brown Leather Ankle Boots",
+    "source": "generated"
+  },
+  "shoe-506": {
+    "url": "/catalog/shoe-506.jpg",
+    "alt": "Black Knee-High Boots",
+    "source": "generated"
+  },
+  "shoe-507": {
+    "url": "/catalog/shoe-507.jpg",
+    "alt": "Tan Strappy Flat Sandals",
+    "source": "generated"
+  },
+  "shoe-508": {
+    "url": "/catalog/shoe-508.jpg",
+    "alt": "Chunky Black Sneakers",
+    "source": "generated"
+  },
+  "acc-601": {
+    "url": "/catalog/acc-601.jpg",
+    "alt": "Black Structured Shoulder Bag",
+    "source": "generated"
   },
   "acc-602": {
-    "photo_id": "MRvn_oInZcc",
-    "url": "https://images.unsplash.com/photo-1778731660238-f6abf7f436b1?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8Mjl8fGxlYXRoZXIlMjBoYW5kYmFnJTIwcHVyc2V8ZW58MXwxfHx8MTc4NjcxMDcyNnww&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#404040",
-    "alt": "Designer handbags displayed in a modern closet",
-    "photographer": "Franco Debartolo",
-    "photographer_url": "https://unsplash.com/@francotheshooter",
-    "source": "Unsplash"
+    "url": "/catalog/acc-602.jpg",
+    "alt": "Brown Leather Crossbody Bag",
+    "source": "generated"
   },
   "acc-603": {
-    "photo_id": "XwjrPFW7xw0",
-    "url": "https://images.unsplash.com/photo-1624687943971-e86af76d57de?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8Mnx8bGVhdGhlciUyMGhhbmRiYWclMjBwdXJzZXxlbnwxfDF8fHwxNzg2NzEwNzI2fDA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#f3d9d9",
-    "alt": "brown leather handbag on white table",
-    "photographer": "Ugluk Potroshitel",
-    "photographer_url": "https://unsplash.com/@uglug",
-    "source": "Unsplash"
+    "url": "/catalog/acc-603.jpg",
+    "alt": "Champagne Satin Evening Clutch",
+    "source": "generated"
   },
   "acc-604": {
-    "photo_id": "rpUKVRCyceo",
-    "url": "https://images.unsplash.com/photo-1746880223690-359948154c53?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8NXx8bGVhdGhlciUyMGhhbmRiYWclMjBwdXJzZXxlbnwxfDF8fHwxNzg2NzEwNzI2fDA&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#402626",
-    "alt": "A brown and black handbag is on display.",
-    "photographer": "Leonie Giardini",
-    "photographer_url": "https://unsplash.com/@leoniegiardini",
-    "source": "Unsplash"
+    "url": "/catalog/acc-604.jpg",
+    "alt": "Gold Layered Necklace",
+    "source": "generated"
   },
-  "acc-607": {
-    "photo_id": "McuOFfLZuC0",
-    "url": "https://images.unsplash.com/photo-1771148886038-eacb528e544e?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTd8fGxlYXRoZXIlMjBoYW5kYmFnJTIwcHVyc2V8ZW58MXwxfHx8MTc4NjcxMDcyNnww&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#262626",
-    "alt": "A narrow aisle filled with colorful bags and purses.",
-    "photographer": "quentin touvard",
-    "photographer_url": "https://unsplash.com/@qt_picture",
-    "source": "Unsplash"
+  "top-106": {
+    "url": "/catalog/top-106.jpg",
+    "alt": "Sage Green Linen Shirt",
+    "source": "generated"
   },
-  "acc-608": {
-    "photo_id": "lUdssz3Co4M",
-    "url": "https://images.unsplash.com/photo-1740489998930-9a1fc98273fd?ixid=M3wxMDI4NTAwfDB8MXxzZWFyY2h8MTl8fGdvbGQlMjBuZWNrbGFjZSUyMGpld2Vscnl8ZW58MXwxfHx8MTc4NjcxMDcyOHww&ixlib=rb-4.1.0&w=900&h=1200&fit=crop&crop=entropy&q=80&fm=jpg",
-    "color": "#c0a6a6",
-    "alt": "A necklace and earring set with pearls",
-    "photographer": "Maruthi Jewellery",
-    "photographer_url": "https://unsplash.com/@maruthicollections",
-    "source": "Unsplash"
+  "acc-605": {
+    "url": "/catalog/acc-605.jpg",
+    "alt": "Black Slim Leather Belt",
+    "source": "generated"
+  },
+  "top-107": {
+    "url": "/catalog/top-107.jpg",
+    "alt": "Black Off-Shoulder Top",
+    "source": "generated"
+  },
+  "top-108": {
+    "url": "/catalog/top-108.jpg",
+    "alt": "White Ribbed Tank Top",
+    "source": "generated"
+  },
+  "top-109": {
+    "url": "/catalog/top-109.jpg",
+    "alt": "Cherry Red Crop Top",
+    "source": "generated"
   }
 }

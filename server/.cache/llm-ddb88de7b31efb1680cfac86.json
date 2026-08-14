@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:03:07.585Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "You already own a black top and black pointed flats that overlap with the Black Fitted Ribbed Top and Black Pointed-Toe Pumps.",
+        "basis": "closet_overlap",
+        "severity": "high"
+      },
+      {
+        "claim": "This all-black ensemble lacks the bold visual impact required for your photoshoot goal.",
+        "basis": "style_match",
+        "severity": "medium"
+      }
+    ]
+  }
+}

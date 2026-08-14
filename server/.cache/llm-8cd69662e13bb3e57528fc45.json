@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T16:21:09.585Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The classic midi silhouette perfectly captures the feminine and elegant aesthetic you desire for your dinner.",
+        "basis": "style_match"
+      },
+      {
+        "claim": "At $75, this dress fits comfortably within your $100 budget while offering high rewear potential for future outings.",
+        "basis": "budget_fit"
+      },
+      {
+        "claim": "The timeless design ensures you feel polished and appropriately dressed for a smart-casual dinner without being overdressed.",
+        "basis": "occasion_match"
+      }
+    ]
+  }
+}

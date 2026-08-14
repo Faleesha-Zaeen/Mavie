@@ -1,0 +1,19 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:02:51.092Z",
+  "value": {
+    "occasion": "party",
+    "formality": "statement",
+    "goal": [
+      "bold",
+      "confident"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.5,
+    "style_preferences": [
+      "bold"
+    ],
+    "avoided_colors": [],
+    "summary": "You are ready to make a striking impression at your photoshoot this weekend with a bold look that fits perfectly within your 150 dollar budget."
+  }
+}

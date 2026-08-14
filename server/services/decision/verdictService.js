@@ -130,7 +130,11 @@ export function findAlternatives({ items = [], constraints = {}, limit = 3 }) {
       ),
       shares_aesthetic: c.style_tags.filter((t) => target.style_tags.includes(t)).length,
     }))
-    .sort((a, b) => (b.shares_aesthetic - a.shares_aesthetic) || (b.improvement - a.improvement))
+    // Rank by how much decision risk is actually removed, using shared
+    // aesthetic only as a tiebreak. Sorting on aesthetic first surfaced a 44%
+    // versatility dress above a 90% one purely because it shared more style
+    // tags — which is not "a better match", it is the same mistake again.
+    .sort((a, b) => (b.improvement - a.improvement) || (b.shares_aesthetic - a.shares_aesthetic))
     .slice(0, limit)
     .map((c) => ({ ...c, why: whyBetter(c, target, budget) }));
 }

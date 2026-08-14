@@ -1,0 +1,30 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:47:28.978Z",
+  "value": {
+    "name": "Black Short-Sleeve Sheath Dress",
+    "category": "dress",
+    "colors": [
+      "black"
+    ],
+    "hex": "#1a1a1a",
+    "style_tags": [
+      "minimal",
+      "elegant",
+      "structured"
+    ],
+    "occasion_tags": [
+      "interview",
+      "office",
+      "dinner"
+    ],
+    "fit": "fitted",
+    "season": "all",
+    "price": null,
+    "currency": null,
+    "versatility": 90,
+    "maintenance": 40,
+    "confidence": 1,
+    "notes": "A classic black sheath dress with a round neckline and short sleeves, perfect for professional settings."
+  }
+}

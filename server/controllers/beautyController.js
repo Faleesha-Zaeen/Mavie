@@ -27,8 +27,17 @@ export async function skin(req, res, next) {
 
 export function makeupRecommend(req, res, next) {
   try {
-    const { constraints = {}, items = [] } = req.body || {};
-    res.json({ makeup: recommendMakeup(constraints, store.getProfile(), items) });
+    const { constraints = {}, items = [], beauty = null } = req.body || {};
+
+    // In guest mode the skin analysis is never stored, so reading the profile
+    // would quietly lose it and fall back to defaults — breaking the
+    // skin → makeup → outfit chain for exactly the users most careful about
+    // their data. Accept the profile inline when the caller holds it.
+    const profile = beauty
+      ? { ...store.getProfile(), beauty }
+      : store.getProfile();
+
+    res.json({ makeup: recommendMakeup(constraints, profile, items) });
   } catch (err) {
     next(err);
   }

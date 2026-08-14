@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:29:15.886Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The dress has low rewear potential, making it a poor investment for a daily college wardrobe.",
+        "basis": "rewear potential",
+        "severity": "high"
+      },
+      {
+        "claim": "The item only moderately matches the casual college environment.",
+        "basis": "occasion match",
+        "severity": "medium"
+      }
+    ]
+  }
+}

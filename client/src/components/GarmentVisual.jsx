@@ -38,37 +38,57 @@ const SHAPES = {
   ),
 };
 
-export default function GarmentVisual({ item, className = '', showLabel = false }) {
+export default function GarmentVisual({ item, className = '', showLabel = false, fit = 'cover' }) {
   if (!item) return null;
 
   const hex = item.hex || '#D9CDBB';
   const shape = SHAPES[item.category] || SHAPES.top;
 
-  // Real photography always wins — but stock shots arrive with wildly different
-  // white balance and saturation. A shared treatment (warm wash, slight
-  // desaturation, soft vignette) pulls sixty unrelated photographs into one
-  // coherent set that sits inside MAVIE's palette instead of fighting it.
+  // Real photography always wins. How much treatment it needs depends on where
+  // it came from: a set shot to one brief is already coherent and only needs
+  // seating into the palette, whereas mismatched stock needs a colour wash to
+  // stop sixty different white balances fighting each other. Washing clean
+  // studio shots would just tint their white backgrounds.
   if (item.image_url) {
+    const consistentSet = item.image_credit?.source !== 'Unsplash';
+
     return (
-      <figure className={`relative w-full h-full overflow-hidden bg-ivory-deep m-0 group/photo ${className}`}>
+      <figure className={`relative w-full h-full overflow-hidden bg-white m-0 group/photo ${className}`}>
         <img
           src={item.image_url}
           alt={item.image_alt || item.name}
           loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: 'saturate(0.86) contrast(1.02) brightness(1.02)' }}
+          className={`absolute inset-0 w-full h-full ${fit === 'contain' ? 'object-contain p-1.5' : 'object-cover'}`}
+          style={{
+            filter: consistentSet
+              ? 'saturate(0.97) contrast(1.01)'
+              : 'saturate(0.86) contrast(1.02) brightness(1.02)',
+          }}
           onError={(e) => { e.currentTarget.style.display = 'none'; }}
         />
 
-        {/* Warm wash keyed to the garment's own colour. */}
-        <span
-          className="absolute inset-0 pointer-events-none mix-blend-soft-light opacity-45"
-          style={{ background: `linear-gradient(150deg, ${hex}, #F0E9DE)` }}
-        />
-        {/* Editorial vignette. */}
+        {consistentSet ? (
+          // Barely-there warm cast so a white product card doesn't glare
+          // against the ivory page.
+          <span
+            className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-[0.07]"
+            style={{ background: '#E8DFD1' }}
+          />
+        ) : (
+          <span
+            className="absolute inset-0 pointer-events-none mix-blend-soft-light opacity-45"
+            style={{ background: `linear-gradient(150deg, ${hex}, #F0E9DE)` }}
+          />
+        )}
+
+        {/* Editorial vignette — lighter on the clean set. */}
         <span
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at 50% 35%, transparent 52%, rgba(46,39,35,0.13) 100%)' }}
+          style={{
+            background: consistentSet
+              ? 'radial-gradient(ellipse at 50% 40%, transparent 62%, rgba(46,39,35,0.07) 100%)'
+              : 'radial-gradient(ellipse at 50% 35%, transparent 52%, rgba(46,39,35,0.13) 100%)',
+          }}
         />
 
         {item.image_credit && (

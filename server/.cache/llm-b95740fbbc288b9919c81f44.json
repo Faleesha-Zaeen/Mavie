@@ -1,0 +1,23 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:53:39.925Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The high maintenance burden of this textured coat makes it impractical for regular use.",
+        "basis": "maintenance burden",
+        "severity": "high"
+      },
+      {
+        "claim": "The item lacks versatility, limiting its use exclusively to party occasions.",
+        "basis": "versatility",
+        "severity": "medium"
+      },
+      {
+        "claim": "The bold and structured style conflicts with your minimal and feminine style DNA.",
+        "basis": "style match",
+        "severity": "medium"
+      }
+    ]
+  }
+}

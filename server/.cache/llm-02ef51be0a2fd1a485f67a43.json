@@ -1,0 +1,27 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T18:01:28.811Z",
+  "value": {
+    "destination": "Dubai",
+    "days": 3,
+    "climate": "warm",
+    "schedule": [
+      {
+        "day": 1,
+        "label": "Arrival and hotel check-in",
+        "occasion": "travel"
+      },
+      {
+        "day": 2,
+        "label": "Exploring the city and desert safari",
+        "occasion": "casual"
+      },
+      {
+        "day": 3,
+        "label": "Fine dining and departure",
+        "occasion": "dinner"
+      }
+    ],
+    "summary": "Get ready for an unforgettable sun-soaked adventure in the dazzling city of Dubai."
+  }
+}

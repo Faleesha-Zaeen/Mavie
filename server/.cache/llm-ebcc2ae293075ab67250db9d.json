@@ -1,0 +1,20 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T14:19:55.989Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The Ivory Satin Blouse beautifully captures your preference for a feminine and elegant style.",
+        "basis": "style match"
+      },
+      {
+        "claim": "You'll feel at ease and confident throughout your interview with the comfortable Black Pointed Flats.",
+        "basis": "comfort priority"
+      },
+      {
+        "claim": "The entire ensemble fits comfortably within your $150 budget.",
+        "basis": "budget fit"
+      }
+    ]
+  }
+}

@@ -32,12 +32,13 @@ export const api = {
   makeupVTO: (payload) => request('/makeup/try-on', { method: 'POST', body: payload }),
 
   catalog: (category) => request(`/catalog${category ? `?category=${category}` : ''}`),
-  composeLooks: (constraints, guest) => request('/outfits/compose', { method: 'POST', body: { constraints, guest } }),
+  composeLooks: (constraints, guest, beauty) => request('/outfits/compose', { method: 'POST', body: { constraints, guest, beauty } }),
   compareLooks: (looks) => request('/looks/compare', { method: 'POST', body: { looks } }),
   saveLook: (look) => request('/looks/save', { method: 'POST', body: look }),
   savedLooks: () => request('/looks/saved'),
 
   tryOnClothes: (payload) => request('/vto/clothes', { method: 'POST', body: payload }),
+  tryOnFound: (payload) => request('/vto/found', { method: 'POST', body: payload }),
 
   planTrip: (payload) => request('/trip/plan', { method: 'POST', body: payload }),
 
@@ -50,6 +51,7 @@ export const api = {
 
   closet: () => request('/closet'),
   addClosetItem: (item) => request('/closet/upload', { method: 'POST', body: item }),
+  clearCloset: () => request('/closet', { method: 'DELETE' }),
   removeClosetItem: (id) => request(`/closet/${id}`, { method: 'DELETE' }),
   analyseCloset: () => request('/closet/analyze', { method: 'POST', body: {} }),
   styleCloset: (constraints) => request('/closet/style', { method: 'POST', body: { constraints } }),

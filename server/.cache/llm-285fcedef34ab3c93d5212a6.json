@@ -1,0 +1,18 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T17:57:10.165Z",
+  "value": {
+    "occasion": "dinner",
+    "formality": "smart-casual",
+    "goal": [
+      "feminine"
+    ],
+    "budget": 150,
+    "comfort_priority": 0.5,
+    "style_preferences": [
+      "feminine"
+    ],
+    "avoided_colors": [],
+    "summary": "You are going to look lovely and feel perfectly feminine for your dinner date tonight."
+  }
+}
