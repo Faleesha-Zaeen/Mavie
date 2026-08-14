@@ -11,7 +11,22 @@ import { store } from './store.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173' }));
+// A deployment has at least two valid origins — the production domain and
+// Vercel's per-commit preview URLs — so the allowlist is comma-separated and
+// preview subdomains are matched by suffix. A blocked origin fails as an
+// opaque network error in the browser, which is painful to diagnose.
+const ALLOWED = (process.env.CLIENT_ORIGIN || 'http://localhost:5173')
+  .split(',').map((s) => s.trim()).filter(Boolean);
+
+app.use(cors({
+  origin(origin, callback) {
+    // No Origin header: same-origin, curl, or a server-to-server call.
+    if (!origin) return callback(null, true);
+    const ok = ALLOWED.includes(origin)
+      || ALLOWED.some((a) => a.startsWith('*.') && origin.endsWith(a.slice(1)));
+    callback(ok ? null : new Error(`Origin ${origin} is not in CLIENT_ORIGIN`), ok);
+  },
+}));
 app.use(express.json({ limit: '12mb' })); // room for base64 photos
 app.use(morgan('dev'));
 

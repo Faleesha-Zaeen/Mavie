@@ -1,0 +1,24 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T19:34:03.050Z",
+  "value": {
+    "reasons": [
+      {
+        "claim": "The blush midi dress and nude heels perfectly align with your casual brunch plans while staying well under your $150 budget.",
+        "basis": "budget fit"
+      },
+      {
+        "claim": "The minimalist aesthetic of these pieces directly reflects your personal style DNA and preference for an easy, clean look.",
+        "basis": "style match"
+      },
+      {
+        "claim": "The block-heel shoes are specifically selected for comfort, ensuring you feel relaxed throughout your coffee catch-up.",
+        "basis": "comfort priority"
+      },
+      {
+        "claim": "Both items are highly suitable for a brunch setting, ensuring you look polished without being over-dressed.",
+        "basis": "occasion match"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "namespace": "llm",
+  "recorded_at": "2026-08-14T19:34:06.380Z",
+  "value": {
+    "concerns": [
+      {
+        "claim": "The dress style is romantic and coquette, which conflicts with your goal for a minimal aesthetic.",
+        "basis": "style_match",
+        "severity": "medium"
+      },
+      {
+        "claim": "The dress has low versatility and is difficult to integrate into a small six-piece closet.",
+        "basis": "versatility",
+        "severity": "medium"
+      },
+      {
+        "claim": "The maintenance burden for this dress is high relative to your preference for easy, casual wear.",
+        "basis": "maintenance_burden",
+        "severity": "low"
+      }
+    ]
+  }
+}
