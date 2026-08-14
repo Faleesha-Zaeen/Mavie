@@ -12,6 +12,16 @@ import { searchCatalog } from '../catalog/searchService.js';
 export async function decide({ items = [], constraints = {}, profile = {}, closet = [], matchScores = {} }) {
   const aftermath = analyseAftermath({ items, constraints, profile, closet, matchScores });
 
+  // Name the pieces that actually collide. Passing only a closet COUNT meant
+  // the Skeptic could see a 34% overlap score but had no idea what it was
+  // overlapping with — so the single strongest reason for a WAIT went unsaid.
+  const overlapping = items.flatMap((item) =>
+    closet
+      .filter((c) => c.category === item.category
+        && (c.color === item.colors?.[0] || (c.colors || []).includes(item.colors?.[0])))
+      .map((c) => ({ owned: c.name || `${c.color} ${c.category}`, collides_with: item.name })),
+  );
+
   const panel = await runPanel({
     metrics: aftermath.metrics,
     constraints,
@@ -20,6 +30,7 @@ export async function decide({ items = [], constraints = {}, profile = {}, close
       id, name, category, price, colors, style_tags, occasion_tags, versatility, maintenance,
     })),
     closet_size: closet.length,
+    already_owns: overlapping,
     makeup: null,
   });
 
@@ -57,8 +68,9 @@ function toVerdict(risk, overallMatch) {
       code: 'WAIT',
       label: 'WAIT',
       headline: 'You look great in it. That is not the same as needing it.',
-      reason: (items, a) =>
-        `Based on what you've told MAVIE you value, this may not be a great purchase yet. Rewear potential is ${a.metrics.rewear_potential}% and versatility is ${a.metrics.versatility}% — give it a day, or see the alternatives below.`,
+      // Lead with whichever factor actually drove the verdict, rather than
+      // reciting the same two numbers every time.
+      reason: (items, a) => `${dominantReason(a.metrics)} Give it a day, or take one of the alternatives below.`,
     };
   }
   return {
@@ -68,6 +80,24 @@ function toVerdict(risk, overallMatch) {
     reason: (items, a) =>
       `The evidence points against this one: versatility ${a.metrics.versatility}%, rewear ${a.metrics.rewear_potential}%, closet overlap ${a.metrics.closet_overlap}%. MAVIE would rather find you something you'll actually reach for.`,
   };
+}
+
+/**
+ * Which factor contributed most to the risk score? The verdict should explain
+ * itself using that, not a fixed sentence — otherwise every WAIT reads the same
+ * and the user learns nothing about their own decision.
+ */
+function dominantReason(m) {
+  const contributions = [
+    { weight: m.closet_overlap * 0.10, text: `You already own pieces doing this job — closet overlap is ${m.closet_overlap}%.` },
+    { weight: (100 - m.rewear_potential) * 0.15, text: `You are unlikely to reach for this often — rewear potential is ${m.rewear_potential}%.` },
+    { weight: (100 - m.versatility) * 0.15, text: `This is a narrow piece — it works in few contexts, scoring ${m.versatility}% on versatility.` },
+    { weight: m.maintenance_burden * 0.10, text: `The upkeep is real — care burden is ${m.maintenance_burden}%.` },
+    { weight: m.budget_pressure * 0.10, text: `This takes up most of your budget — budget pressure is ${m.budget_pressure}%.` },
+    { weight: (100 - m.occasion_match) * 0.20, text: `It is not quite right for the occasion — occasion fit is ${m.occasion_match}%.` },
+  ].sort((a, b) => b.weight - a.weight);
+
+  return contributions[0].text;
 }
 
 /**
@@ -85,6 +115,10 @@ export function findAlternatives({ items = [], constraints = {}, limit = 3 }) {
     .filter((c) => c.id !== target.id)
     // An "alternative" that blows the budget is not an alternative.
     .filter((c) => (budget ? c.price <= budget : true))
+    // It has to still work for the occasion. Suggesting a more versatile piece
+    // that doesn't suit the event is not a better match, it's a worse one — and
+    // it was quietly producing a second WAIT instead of a way forward.
+    .filter((c) => (constraints.occasion ? c.occasion_tags.includes(constraints.occasion) : true))
     // It must actually reduce decision risk, not merely look similar.
     .filter((c) => c.versatility > target.versatility || c.maintenance < target.maintenance - 15)
     .map((c) => ({

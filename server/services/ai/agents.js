@@ -32,6 +32,14 @@ concern, do not raise it. It is acceptable to return few concerns when the purch
 Return ONLY JSON: { "concerns": [{ "claim": "<one sentence>", "basis": "<field name only>", "severity": "low|medium|high" }] }
 Give 1-4 concerns. Be direct and useful, never preachy or moralising about spending.
 
+Two hard rules:
+1. If "already_owns" is non-empty, your FIRST concern must name those specific
+   pieces. Someone who already owns three similar dresses needs to hear that
+   before anything else — it is the most concrete reason not to buy.
+2. State concerns as fact, not as hedge. Write "This works for weddings, not for
+   a weeknight dinner", not "this may be less suitable than desired". Never use
+   "may be", "might", "could potentially" or "than desired".
+
 "basis" MUST be a bare field name of at most 3 words, such as "versatility",
 "closet_overlap" or "budget_pressure". It is rendered as a small caption, so it
 must never be a sentence, an explanation, or contain backticks or numbers.
@@ -100,8 +108,19 @@ export function deterministicStylist({ metrics, constraints, items, makeup }) {
     : [{ claim: 'This is a workable match for what you described.', basis: 'overall' }];
 }
 
-export function deterministicSkeptic({ metrics, constraints, items }) {
+export function deterministicSkeptic(evidence) {
+  const { metrics, constraints, items } = evidence;
   const concerns = [];
+
+  // Lead with what she already owns — same rule the LLM Skeptic is given.
+  const owned = (evidence.already_owns || []).map((o) => o.owned);
+  if (owned.length) {
+    concerns.push({
+      claim: `You already own ${owned.length} ${owned.length === 1 ? 'piece' : 'pieces'} doing this job — ${owned.slice(0, 3).join(', ')}.`,
+      basis: 'closet_overlap',
+      severity: owned.length >= 3 ? 'high' : 'medium',
+    });
+  }
 
   if (metrics.versatility < 65) {
     concerns.push({
@@ -117,7 +136,7 @@ export function deterministicSkeptic({ metrics, constraints, items }) {
       severity: metrics.rewear_potential < 50 ? 'high' : 'medium',
     });
   }
-  if (metrics.closet_overlap > 25) {
+  if (!owned.length && metrics.closet_overlap > 25) {
     concerns.push({
       claim: `Your closet already contains pieces serving a similar purpose — overlap is ${metrics.closet_overlap}%.`,
       basis: 'closet_overlap',
