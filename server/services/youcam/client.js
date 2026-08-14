@@ -10,6 +10,107 @@
  */
 
 import crypto from 'node:crypto';
+import https from 'node:https';
+
+/**
+ * DNS-hijack bypass.
+ *
+ * Some ISPs (Reliance Jio in India, confirmed) intercept DNS and answer every
+ * perfectcorp.com hostname with a single sinkhole address, so the API is
+ * unreachable even though nothing is wrong with the account or the network
+ * route. Verified: the system resolver returned 49.44.79.236 for every host,
+ * while the real address is 32.187.59.159 — and connecting to the real address
+ * directly succeeds. The block is DNS-only.
+ *
+ * So we resolve over DNS-over-HTTPS (which the ISP cannot intercept) and
+ * connect to the real IP with the correct SNI and Host header. On a normal
+ * network this behaves identically; it simply resolves correctly either way.
+ *
+ * Set YOUCAM_DOH=off to disable and use the system resolver.
+ */
+
+const ipCache = new Map();
+const DOH_TTL = 5 * 60 * 1000;
+
+async function resolveViaDoH(host) {
+  if (process.env.YOUCAM_DOH === 'off') return [];
+
+  const cached = ipCache.get(host);
+  if (cached && Date.now() < cached.expires) return cached.ips;
+
+  try {
+    const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${host}&type=A`, {
+      headers: { accept: 'application/dns-json' },
+    });
+    const data = await res.json();
+    const ips = (data.Answer || []).filter((a) => a.type === 1).map((a) => a.data);
+    if (ips.length) {
+      ipCache.set(host, { ips, expires: Date.now() + DOH_TTL });
+      return ips;
+    }
+  } catch (err) {
+    console.warn('[youcam] DoH resolve failed, using system DNS:', err.message);
+  }
+  return [];
+}
+
+/** HTTPS request pinned to a specific IP, preserving SNI and Host. */
+function requestVia(ip, host, path, { method, headers = {}, body }) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(
+      {
+        host: ip,
+        servername: host, // SNI — required or TLS fails
+        port: 443,
+        path,
+        method,
+        timeout: 30000,
+        headers: {
+          ...headers,
+          Host: host,
+          ...(body ? { 'Content-Length': Buffer.byteLength(body) } : {}),
+        },
+      },
+      (res) => {
+        let text = '';
+        res.on('data', (c) => { text += c; });
+        res.on('end', () => resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          text: () => Promise.resolve(text),
+          json: () => Promise.resolve(JSON.parse(text)),
+        }));
+      },
+    );
+    req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
+    req.on('error', reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
+
+/**
+ * fetch() replacement that routes around a hijacked resolver.
+ * Falls back to normal fetch when DoH gives us nothing.
+ */
+export async function resilientFetch(url, options = {}) {
+  const { hostname, pathname, search } = new URL(url);
+  const ips = await resolveViaDoH(hostname);
+
+  if (!ips.length) return fetch(url, options);
+
+  let lastErr;
+  for (const ip of ips) {
+    try {
+      return await requestVia(ip, hostname, pathname + search, options);
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  // Every real IP failed — let plain fetch have the last word.
+  console.warn(`[youcam] direct-IP attempts failed (${lastErr?.message}), falling back to system DNS`);
+  return fetch(url, options);
+}
 
 const BASE = () => process.env.YOUCAM_API_BASE || 'https://yce-api-01.perfectcorp.com';
 
@@ -46,7 +147,7 @@ function buildIdToken() {
 async function getToken() {
   if (cachedToken && Date.now() < tokenExpiry) return cachedToken;
 
-  const res = await fetch(`${BASE()}/s2s/v1.0/client/auth`, {
+  const res = await resilientFetch(`${BASE()}/s2s/v1.0/client/auth`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -67,7 +168,7 @@ async function getToken() {
 
 export async function youcamFetch(path, { method = 'POST', body, headers = {} } = {}) {
   const token = await getToken();
-  const res = await fetch(`${BASE()}${path}`, {
+  const res = await resilientFetch(`${BASE()}${path}`, {
     method,
     headers: {
       'Content-Type': 'application/json',

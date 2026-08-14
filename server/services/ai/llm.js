@@ -9,6 +9,9 @@
  * The LLM is a REASONING layer only. It never scores, ranks or decides.
  */
 
+import crypto from 'node:crypto';
+import * as cache from '../cache.js';
+
 const provider = () => {
   const p = (process.env.AI_PROVIDER || 'mock').toLowerCase();
   if (p === 'openai' && process.env.OPENAI_API_KEY) return 'openai';
@@ -24,6 +27,13 @@ export const isLive = () => provider() !== 'mock';
  * callers are expected to have a deterministic fallback.
  */
 export async function askJSON({ system, user, maxTokens = 2500, image = null }) {
+  // Cache is consulted BEFORE the provider, so a clone with no keys at all
+  // still replays recorded responses. This is what makes the demo path
+  // quota-proof and offline-safe.
+  const cacheKey = { system, user, image: image ? imageFingerprint(image) : null };
+  const cached = cache.read('llm', cacheKey);
+  if (cached != null) return cached;
+
   const p = provider();
   if (p === 'mock') return null;
 
@@ -38,7 +48,7 @@ export async function askJSON({ system, user, maxTokens = 2500, image = null }) 
         ? await callOpenAI({ system, user, maxTokens, image })
         : await callGemini({ system, user, maxTokens, image });
       const parsed = extractJSON(raw);
-      if (parsed) return parsed;
+      if (parsed) return cache.write('llm', cacheKey, parsed);
       throw new Error('response was not valid JSON');
     } catch (err) {
       const retryable = /429|503|rate|quota|timeout|fetch failed/i.test(err.message);
@@ -52,6 +62,10 @@ export async function askJSON({ system, user, maxTokens = 2500, image = null }) 
   }
   return null;
 }
+
+/** Hash the image so cache keys stay small and stable. */
+const imageFingerprint = (dataUrl) =>
+  crypto.createHash('sha256').update(dataUrl).digest('hex').slice(0, 32);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -90,8 +104,9 @@ async function callOpenAI({ system, user, maxTokens }) {
  * dropping to the deterministic reasoner for the rest of the day.
  */
 const GEMINI_FALLBACKS = [
-  'gemini-2.5-flash',
   'gemini-flash-latest',
+  'gemini-2.5-flash',
+  'gemini-3.1-flash-lite',
   'gemini-2.5-flash-lite',
   'gemini-flash-lite-latest',
 ];

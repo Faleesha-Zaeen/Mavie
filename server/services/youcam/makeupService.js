@@ -9,9 +9,18 @@
  * direction, which is still a complete part of the look.
  */
 
+import crypto from 'node:crypto';
 import { hasCredentials, youcamFetch, pollTask } from './client.js';
+import * as cache from '../cache.js';
+
+const fingerprint = (s) =>
+  crypto.createHash('sha256').update(String(s || 'none')).digest('hex').slice(0, 32);
 
 export async function tryOnMakeup({ userImage, makeup }) {
+  const key = { image: fingerprint(userImage), makeup: makeup?.vto_payload || null };
+  const cached = cache.read('makeup-vto', key);
+  if (cached) return { ...cached, cached: true };
+
   if (!hasCredentials()) {
     return mockResult(makeup, 'no_credentials');
   }
@@ -40,7 +49,7 @@ export async function tryOnMakeup({ userImage, makeup }) {
     const url = done.result?.results?.[0]?.data?.[0]?.url || done.result?.url;
 
     if (!url) throw new Error('No makeup try-on image returned');
-    return { result_url: url, mocked: false };
+    return cache.write('makeup-vto', key, { result_url: url, mocked: false });
   } catch (err) {
     console.warn('[makeup-vto] falling back to described direction:', err.message);
     return mockResult(makeup, 'live_call_failed');

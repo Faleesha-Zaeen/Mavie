@@ -9,6 +9,7 @@
 
 import 'dotenv/config';
 import crypto from 'node:crypto';
+import { resilientFetch } from '../services/youcam/client.js';
 
 const BASE = process.env.YOUCAM_API_BASE || 'https://yce-api-01.perfectcorp.com';
 const ok = (s) => `\x1b[32m✓\x1b[0m ${s}`;
@@ -29,7 +30,7 @@ console.log(ok('Credentials found in server/.env'));
 try {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), 10000);
-  await fetch(BASE, { signal: ctl.signal }).catch((e) => { throw e; });
+  await resilientFetch(BASE, { method: 'GET' }).catch((e) => { throw e; });
   clearTimeout(timer);
   console.log(ok(`Reached ${BASE}`));
 } catch (err) {
@@ -69,7 +70,7 @@ try {
 /* ── 4. Authenticate ────────────────────────────────────────────────── */
 let token;
 try {
-  const res = await fetch(`${BASE}/s2s/v1.0/client/auth`, {
+  const res = await resilientFetch(`${BASE}/s2s/v1.0/client/auth`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ client_id: process.env.YOUCAM_API_KEY, id_token: idToken }),
@@ -102,7 +103,7 @@ const ENDPOINTS = [
 
 for (const [name, path] of ENDPOINTS) {
   try {
-    const res = await fetch(`${BASE}${path}`, {
+    const res = await resilientFetch(`${BASE}${path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ request_id: Date.now(), payload: {} }),

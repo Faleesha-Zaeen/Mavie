@@ -9,10 +9,20 @@
  * decision pipeline stays fully demoable without keys.
  */
 
+import crypto from 'node:crypto';
 import { hasCredentials, youcamFetch, pollTask } from './client.js';
+import * as cache from '../cache.js';
+
+const fingerprint = (s) =>
+  crypto.createHash('sha256').update(String(s || 'none')).digest('hex').slice(0, 32);
 
 export async function tryOnClothes({ userImage, items = [] }) {
   const garments = items.filter((i) => ['upper', 'lower', 'full'].includes(i.body_area));
+
+  // A recorded try-on replays regardless of network or credentials.
+  const key = { image: fingerprint(userImage), garments: garments.map((g) => g.id).sort() };
+  const cached = cache.read('vto', key);
+  if (cached) return { ...cached, cached: true };
 
   if (!hasCredentials()) {
     return mockResult(userImage, garments, 'no_credentials');
@@ -43,7 +53,7 @@ export async function tryOnClothes({ userImage, items = [] }) {
 
     if (!url) throw new Error('No try-on image returned');
 
-    return { result_url: url, garments: garments.map((g) => g.id), mocked: false };
+    return cache.write('vto', key, { result_url: url, garments: garments.map((g) => g.id), mocked: false });
   } catch (err) {
     console.warn('[vto] falling back to composite preview:', err.message);
     return mockResult(userImage, garments, 'live_call_failed');
